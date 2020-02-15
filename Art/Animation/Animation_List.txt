@@ -1,0 +1,13 @@
+animation list
+
+coin rotation.
+idle pose. 
+select animation. 
+
+ingame start animation.
+action idle.
+shoot animation.
+spray idle.
+driver animation.
+final faze cut scene. 
+end dance.
