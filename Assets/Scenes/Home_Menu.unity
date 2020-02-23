@@ -411,6 +411,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Character_Selection
       objectReference: {fileID: 0}
+    - target: {fileID: 641744047557668970, guid: 5ffb2e137aaf8ee4fb0c8395379621f2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 641744047557668971, guid: 5ffb2e137aaf8ee4fb0c8395379621f2,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -529,6 +534,11 @@ PrefabInstance:
     - target: {fileID: 641744047557668971, guid: 5ffb2e137aaf8ee4fb0c8395379621f2,
         type: 3}
       propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 641744048512436674, guid: 5ffb2e137aaf8ee4fb0c8395379621f2,
+        type: 3}
+      propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -783,6 +793,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Home_Menu
+      objectReference: {fileID: 0}
+    - target: {fileID: 9065889547795274670, guid: 9a1d86fe18480f643bfff9b9dfef1f72,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9a1d86fe18480f643bfff9b9dfef1f72, type: 3}
