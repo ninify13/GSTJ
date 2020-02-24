@@ -19,23 +19,31 @@ public class Home : MenuLayout
         Button_Exit.onClick.AddListener(OnButtonExit);
     }
 
+    void OnDestroy()
+    {
+        Button_SinglePlayer.onClick.RemoveAllListeners();
+        Button_MultiPlayer.onClick.RemoveAllListeners();
+        Button_Highscores.onClick.RemoveAllListeners();
+        Button_Exit.onClick.RemoveAllListeners();
+    }
+
     void OnButtonSinglePlayer()
     {
-
+        // Switch to SP scene
     }
 
     void OnButtonMultiPlayer()
     {
-
+        // Switch to MP scene
     }
 
     void OnButtonHighscores()
-    { 
-    
+    {
+        // Switch to High scores
     }
 
     void OnButtonExit()
     {
-
+        // Fuck off out of code
     }
 }
