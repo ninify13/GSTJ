@@ -20,6 +20,11 @@ public class Home : MenuLayout
         Button_Exit.onClick.AddListener(OnButtonExit);
     }
 
+    void Start()
+    {
+        StartCoroutine(EnterHome());
+    }
+
     void OnDestroy()
     {
         Button_SinglePlayer.onClick.RemoveAllListeners();
@@ -31,41 +36,55 @@ public class Home : MenuLayout
     void OnButtonSinglePlayer()
     {
         // Switch to SP scene
-        //ScaleButtons(0.0f);
-        BounceButton(Button_SinglePlayer);
-        
+        BounceButton(Button_SinglePlayer).onComplete = ExitScene;        
     }
 
     void OnButtonMultiPlayer()
     {
         // Switch to MP scene
-        ScaleButtons(0.0f);
+        BounceButton(Button_MultiPlayer).onComplete = ExitScene;
     }
 
     void OnButtonHighscores()
     {
         // Switch to High scores
-        ScaleButtons(0.0f);
+        BounceButton(Button_Highscores).onComplete = ExitScene;
     }
 
     void OnButtonExit()
     {
         // Fuck off out of code
-        ScaleButtons(0.0f);
+        BounceButton(Button_Exit).onComplete = ExitScene;
     }
     
+    // Transitions
+    IEnumerator EnterHome()
+    {
+        ScaleButtons(0.0f, 0.1f);
+        yield return new WaitForSeconds(1.0f);
+        ScaleButtons(1.0f, 0.0f, 0.2f);
+        yield return null;
+    }
+
+    void ExitScene()
+    {
+        ScaleButtons(0.0f, 0.2f);
+    }
+    //
 
     // Tweens
-    void BounceButton(Button button)
+    Tweener BounceButton(Button button)
     {
-        button.transform.DOPunchScale(Vector3.one * 0.15f, 0.25f, 1);
+        button.interactable = false;
+        return button.transform.DOPunchScale(Vector3.one * 0.15f, 0.25f, 1);
     }
 
-    void ScaleButtons(float scaleTo, float duration = 1.0f)
+    void ScaleButtons(float scaleTo, float scaleFrom = 1.0f, float duration = 1.0f)
     {
-        Button_SinglePlayer.transform.DOScale(scaleTo, duration);
-        Button_MultiPlayer.transform.DOScale(scaleTo, duration);
-        Button_Highscores.transform.DOScale(scaleTo, duration);
-        Button_Exit.transform.DOScale(scaleTo, duration);
+        Button_SinglePlayer.transform.DOScale(scaleTo, duration).From(scaleFrom, true);
+        Button_MultiPlayer.transform.DOScale(scaleTo, duration).From(scaleFrom, true);
+        Button_Highscores.transform.DOScale(scaleTo, duration).From(scaleFrom, true);
+        Button_Exit.transform.DOScale(scaleTo, duration).From(scaleFrom, true);
     }
+    //
 }
