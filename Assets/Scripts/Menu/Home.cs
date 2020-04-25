@@ -6,69 +6,86 @@ using DG.Tweening;
 
 public class Home : MenuLayout
 {
-    public Button Button_SinglePlayer;
-    public Button Button_MultiPlayer;
-    public Button Button_Highscores;
-    public Button Button_Exit;
+    [SerializeField] Button m_button_SinglePlayer = default;
+    [SerializeField] Button m_button_MultiPlayer = default;
+    [SerializeField] Button m_button_Highscores = default;
+    [SerializeField] Button m_button_Exit = default;
 
+    MenuItem.Menus m_transitionToScene = default;
 
-    void Awake()
+    protected override void Awake()
     {
-        Button_SinglePlayer.onClick.AddListener(OnButtonSinglePlayer);
-        Button_MultiPlayer.onClick.AddListener(OnButtonMultiPlayer);
-        Button_Highscores.onClick.AddListener(OnButtonHighscores);
-        Button_Exit.onClick.AddListener(OnButtonExit);
+        base.Awake();
+
+        m_button_SinglePlayer.onClick.AddListener(OnButtonSinglePlayer);
+        m_button_MultiPlayer.onClick.AddListener(OnButtonMultiPlayer);
+        m_button_Highscores.onClick.AddListener(OnButtonHighscores);
+        m_button_Exit.onClick.AddListener(OnButtonExit);
     }
 
-    void Start()
+    protected override void OnEnable()
     {
+        base.OnEnable();
+
         StartCoroutine(EnterHome());
     }
 
-    void OnDestroy()
+    protected override void OnDestroy()
     {
-        Button_SinglePlayer.onClick.RemoveAllListeners();
-        Button_MultiPlayer.onClick.RemoveAllListeners();
-        Button_Highscores.onClick.RemoveAllListeners();
-        Button_Exit.onClick.RemoveAllListeners();
+        base.OnDestroy();
+
+        m_button_SinglePlayer.onClick.RemoveAllListeners();
+        m_button_MultiPlayer.onClick.RemoveAllListeners();
+        m_button_Highscores.onClick.RemoveAllListeners();
+        m_button_Exit.onClick.RemoveAllListeners();
     }
 
     void OnButtonSinglePlayer()
     {
         // Switch to SP scene
-        BounceButton(Button_SinglePlayer).onComplete = ExitScene;        
+        BounceButton(m_button_SinglePlayer).onComplete = ExitScene;
+        m_transitionToScene = MenuItem.Menus.Characters;
+        GSTJ_Core.SelectedMode = GSTJ_Core.GameMode.Single;
     }
 
     void OnButtonMultiPlayer()
     {
         // Switch to MP scene
-        BounceButton(Button_MultiPlayer).onComplete = ExitScene;
+        BounceButton(m_button_MultiPlayer).onComplete = ExitScene;
+        m_transitionToScene = MenuItem.Menus.Characters;
+        GSTJ_Core.SelectedMode = GSTJ_Core.GameMode.Multi;
     }
 
     void OnButtonHighscores()
     {
         // Switch to High scores
-        BounceButton(Button_Highscores).onComplete = ExitScene;
+        BounceButton(m_button_Highscores).onComplete = ExitScene;
+        m_transitionToScene = MenuItem.Menus.Scores;
     }
 
     void OnButtonExit()
     {
         // Fuck off out of code
-        BounceButton(Button_Exit).onComplete = ExitScene;
+        BounceButton(m_button_Exit).onComplete = ExitScene;
     }
     
     // Transitions
     IEnumerator EnterHome()
     {
-        ScaleButtons(0.0f, 0.1f);
-        yield return new WaitForSeconds(1.0f);
         ScaleButtons(1.0f, 0.0f, 0.2f);
+
+        m_button_SinglePlayer.interactable = true;
+        m_button_MultiPlayer.interactable = true;
+        m_button_Highscores.interactable = true;
+        m_button_Exit.interactable = true;
+
         yield return null;
     }
 
     void ExitScene()
     {
         ScaleButtons(0.0f, 0.2f);
+        m_menuManager.SwitchToScreen(m_transitionToScene);
     }
     //
 
@@ -81,10 +98,10 @@ public class Home : MenuLayout
 
     void ScaleButtons(float scaleTo, float scaleFrom = 1.0f, float duration = 1.0f)
     {
-        Button_SinglePlayer.transform.DOScale(scaleTo, duration).From(scaleFrom, true);
-        Button_MultiPlayer.transform.DOScale(scaleTo, duration).From(scaleFrom, true);
-        Button_Highscores.transform.DOScale(scaleTo, duration).From(scaleFrom, true);
-        Button_Exit.transform.DOScale(scaleTo, duration).From(scaleFrom, true);
+        m_button_SinglePlayer.transform.DOScale(scaleTo, duration).From(scaleFrom, true);
+        m_button_MultiPlayer.transform.DOScale(scaleTo, duration).From(scaleFrom, true);
+        m_button_Highscores.transform.DOScale(scaleTo, duration).From(scaleFrom, true);
+        m_button_Exit.transform.DOScale(scaleTo, duration).From(scaleFrom, true);
     }
     //
 }

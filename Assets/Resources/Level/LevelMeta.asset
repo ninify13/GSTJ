@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c3d448844d7aaa45b30a028a9925669, type: 3}
+  m_Name: LevelMeta
+  m_EditorClassIdentifier: 
+  Levels:
+  - LevelTime: 60
+    Fires: 30
+    Coins: 10
+  - LevelTime: 60
+    Fires: 35
+    Coins: 20
+  - LevelTime: 60
+    Fires: 45
+    Coins: 30
+  - LevelTime: 70
+    Fires: 55
+    Coins: 40
+  - LevelTime: 70
+    Fires: 60
+    Coins: 50
+  - LevelTime: 70
+    Fires: 60
+    Coins: 60
+  - LevelTime: 0
+    Fires: 75
+    Coins: 70
+  - LevelTime: 85
+    Fires: 80
+    Coins: 80
+  - LevelTime: 85
+    Fires: 80
+    Coins: 90
+  - LevelTime: 100
+    Fires: 80
+    Coins: 100
