@@ -14,32 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Levels:
   - LevelTime: 60
+    BossTime: 20
+    BossFires: 20
     Fires: 30
     Coins: 10
-  - LevelTime: 60
-    Fires: 35
-    Coins: 20
-  - LevelTime: 60
-    Fires: 45
-    Coins: 30
-  - LevelTime: 70
-    Fires: 55
-    Coins: 40
-  - LevelTime: 70
-    Fires: 60
-    Coins: 50
-  - LevelTime: 70
-    Fires: 60
-    Coins: 60
-  - LevelTime: 0
-    Fires: 75
-    Coins: 70
-  - LevelTime: 85
-    Fires: 80
-    Coins: 80
-  - LevelTime: 85
-    Fires: 80
-    Coins: 90
-  - LevelTime: 100
-    Fires: 80
-    Coins: 100

@@ -287,6 +287,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Coin_Mesh
       objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 7775b580d4bd36744872147327baf174,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7775b580d4bd36744872147327baf174, type: 3}
 --- !u!1 &261858349 stripped
@@ -399,6 +404,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: FireTruck_Mesh
       objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: a54a4edea398bb34885c207b35a14b89,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a54a4edea398bb34885c207b35a14b89, type: 3}
 --- !u!1 &387480413 stripped
@@ -476,6 +486,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -740,7 +751,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1511536817}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_MethodName: SetClip
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1511536817
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -756,6 +778,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
+  m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []

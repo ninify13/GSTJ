@@ -75,8 +75,8 @@ public class Home : MenuLayout
         ScaleButtons(1.0f, 0.0f, 0.2f);
 
         m_button_SinglePlayer.interactable = true;
-        m_button_MultiPlayer.interactable = true;
-        m_button_Highscores.interactable = true;
+        m_button_MultiPlayer.interactable = false;
+        m_button_Highscores.interactable = false;
         m_button_Exit.interactable = true;
 
         yield return null;

@@ -11,7 +11,12 @@ public class LevelMeta : ScriptableObject
 [Serializable]
 public class LevelMetaObject
 {
+    public Vector2 LevelSpeedMinMax;
     public int LevelTime;
+
+    public int BossTime;
+    public int BossFires;
+
     public int Fires;
     public int Coins;
 }

@@ -1,9 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 
 public class ScrollingObject : MonoBehaviour
 {
+    public Action<ScrollingObject> OnScrollComplete = default;
+
     public float MoveSpeed { get { return m_moveSpeed; } }
 
     [SerializeField] Vector3 m_startPoint = default;
@@ -15,16 +16,23 @@ public class ScrollingObject : MonoBehaviour
 
     [SerializeField] Transform m_objectTransform = default;
 
-    bool m_pause = default;
+    [SerializeField] bool m_loop = true;
+
+    public bool IsPlaying { get; private set; } = default;
 
     void OnEnable()
     {
         ResetObject();
-        m_pause = true;
+        IsPlaying = false;
     }
 
     void ResetObject()
     {
+        if (m_objectTransform == null)
+        {
+            m_objectTransform = transform;
+        }
+
         if (m_localPosition)
         {
             m_objectTransform.localPosition = m_startPoint;
@@ -37,7 +45,7 @@ public class ScrollingObject : MonoBehaviour
 
     void LateUpdate()
     {
-        if (!m_pause)
+        if (IsPlaying)
         {
             if (m_localPosition)
             {
@@ -46,7 +54,16 @@ public class ScrollingObject : MonoBehaviour
                 float distance = Vector3.Distance(m_objectTransform.localPosition, m_endPoint);
                 if (distance < 0.05f)
                 {
-                    ResetObject();
+                    OnScrollComplete?.Invoke(this);
+
+                    if (m_loop)
+                    {
+                        ResetObject();
+                    }
+                    else
+                    {
+                        Pause();
+                    }
                 }
             }
             else
@@ -56,7 +73,16 @@ public class ScrollingObject : MonoBehaviour
                 float distance = Vector3.Distance(m_objectTransform.position, m_endPoint);
                 if (distance < 0.05f)
                 {
-                    ResetObject();
+                    OnScrollComplete?.Invoke(this);
+
+                    if (m_loop)
+                    {
+                        ResetObject();
+                    }
+                    else
+                    {
+                        Pause();
+                    }
                 }
             }
         }
@@ -69,11 +95,22 @@ public class ScrollingObject : MonoBehaviour
 
     public void Pause()
     {
-        m_pause = true;
+        IsPlaying = false;
     }
 
     public void Play()
     {
-        m_pause = false;
+        IsPlaying = true;
+    }
+
+    public void SetStartPoint(Vector3 start)
+    {
+        m_startPoint = start;
+        ResetObject();
+    }
+
+    public void SetEndPoint(Vector3 end)
+    {
+        m_endPoint = end;
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class InputManager : MonoBehaviour
@@ -7,6 +6,8 @@ public class InputManager : MonoBehaviour
     public Action<Vector3> OnMouseDown = default;
     public Action<Vector3> OnMouseHold = default;
     public Action<Vector3> OnMouseUp = default;
+
+    public Vector3 MousePosition { get { return Input.mousePosition; } }
 
     void Awake()
     {

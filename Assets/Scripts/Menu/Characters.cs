@@ -8,7 +8,7 @@ public class Characters : MenuLayout
     public enum Character
     {
         Humpy,
-        //Gorgy,
+        Gorgy,
         Aj,
         Adi,
         Dj,
@@ -23,6 +23,7 @@ public class Characters : MenuLayout
     [SerializeField] GameObject[] m_selectImages = default;
 
     [SerializeField] Text[] m_lockTexts = default;
+    [SerializeField] Text m_coinCount = default;
 
     [SerializeField] Button[] m_selectButtons = default;
     [SerializeField] Button m_button_Play = default;
@@ -80,6 +81,8 @@ public class Characters : MenuLayout
 
     void EnterScene()
     {
+        m_coinCount.text = PlayerPrefs.GetInt(LevelManager.ScoreType.Coin.ToString(), 0).ToString();
+
         // Selection Arrows
         for (int i = 0; i < m_selectionArrows.Length; i++)
         {

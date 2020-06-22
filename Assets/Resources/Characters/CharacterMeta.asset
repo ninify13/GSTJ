@@ -20,7 +20,7 @@ MonoBehaviour:
   - CharacterName: 1
     CoinRequirement: 0
   - CharacterName: 2
-    CoinRequirement: 250
+    CoinRequirement: 400
   - CharacterName: 3
     CoinRequirement: 500
   - CharacterName: 4

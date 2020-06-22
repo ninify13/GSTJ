@@ -19,7 +19,7 @@ public class GSTJ_Core : MonoBehaviour
 
     public static CharacterMetaList CharacterMeta { get { return m_instance.m_characterMeta; } }
 
-    public static int Coins { get { return PlayerPrefs.GetInt(PrefsConstants.Coins); } }    
+    public static int Coins { get { return PlayerPrefs.GetInt(LevelManager.ScoreType.Coin.ToString(), 0); } }    
 
     static GSTJ_Core m_instance = default;
 
