@@ -17,6 +17,9 @@ public class LevelMetaObject
     public int BossTime;
     public int BossFires;
 
-    public int Fires;
+    public Vector2 FireMinMaxPerSet;
+    public Vector2 GapBetweenFiresInSet;
+    public Vector2 TimeBetweenFireSets;
+
     public int Coins;
 }

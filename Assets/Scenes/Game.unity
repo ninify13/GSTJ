@@ -3351,11 +3351,11 @@ MonoBehaviour:
   - {fileID: 1327290872}
   - {fileID: 2071113172}
   - {fileID: 1225579094}
-  - {fileID: 1913528756}
   m_foregroundParallax:
   - {fileID: 975760663}
   - {fileID: 1558870904}
   - {fileID: 1049416197}
+  m_groundObject: {fileID: 1913528756}
   m_bossObject: {fileID: 1076290554}
   m_fireSprites_Top:
   - {fileID: 481895410}
@@ -3371,7 +3371,6 @@ MonoBehaviour:
   - {fileID: 1951287307}
   - {fileID: 1691356652}
   - {fileID: 164281919}
-  m_fireSprites_Bottom:
   - {fileID: 909230483}
   - {fileID: 711349167}
   - {fileID: 2059215067}

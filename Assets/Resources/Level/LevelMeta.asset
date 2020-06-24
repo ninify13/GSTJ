@@ -13,8 +13,11 @@ MonoBehaviour:
   m_Name: LevelMeta
   m_EditorClassIdentifier: 
   Levels:
-  - LevelTime: 60
+  - LevelSpeedMinMax: {x: 5, y: 20}
+    LevelTime: 180
     BossTime: 20
     BossFires: 20
-    Fires: 30
+    FireMinMaxPerSet: {x: 1, y: 8}
+    GapBetweenFiresInSet: {x: 3, y: 5}
+    TimeBetweenFireSets: {x: 5, y: 5}
     Coins: 10

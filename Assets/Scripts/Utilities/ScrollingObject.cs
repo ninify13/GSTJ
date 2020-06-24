@@ -113,4 +113,9 @@ public class ScrollingObject : MonoBehaviour
     {
         m_endPoint = end;
     }
+
+    public void SetMoveSpeed(float speed)
+    {
+        m_moveSpeed = speed;
+    }
 }
