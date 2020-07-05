@@ -119,8 +119,6 @@ public class Player : MonoBehaviour
                 if (dotProd > margin)
                 {
                     // Water helper is looking mostly towards fire
-                    m_fire[i].Stop();
-                    m_fire[i].gameObject.SetActive(false);
                     m_levelManager.CleanFire(m_fire[i].GetComponent<ScrollingObject>());
                     m_fire.Remove(m_fire[i]);                    
 

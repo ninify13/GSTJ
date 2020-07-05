@@ -1,12 +1,16 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour
 {
     public enum LevelState
     {
+        Countup,
         Starting,
         Paused,
         Progress,
@@ -29,6 +33,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] Transform m_driverNode = default;
     [SerializeField] Transform m_playerNode = default;
     [SerializeField] Transform m_fireTruck = default;
+    [SerializeField] Transform m_countUpTransform = default;
 
     [SerializeField] Vector3 m_truckStartPosition = default;
     [SerializeField] Vector3 m_truckLevelPosition = default;
@@ -44,6 +49,8 @@ public class LevelManager : MonoBehaviour
     [SerializeField] HUD m_hud = default;
     [SerializeField] Pause m_pause = default;
     [SerializeField] Pause m_end = default;
+
+    [SerializeField] Text m_countUpText = default;
 
     public System.Action<LevelState> OnLevelStateChange = default;
 
@@ -89,6 +96,9 @@ public class LevelManager : MonoBehaviour
     Player m_levelPlayerCharacter = default;
     Player m_levelNonPlayerCharacter = default;
 
+    // Misc
+    int countUpIndex = default;
+
     void Awake()
     {
         OnLevelStateChange += LevelStateChange;
@@ -128,7 +138,7 @@ public class LevelManager : MonoBehaviour
     {
         m_fireTruck.transform.position = m_truckStartPosition;
 
-        OnLevelStateChange?.Invoke(LevelState.Starting);
+        OnLevelStateChange?.Invoke(LevelState.Countup);
 
         m_pause.gameObject.SetActive(false);
         m_end.gameObject.SetActive(false);
@@ -313,7 +323,14 @@ public class LevelManager : MonoBehaviour
 
         switch (State)
         {
+            case LevelState.Countup:
+                countUpIndex = 4;
+                m_countUpTransform.gameObject.SetActive(true);
+                StartCoroutine(DelayedCountUp());
+                break;
+
             case LevelState.Starting:
+                StopCoroutine(DelayedCountUp());
                 for (int i = 0; i < m_backgroundParallax.Length; i++)
                 {
                     m_backgroundParallax[i].Pause();
@@ -370,6 +387,26 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+    IEnumerator DelayedCountUp()
+    {
+        while (State == LevelState.Countup)
+        {
+            countUpIndex--;
+            m_countUpText.text = (countUpIndex == 0) ? "GO" : countUpIndex.ToString();
+            m_countUpTransform.DOScale(2.0f, 0.5f).From(0.0f);
+
+            yield return new WaitForSeconds(1f);
+            
+            if (countUpIndex <= 0)
+            {
+                m_countUpTransform.gameObject.SetActive(false);
+                OnLevelStateChange?.Invoke(LevelState.Starting);
+            }
+        }
+        
+        yield return null;
+    }
+
     IEnumerator SpawnRandomForeground()
     {
         while (State == LevelState.Progress)
@@ -388,6 +425,41 @@ public class LevelManager : MonoBehaviour
         yield return null;
     }
 
+    public void AddScore(ScoreType scoreType, int value = 1)
+    {
+        int score = PlayerPrefs.GetInt(scoreType.ToString(), 0);
+        score += value;
+        PlayerPrefs.SetInt(scoreType.ToString(), score);
+
+        switch (scoreType)
+        {
+            case ScoreType.Coin:
+                m_coinsThisSession += value;
+                m_hud.SetHUDCount(HUD.PlayerHUD.Player_01, scoreType, m_coinsThisSession);
+                break;
+
+            case ScoreType.Fire:
+                m_fireThisSession += value;
+                m_hud.SetHUDCount(HUD.PlayerHUD.Player_01, scoreType, m_fireThisSession);
+                break;
+        }
+
+        int overallScore = PlayerPrefs.GetInt(ScoreType.Score.ToString(), 0);
+        overallScore += value;
+        PlayerPrefs.SetInt(ScoreType.Score.ToString(), overallScore);
+
+        m_hud.SetHUDCount(HUD.PlayerHUD.Player_01, ScoreType.Score, m_coinsThisSession +  m_fireThisSession);
+    }
+
+    public void CleanForegroundScroll(ScrollingObject scrollingObject)
+    {
+        scrollingObject.Stop();
+        m_foregroundObjects.Remove(scrollingObject);
+        scrollingObject.OnScrollComplete -= CleanForegroundScroll;
+        scrollingObject.OnScrollComplete = null;
+    }
+
+    #region Fires
     void UpdateFires()
     {
         if ((Time.time - m_lastFireSetSpawnTime) >= m_timeToNextFireSet)
@@ -425,6 +497,7 @@ public class LevelManager : MonoBehaviour
                         while (m_fireSprites_Top[index].IsPlaying);
                         m_fireSprites_Top[index].gameObject.SetActive(true);
                         m_fireSprites_Top[index].Play();
+                        m_fireSprites_Top[index].SetClip(0);
                         m_fireSprites_Top[index].GetComponent<ScrollingObject>().SetStartPoint(firePosition);
                         m_fireSprites_Top[index].GetComponent<ScrollingObject>().SetEndPoint(new Vector3(-firePosition.x, firePosition.y, firePosition.z));
                         m_fireSprites_Top[index].GetComponent<ScrollingObject>().SetMoveSpeed(m_currentLevelSpeed);
@@ -439,49 +512,15 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    public void AddScore(ScoreType scoreType, int value = 1)
-    {
-        int score = PlayerPrefs.GetInt(scoreType.ToString(), 0);
-        score += value;
-        PlayerPrefs.SetInt(scoreType.ToString(), score);
-
-        switch (scoreType)
-        {
-            case ScoreType.Coin:
-                m_coinsThisSession += value;
-                m_hud.SetHUDCount(HUD.PlayerHUD.Player_01, scoreType, m_coinsThisSession);
-                break;
-
-            case ScoreType.Fire:
-                m_fireThisSession += value;
-                m_hud.SetHUDCount(HUD.PlayerHUD.Player_01, scoreType, m_fireThisSession);
-                break;
-        }
-
-        int overallScore = PlayerPrefs.GetInt(ScoreType.Score.ToString(), 0);
-        overallScore += value;
-        PlayerPrefs.SetInt(ScoreType.Score.ToString(), overallScore);
-
-        m_hud.SetHUDCount(HUD.PlayerHUD.Player_01, ScoreType.Score, m_coinsThisSession +  m_fireThisSession);
-    }
-
-    public void CleanForegroundScroll(ScrollingObject scrollingObject)
-    {
-        scrollingObject.Stop();
-        m_foregroundObjects.Remove(scrollingObject);
-        scrollingObject.OnScrollComplete -= CleanForegroundScroll;
-        scrollingObject.OnScrollComplete = null;
-    }
-
     public void CleanFire(ScrollingObject scrollingObject)
     {
         m_bossFireCurrentCount--;
         m_bossFireCurrentCount = Mathf.Clamp(m_bossFireCurrentCount, 0, 100);
-        scrollingObject.Stop();
+        scrollingObject.Pause();
         scrollingObject.OnScrollComplete -= CleanFire;
         scrollingObject.OnScrollComplete = null;
-        scrollingObject.gameObject.GetComponent<SpritePlayer>().Stop();
-        scrollingObject.gameObject.SetActive(false);
+        scrollingObject.gameObject.GetComponent<SpritePlayer>().SetClip(1);
+        scrollingObject.gameObject.GetComponent<SpritePlayer>().Play();
     }
 
     void StartBossFires(ScrollingObject scrollingObject)
@@ -490,6 +529,7 @@ public class LevelManager : MonoBehaviour
         scrollingObject.OnScrollComplete = null;
         OnLevelStateChange(LevelState.BossFires);
     }
+    #endregion
 
     void OnDestroy()
     {

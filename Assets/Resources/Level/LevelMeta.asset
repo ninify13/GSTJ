@@ -19,5 +19,5 @@ MonoBehaviour:
     BossFires: 20
     FireMinMaxPerSet: {x: 1, y: 8}
     GapBetweenFiresInSet: {x: 3, y: 5}
-    TimeBetweenFireSets: {x: 5, y: 5}
+    TimeBetweenFireSets: {x: 2, y: 3}
     Coins: 10

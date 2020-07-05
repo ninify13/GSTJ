@@ -1,50 +1,9 @@
 fileFormatVersion: 2
-guid: 1d5af9d193e396342a703d409978c276
+guid: a54a4edea398bb34885c207b35a14b89
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: 01 - Default
-    second: {fileID: 239378781582670930, guid: 1d5af9d193e396342a703d409978c276, type: 3}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: ch_humpy_bodyTex_SHD
-    second: {fileID: -8239742240355154678, guid: 1d5af9d193e396342a703d409978c276,
-      type: 3}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: ch_humpy_eyeBrowTex_SHD
-    second: {fileID: 1592456767971973967, guid: 1d5af9d193e396342a703d409978c276,
-      type: 3}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: ch_humpy_eyeTex_SHD
-    second: {fileID: -7758371175581145687, guid: 1d5af9d193e396342a703d409978c276,
-      type: 3}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: ch_humpy_innerMouthTex_SHD
-    second: {fileID: -3261610698558814644, guid: 1d5af9d193e396342a703d409978c276,
-      type: 3}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: ch_humpy_teeth_SHD
-    second: {fileID: -9172779671142701566, guid: 1d5af9d193e396342a703d409978c276,
-      type: 3}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: default
-    second: {fileID: 8554655104631171556, guid: 1d5af9d193e396342a703d409978c276,
-      type: 3}
+  externalObjects: {}
   materials:
     materialImportMode: 1
     materialName: 0
@@ -122,7 +81,7 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     globalScale: 1
-    rootMotionBoneName: Bip001
+    rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
@@ -130,7 +89,7 @@ ModelImporter:
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 1
+  avatarSetup: 0
   additionalBone: 0
   userData: 
   assetBundleName: 
