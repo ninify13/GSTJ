@@ -284,7 +284,7 @@ public class LevelManager : MonoBehaviour
                         coinPosition = new Vector3(30.0f, Random.Range(-2f, 8f), 0.0f);
                         for (int i = 0; i < m_coinSprites.Length; i++)
                         {
-                            if (!m_coinSprites[i].IsPlaying)
+                            if (!m_coinSprites[i].IsPlaying || !m_coinSprites[i].gameObject.activeSelf)
                             {
                                 index = i;
                                 break;
@@ -321,7 +321,7 @@ public class LevelManager : MonoBehaviour
                             {
                                 for (int i = 0; i < m_fireSprites_Top.Length; i++)
                                 {
-                                    if (!m_fireSprites_Top[i].IsPlaying)
+                                    if (!m_fireSprites_Top[i].IsPlaying || !m_fireSprites_Top[i].gameObject.activeSelf)
                                     {
                                         bossFireIndex = i;
                                         break;
@@ -333,6 +333,7 @@ public class LevelManager : MonoBehaviour
                             {
                                 m_fireSprites_Top[bossFireIndex].gameObject.SetActive(true);
                                 m_fireSprites_Top[bossFireIndex].GetComponent<ScrollingObject>().enabled = false;
+                                m_fireSprites_Top[bossFireIndex].SetClip(0);
                                 m_fireSprites_Top[bossFireIndex].Play();
                                 m_fireSprites_Top[bossFireIndex].transform.position = m_bossObject.transform.position + bossFirePosition;
                                 SpritePlayer bossFireSprite = m_fireSprites_Top[bossFireIndex];
@@ -557,7 +558,7 @@ public class LevelManager : MonoBehaviour
                         firePosition = new Vector3(30.0f + (i * (Random.Range(gaps.x, gaps.y))), Random.Range(0f, 6f), 0.0f);
                         for (int j = 0; j < m_fireSprites_Top.Length; j++)
                         {
-                            if (!m_fireSprites_Top[j].IsPlaying)
+                            if (!m_fireSprites_Top[j].IsPlaying || !m_fireSprites_Top[j].gameObject.activeSelf)
                             {
                                 index = j;
                                 break;
@@ -579,7 +580,10 @@ public class LevelManager : MonoBehaviour
                         break;
                 }
 
-                m_levelPlayerCharacter.AddFire(fireSprite);
+                if (fireSprite != null)
+                {
+                    m_levelPlayerCharacter.AddFire(fireSprite);
+                }
             }
         }
     }

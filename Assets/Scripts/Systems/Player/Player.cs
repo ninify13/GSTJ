@@ -107,18 +107,18 @@ public class Player : MonoBehaviour
             Transform fireTransform = m_fire[i].transform;
 
             bool dispel = false;
-            float margin = 0.98f;
+            float margin = 0.92f;
             if (m_levelManager.State == LevelManager.LevelState.BossFires)
             {
                 dispel = true;
-                margin = 1.0f;
+                margin = 0.98f;
             }
             else if (m_levelManager.State == LevelManager.LevelState.Progress)
             {
                 if (fireTransform.position.x < 6.5f && fireTransform.position.x > -6.5f)
                 {
                     dispel = true;
-                    margin = 0.98f;
+                    margin = 0.92f;
                 }
             }
 
