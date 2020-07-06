@@ -56,16 +56,16 @@ public class Player : MonoBehaviour
                 m_animController.SetBool(CharacterStateConstants.DriverParam, false);
                 m_hose.SetActive(true);
 
-                m_inputManager.OnMouseDown += OnWaterStart;
-                m_inputManager.OnMouseHold += OnWaterSpray;
-                m_inputManager.OnMouseUp += OnWaterRelease;
-
                 GameObject waterSprite = Instantiate(m_waterSpriteTemplate.gameObject);
                 m_waterSpritePlayer = waterSprite.GetComponent<SpritePlayer>();
                 m_waterSpritePlayer.transform.SetParent(m_waterHelper);
                 m_waterSpritePlayer.transform.localPosition = Vector3.zero;
                 m_waterSpritePlayer.transform.localRotation = Quaternion.identity;
                 m_waterSpritePlayer.gameObject.SetActive(false);
+
+                m_inputManager.OnMouseDown += OnWaterStart;
+                m_inputManager.OnMouseHold += OnWaterSpray;
+                m_inputManager.OnMouseUp += OnWaterRelease;
                 break;
         }
     }
@@ -80,6 +80,9 @@ public class Player : MonoBehaviour
         if (m_levelManager.State == LevelManager.LevelState.End || m_levelManager.State == LevelManager.LevelState.Paused)
             return;
 
+        if (m_levelManager.AvailableWater <= 0.0f  || m_levelManager.WaterFilling)
+            return;
+
         m_waterSpritePlayer.gameObject.SetActive(true);
 
         m_waterSpritePlayer.SetClip(0);
@@ -90,6 +93,14 @@ public class Player : MonoBehaviour
     {
         if (m_levelManager.State == LevelManager.LevelState.End || m_levelManager.State == LevelManager.LevelState.Paused)
             return;
+
+        if (m_levelManager.AvailableWater <= 0.0f || m_levelManager.WaterFilling)
+        {
+            m_waterSpritePlayer.gameObject.SetActive(false);
+            return;
+        }
+
+        m_levelManager.ConsumeWater();
 
         for (int i = (m_fire.Count - 1); i >= 0; i--)
         {
@@ -135,6 +146,12 @@ public class Player : MonoBehaviour
 
         m_waterSpritePlayer.SetClip(1);
         m_waterSpritePlayer.Play();
+
+        if (m_levelManager.AvailableWater <= 0.0f || m_levelManager.WaterFilling)
+        {
+            m_waterSpritePlayer.gameObject.SetActive(false);
+            return;
+        }
     }
 
     void LateUpdate()

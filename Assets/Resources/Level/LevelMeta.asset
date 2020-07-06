@@ -21,3 +21,5 @@ MonoBehaviour:
     GapBetweenFiresInSet: {x: 3, y: 5}
     TimeBetweenFireSets: {x: 2, y: 3}
     Coins: 10
+    WaterFillRate: 5
+    WaterReduceRate: 1

@@ -12,6 +12,8 @@ public class HUD : MonoBehaviour
     [SerializeField] HUDElements m_player_01_HUD = default;
     [SerializeField] HUDElements m_player_02_HUD = default;
 
+    [SerializeField] Transform m_waterBar = default;
+
     public void EnableHUD(PlayerHUD playerHUD, bool enable)
     {
         switch (playerHUD)
@@ -78,6 +80,13 @@ public class HUD : MonoBehaviour
                 m_player_02_HUD.SetBarValue(normalizedVaue);
                 break;
         }
+    }
+
+    public void SetWaterValue(float availableWater)
+    {
+        m_waterBar.localScale = new Vector3(m_waterBar.localScale.x,
+                                            availableWater,
+                                            m_waterBar.localScale.z);
     }
 }
 

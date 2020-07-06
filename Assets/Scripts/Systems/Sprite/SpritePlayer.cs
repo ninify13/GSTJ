@@ -14,6 +14,7 @@ public class SpritePlayer : MonoBehaviour
     }
 
     [SerializeField] SpriteClip[] m_clips = default;
+    public int ClipCount { get { return m_clips.Length; } }
 
     [SerializeField] MeshRenderer m_renderer = default;
 

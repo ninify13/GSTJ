@@ -59,6 +59,10 @@ public class LevelManager : MonoBehaviour
 
     public LevelState State { get; private set; } = default;
 
+    // Water vars
+    public float AvailableWater { get; private set; } = default;
+    public bool WaterFilling { get; private set; } = default;
+
     // Level Index
     int m_levelIndex = default;
 
@@ -117,6 +121,7 @@ public class LevelManager : MonoBehaviour
 
         // Input handlers
         m_inputManager.OnMouseDown += OnMouseDown;
+        m_inputManager.OnMouseUp += OnMouseUp;
 
         // Character Details
         LoadCharacterAsset();
@@ -137,13 +142,14 @@ public class LevelManager : MonoBehaviour
     void Start()
     {
         m_fireTruck.transform.position = m_truckStartPosition;
-
+        AvailableWater = 1.0f;
+        OnWaterFill();
         OnLevelStateChange?.Invoke(LevelState.Countup);
 
         m_pause.gameObject.SetActive(false);
         m_end.gameObject.SetActive(false);
 
-        m_hud.EnableHUD(HUD.PlayerHUD.Player_01, true);
+        m_hud.EnableHUD(HUD.PlayerHUD.Player_01, false);
         m_hud.EnableHUD(HUD.PlayerHUD.Player_02, false);
 
         m_hud.SetProgress(HUD.PlayerHUD.Player_01, 0);
@@ -186,6 +192,29 @@ public class LevelManager : MonoBehaviour
                 AddScore(ScoreType.Coin);
             }
         }
+    }
+
+    void OnMouseUp(Vector3 mousePostiion)
+    {
+        WaterFilling = false;
+    }
+
+    public void OnWaterFill()
+    {
+        AvailableWater += ((GSTJ_Core.LevelMeta.Levels[m_levelIndex].WaterFillRate / 10f) * Time.deltaTime);
+        AvailableWater = Mathf.Clamp(AvailableWater, 0.0f, 1.0f);
+
+        m_hud.SetWaterValue(AvailableWater);
+
+        WaterFilling = true;
+    }
+
+    public void ConsumeWater()
+    {
+        AvailableWater -= ((GSTJ_Core.LevelMeta.Levels[m_levelIndex].WaterReduceRate / 10f) * Time.deltaTime);
+        AvailableWater = Mathf.Clamp(AvailableWater, 0.0f, 1.0f);
+
+        m_hud.SetWaterValue(AvailableWater);
     }
 
     void LateUpdate()
@@ -327,10 +356,12 @@ public class LevelManager : MonoBehaviour
                 countUpIndex = 4;
                 m_countUpTransform.gameObject.SetActive(true);
                 StartCoroutine(DelayedCountUp());
+                m_hud.EnableHUD(HUD.PlayerHUD.Player_01, false);
                 break;
 
             case LevelState.Starting:
                 StopCoroutine(DelayedCountUp());
+                m_hud.EnableHUD(HUD.PlayerHUD.Player_01, true);
                 for (int i = 0; i < m_backgroundParallax.Length; i++)
                 {
                     m_backgroundParallax[i].Pause();
@@ -519,8 +550,11 @@ public class LevelManager : MonoBehaviour
         scrollingObject.Pause();
         scrollingObject.OnScrollComplete -= CleanFire;
         scrollingObject.OnScrollComplete = null;
-        scrollingObject.gameObject.GetComponent<SpritePlayer>().SetClip(1);
-        scrollingObject.gameObject.GetComponent<SpritePlayer>().Play();
+        if (scrollingObject.gameObject.GetComponent<SpritePlayer>().ClipCount > 1)
+        {
+            scrollingObject.gameObject.GetComponent<SpritePlayer>().SetClip(1);
+            scrollingObject.gameObject.GetComponent<SpritePlayer>().Play();
+        }
     }
 
     void StartBossFires(ScrollingObject scrollingObject)
@@ -599,6 +633,9 @@ public class LevelManager : MonoBehaviour
 
     public void OnExit()
     {
+        m_inputManager.OnMouseDown -= OnMouseDown;
+        m_inputManager.OnMouseUp -= OnMouseUp;
+
         SceneManager.LoadScene(SceneConstants.Home);
     }
     #endregion
