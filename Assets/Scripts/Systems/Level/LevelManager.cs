@@ -1,10 +1,9 @@
-﻿using DG.Tweening;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class LevelManager : MonoBehaviour
 {
@@ -15,6 +14,7 @@ public class LevelManager : MonoBehaviour
         Paused,
         Progress,
         Boss,
+        BossMovie,
         BossFires,
         End,
     }
@@ -34,6 +34,8 @@ public class LevelManager : MonoBehaviour
     [SerializeField] Transform m_playerNode = default;
     [SerializeField] Transform m_fireTruck = default;
     [SerializeField] Transform m_countUpTransform = default;
+
+    [SerializeField] GameObject m_bossCharacter = default;
 
     [SerializeField] Vector3 m_truckStartPosition = default;
     [SerializeField] Vector3 m_truckLevelPosition = default;
@@ -125,6 +127,8 @@ public class LevelManager : MonoBehaviour
 
         // Character Details
         LoadCharacterAsset();
+
+        m_bossCharacter.SetActive(false);
 
         for (int i = 0; i < m_backgroundParallax.Length; i++)
         {
@@ -276,19 +280,26 @@ public class LevelManager : MonoBehaviour
 
                         // Spawn coin at (Screen end, Random y, 0.0f)
                         Vector3 coinPosition = Vector3.zero;
-                        int index = 0;
+                        int index = -1;
                         coinPosition = new Vector3(30.0f, Random.Range(-2f, 8f), 0.0f);
-                        do
+                        for (int i = 0; i < m_coinSprites.Length; i++)
                         {
-                            index = Random.Range(0, m_coinSprites.Length);
+                            if (!m_coinSprites[i].IsPlaying)
+                            {
+                                index = i;
+                                break;
+                            }
                         }
-                        while (m_coinSprites[index].IsPlaying);
-                        m_coinSprites[index].gameObject.SetActive(true);
-                        m_coinSprites[index].Play();
-                        m_coinSprites[index].GetComponent<ScrollingObject>().SetStartPoint(coinPosition);
-                        m_coinSprites[index].GetComponent<ScrollingObject>().SetEndPoint(new Vector3(-coinPosition.x, coinPosition.y, coinPosition.z));
-                        m_coinSprites[index].GetComponent<ScrollingObject>().Play();
-                        m_coinSprites[index].GetComponent<ScrollingObject>().OnScrollComplete += CleanFire;
+
+                        if (index > -1 && index < m_coinSprites.Length)
+                        {
+                            m_coinSprites[index].gameObject.SetActive(true);
+                            m_coinSprites[index].Play();
+                            m_coinSprites[index].GetComponent<ScrollingObject>().SetStartPoint(coinPosition);
+                            m_coinSprites[index].GetComponent<ScrollingObject>().SetEndPoint(new Vector3(-coinPosition.x, coinPosition.y, coinPosition.z));
+                            m_coinSprites[index].GetComponent<ScrollingObject>().Play();
+                            m_coinSprites[index].GetComponent<ScrollingObject>().OnScrollComplete += CleanFire;
+                        }
                     }
                 }
                 break;
@@ -304,25 +315,31 @@ public class LevelManager : MonoBehaviour
                             m_bossLastFireSpawn = Time.time;
                             Vector2 randomPos = Random.insideUnitCircle;
                             Vector3 bossFirePosition = new Vector3(randomPos.x * 4f, randomPos.y * 4f, 0.0f);
-                            int bossFireIndex = 0;
+                            int bossFireIndex = -1;
 
                             if (m_bossFireCurrentCount < m_fireSprites_Top.Length)
                             {
-                                do
+                                for (int i = 0; i < m_fireSprites_Top.Length; i++)
                                 {
-                                    bossFireIndex = Random.Range(0, m_fireSprites_Top.Length);
+                                    if (!m_fireSprites_Top[i].IsPlaying)
+                                    {
+                                        bossFireIndex = i;
+                                        break;
+                                    }
                                 }
-                                while (m_fireSprites_Top[bossFireIndex].IsPlaying);
                             }
 
-                            m_fireSprites_Top[bossFireIndex].gameObject.SetActive(true);
-                            m_fireSprites_Top[bossFireIndex].GetComponent<ScrollingObject>().enabled = false;
-                            m_fireSprites_Top[bossFireIndex].Play();
-                            m_fireSprites_Top[bossFireIndex].transform.position = m_bossObject.transform.position + bossFirePosition;
-                            SpritePlayer bossFireSprite = m_fireSprites_Top[bossFireIndex];
-                            m_levelPlayerCharacter.AddFire(bossFireSprite);
-                            m_bossFireTotalCount++;
-                            m_bossFireCurrentCount++;
+                            if (bossFireIndex > -1 && bossFireIndex < m_fireSprites_Top.Length)
+                            {
+                                m_fireSprites_Top[bossFireIndex].gameObject.SetActive(true);
+                                m_fireSprites_Top[bossFireIndex].GetComponent<ScrollingObject>().enabled = false;
+                                m_fireSprites_Top[bossFireIndex].Play();
+                                m_fireSprites_Top[bossFireIndex].transform.position = m_bossObject.transform.position + bossFirePosition;
+                                SpritePlayer bossFireSprite = m_fireSprites_Top[bossFireIndex];
+                                m_levelPlayerCharacter.AddFire(bossFireSprite);
+                                m_bossFireTotalCount++;
+                                m_bossFireCurrentCount++;
+                            }
                         }
                     }
                 }
@@ -396,7 +413,24 @@ public class LevelManager : MonoBehaviour
             case LevelState.Boss:
                 m_bossObject.gameObject.SetActive(true);
                 m_bossObject.Play();
-                m_bossObject.OnScrollComplete = StartBossFires;
+                m_bossObject.OnScrollComplete = StartBossMovie;
+                break;
+
+            case LevelState.BossMovie:
+                for (int i = 0; i < m_backgroundParallax.Length; i++)
+                {
+                    m_backgroundParallax[i].Pause();
+                }
+
+                for (int i = 0; i < m_foregroundParallax.Length; i++)
+                {
+                    m_foregroundParallax[i].Pause();
+                }
+
+                m_bossCharacter.SetActive(true);
+                m_bossCharacter.GetComponent<Animator>().SetInteger(CharacterStateConstants.BossRunCycle, 0);
+                m_bossCharacter.GetComponent<ScrollingObject>().Play();
+                m_bossCharacter.GetComponent<ScrollingObject>().OnScrollComplete = ShowBossDialog;
                 break;
 
             case LevelState.BossFires:
@@ -510,7 +544,7 @@ public class LevelManager : MonoBehaviour
                 SpritePlayer fireSprite = null;
                 int position = Random.Range(0, 4);
                 Vector3 firePosition = Vector3.zero;
-                int index = 0;
+                int index = -1;
                 switch (position)
                 {
                     case 0:
@@ -521,20 +555,27 @@ public class LevelManager : MonoBehaviour
                         //Top
                         Vector2 gaps = GSTJ_Core.LevelMeta.Levels[m_levelIndex].GapBetweenFiresInSet;
                         firePosition = new Vector3(30.0f + (i * (Random.Range(gaps.x, gaps.y))), Random.Range(0f, 6f), 0.0f);
-                        do
+                        for (int j = 0; j < m_fireSprites_Top.Length; j++)
                         {
-                            index = Random.Range(0, m_fireSprites_Top.Length);
+                            if (!m_fireSprites_Top[j].IsPlaying)
+                            {
+                                index = j;
+                                break;
+                            }
                         }
-                        while (m_fireSprites_Top[index].IsPlaying);
-                        m_fireSprites_Top[index].gameObject.SetActive(true);
-                        m_fireSprites_Top[index].Play();
-                        m_fireSprites_Top[index].SetClip(0);
-                        m_fireSprites_Top[index].GetComponent<ScrollingObject>().SetStartPoint(firePosition);
-                        m_fireSprites_Top[index].GetComponent<ScrollingObject>().SetEndPoint(new Vector3(-firePosition.x, firePosition.y, firePosition.z));
-                        m_fireSprites_Top[index].GetComponent<ScrollingObject>().SetMoveSpeed(m_currentLevelSpeed);
-                        m_fireSprites_Top[index].GetComponent<ScrollingObject>().Play();
-                        m_fireSprites_Top[index].GetComponent<ScrollingObject>().OnScrollComplete += CleanFire;
-                        fireSprite = m_fireSprites_Top[index];
+
+                        if (index > -1 && index < m_fireSprites_Top.Length)
+                        {
+                            m_fireSprites_Top[index].gameObject.SetActive(true);
+                            m_fireSprites_Top[index].Play();
+                            m_fireSprites_Top[index].SetClip(0);
+                            m_fireSprites_Top[index].GetComponent<ScrollingObject>().SetStartPoint(firePosition);
+                            m_fireSprites_Top[index].GetComponent<ScrollingObject>().SetEndPoint(new Vector3(-firePosition.x, firePosition.y, firePosition.z));
+                            m_fireSprites_Top[index].GetComponent<ScrollingObject>().SetMoveSpeed(m_currentLevelSpeed);
+                            m_fireSprites_Top[index].GetComponent<ScrollingObject>().Play();
+                            m_fireSprites_Top[index].GetComponent<ScrollingObject>().OnScrollComplete += CleanFire;
+                            fireSprite = m_fireSprites_Top[index];
+                        }
                         break;
                 }
 
@@ -557,8 +598,42 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+    void StartBossMovie(ScrollingObject scrollingObject)
+    {
+        m_hud.EnablePause(false);
+        scrollingObject.Pause();
+        scrollingObject.OnScrollComplete = null;
+        OnLevelStateChange(LevelState.BossMovie);
+    }
+
+    void ShowBossDialog(ScrollingObject scrollingObject)
+    {
+        m_bossCharacter.GetComponent<Animator>().SetInteger(CharacterStateConstants.BossRunCycle, 0);
+        m_hud.EnableBossDialog(true);
+    }
+
+    public void RetractBoss()
+    {
+        m_hud.EnableBossDialog(false);
+        ScrollingObject scrollingObject = m_bossCharacter.GetComponent<ScrollingObject>();
+        scrollingObject.Pause();
+        Vector3 start = scrollingObject.EndPoint;
+        Vector3 end = scrollingObject.StartPoint;
+        scrollingObject.SetStartPoint(start);
+        scrollingObject.SetEndPoint(end);
+        scrollingObject.Stop();
+        scrollingObject.Play();
+        scrollingObject.OnScrollComplete = StartBossFires;
+        m_bossCharacter.GetComponent<Animator>().SetInteger(CharacterStateConstants.BossRunCycle, 2);
+        m_bossCharacter.transform.eulerAngles = new Vector3(m_bossCharacter.transform.eulerAngles.x,
+                                                            m_bossCharacter.transform.eulerAngles.y * -1,
+                                                            m_bossCharacter.transform.eulerAngles.z);
+    }
+
     void StartBossFires(ScrollingObject scrollingObject)
     {
+        m_hud.EnablePause(true);
+        m_bossCharacter.SetActive(false);
         scrollingObject.Pause();
         scrollingObject.OnScrollComplete = null;
         OnLevelStateChange(LevelState.BossFires);

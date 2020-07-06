@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Levels:
   - LevelSpeedMinMax: {x: 5, y: 20}
-    LevelTime: 180
+    LevelTime: 10
     BossTime: 20
     BossFires: 20
     FireMinMaxPerSet: {x: 1, y: 8}

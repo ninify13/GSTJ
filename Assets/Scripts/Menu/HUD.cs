@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class HUD : MonoBehaviour
 {
@@ -14,6 +15,11 @@ public class HUD : MonoBehaviour
 
     [SerializeField] Transform m_waterBar = default;
 
+    [SerializeField] Button m_pauseButton = default;
+
+    [SerializeField] GameObject m_bossDialog = default;
+    [SerializeField] GameObject m_bossPanel = default;
+
     public void EnableHUD(PlayerHUD playerHUD, bool enable)
     {
         switch (playerHUD)
@@ -26,6 +32,20 @@ public class HUD : MonoBehaviour
                 m_player_02_HUD.Root.SetActive(enable);
                 break;
         }
+    }
+
+    public void EnablePause(bool enable)
+    {
+        m_pauseButton.gameObject.SetActive(enable);
+    }
+
+    public void EnableBossDialog(bool enable)
+    {
+        float scaleTo = (enable) ? 1.0f : 0.0f;
+        float scaleFrom = (enable) ? 0.0f : 1.0f;
+        m_bossDialog.SetActive(enable);
+        m_bossPanel.SetActive(enable);
+        m_bossDialog.transform.DOScale(scaleTo, 0.5f).From(scaleFrom);
     }
 
     public void SetHUDCount(PlayerHUD playerHUD, LevelManager.ScoreType type, int value)

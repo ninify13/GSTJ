@@ -7,4 +7,5 @@ public class CharacterStateConstants
     public const string DriverParam = "Driver";
     public const string MouseDownParam = "MouseDown";
     public const string BlendParam = "Blend";
+    public const string BossRunCycle = "RunCycle";
 }
