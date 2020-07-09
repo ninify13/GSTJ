@@ -8,7 +8,10 @@ public class ScrollingObject : MonoBehaviour
     public float MoveSpeed { get { return m_moveSpeed; } }
 
     [SerializeField] Vector3 m_startPoint = default;
+    public Vector3 StartPoint { get { return m_startPoint; } }
+
     [SerializeField] Vector3 m_endPoint = default;
+    public Vector3 EndPoint { get { return m_endPoint; } }
 
     [SerializeField] float m_moveSpeed = default;
 
@@ -54,8 +57,6 @@ public class ScrollingObject : MonoBehaviour
                 float distance = Vector3.Distance(m_objectTransform.localPosition, m_endPoint);
                 if (distance < 0.05f)
                 {
-                    OnScrollComplete?.Invoke(this);
-
                     if (m_loop)
                     {
                         ResetObject();
@@ -64,6 +65,8 @@ public class ScrollingObject : MonoBehaviour
                     {
                         Pause();
                     }
+
+                    OnScrollComplete?.Invoke(this);
                 }
             }
             else
@@ -73,8 +76,6 @@ public class ScrollingObject : MonoBehaviour
                 float distance = Vector3.Distance(m_objectTransform.position, m_endPoint);
                 if (distance < 0.05f)
                 {
-                    OnScrollComplete?.Invoke(this);
-
                     if (m_loop)
                     {
                         ResetObject();
@@ -83,6 +84,8 @@ public class ScrollingObject : MonoBehaviour
                     {
                         Pause();
                     }
+
+                    OnScrollComplete?.Invoke(this);
                 }
             }
         }

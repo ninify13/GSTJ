@@ -56,16 +56,16 @@ public class Player : MonoBehaviour
                 m_animController.SetBool(CharacterStateConstants.DriverParam, false);
                 m_hose.SetActive(true);
 
-                m_inputManager.OnMouseDown += OnWaterStart;
-                m_inputManager.OnMouseHold += OnWaterSpray;
-                m_inputManager.OnMouseUp += OnWaterRelease;
-
                 GameObject waterSprite = Instantiate(m_waterSpriteTemplate.gameObject);
                 m_waterSpritePlayer = waterSprite.GetComponent<SpritePlayer>();
                 m_waterSpritePlayer.transform.SetParent(m_waterHelper);
                 m_waterSpritePlayer.transform.localPosition = Vector3.zero;
                 m_waterSpritePlayer.transform.localRotation = Quaternion.identity;
                 m_waterSpritePlayer.gameObject.SetActive(false);
+
+                m_inputManager.OnMouseDown += OnWaterStart;
+                m_inputManager.OnMouseHold += OnWaterSpray;
+                m_inputManager.OnMouseUp += OnWaterRelease;
                 break;
         }
     }
@@ -80,6 +80,9 @@ public class Player : MonoBehaviour
         if (m_levelManager.State == LevelManager.LevelState.End || m_levelManager.State == LevelManager.LevelState.Paused)
             return;
 
+        if (m_levelManager.AvailableWater <= 0.0f  || m_levelManager.WaterFilling)
+            return;
+
         m_waterSpritePlayer.gameObject.SetActive(true);
 
         m_waterSpritePlayer.SetClip(0);
@@ -91,23 +94,31 @@ public class Player : MonoBehaviour
         if (m_levelManager.State == LevelManager.LevelState.End || m_levelManager.State == LevelManager.LevelState.Paused)
             return;
 
+        if (m_levelManager.AvailableWater <= 0.0f || m_levelManager.WaterFilling)
+        {
+            m_waterSpritePlayer.gameObject.SetActive(false);
+            return;
+        }
+
+        m_levelManager.ConsumeWater();
+
         for (int i = (m_fire.Count - 1); i >= 0; i--)
         {
             Transform fireTransform = m_fire[i].transform;
 
             bool dispel = false;
-            float margin = 0.98f;
+            float margin = 0.92f;
             if (m_levelManager.State == LevelManager.LevelState.BossFires)
             {
                 dispel = true;
-                margin = 1.0f;
+                margin = 0.98f;
             }
             else if (m_levelManager.State == LevelManager.LevelState.Progress)
             {
                 if (fireTransform.position.x < 6.5f && fireTransform.position.x > -6.5f)
                 {
                     dispel = true;
-                    margin = 0.98f;
+                    margin = 0.92f;
                 }
             }
 
@@ -119,8 +130,6 @@ public class Player : MonoBehaviour
                 if (dotProd > margin)
                 {
                     // Water helper is looking mostly towards fire
-                    m_fire[i].Stop();
-                    m_fire[i].gameObject.SetActive(false);
                     m_levelManager.CleanFire(m_fire[i].GetComponent<ScrollingObject>());
                     m_fire.Remove(m_fire[i]);                    
 
@@ -137,6 +146,12 @@ public class Player : MonoBehaviour
 
         m_waterSpritePlayer.SetClip(1);
         m_waterSpritePlayer.Play();
+
+        if (m_levelManager.AvailableWater <= 0.0f || m_levelManager.WaterFilling)
+        {
+            m_waterSpritePlayer.gameObject.SetActive(false);
+            return;
+        }
     }
 
     void LateUpdate()

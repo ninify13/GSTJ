@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 5664554007810192452}
   - component: {fileID: 6081006605073563528}
   - component: {fileID: 5066023484704265629}
-  - component: {fileID: 4692511382737521513}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -53,13 +52,13 @@ MeshRenderer:
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
   m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 5231d30d74677fe4d9e041878d5b21b6, type: 2}
+  - {fileID: 2100000, guid: 3675004740aa86e469c88eb048cc524a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -80,20 +79,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!64 &4692511382737521513
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5451386844955165697}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &7824100267855699213
 GameObject:
   m_ObjectHideFlags: 0
@@ -111,7 +96,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7824100267855699208
 Transform:
   m_ObjectHideFlags: 0
@@ -151,6 +136,25 @@ MonoBehaviour:
     - {fileID: 2800000, guid: 55196ef3c4615204e998a9838cb19f82, type: 3}
     m_loop: 1
     m_framesBetweenUpdates: 7
+  - m_textures:
+    - {fileID: 2800000, guid: 8f219581b75b60e4daffe6088396904b, type: 3}
+    - {fileID: 2800000, guid: 0c5721741df034d44b789f9fed1d9f0d, type: 3}
+    - {fileID: 2800000, guid: ecde52c7fbe18694d92fdf82aca0bc3e, type: 3}
+    - {fileID: 2800000, guid: 99b4621f7fb51424caaea1e186c7c194, type: 3}
+    - {fileID: 2800000, guid: a6ae8ff2cbbc16a478d58ac32ee8a538, type: 3}
+    - {fileID: 2800000, guid: 63185c0590b1003438c43a1645c4ab98, type: 3}
+    - {fileID: 2800000, guid: 0691584a07fe78942b8cb81eb181a8e2, type: 3}
+    - {fileID: 2800000, guid: 77a5328769d3fca4eb8b9c1cde1e50c7, type: 3}
+    - {fileID: 2800000, guid: 41c3d17aee848b54eb21500cbde28b5f, type: 3}
+    - {fileID: 2800000, guid: 28c9c92ef2c81214d8f902dd37ab4473, type: 3}
+    - {fileID: 2800000, guid: 7ebc08c4ea3470e4bbe174980b7a7c43, type: 3}
+    - {fileID: 2800000, guid: cfce1fc81a322c1488782c60d57edc67, type: 3}
+    - {fileID: 2800000, guid: a88ee49e6889ea14f8644f9cb7e377fe, type: 3}
+    - {fileID: 2800000, guid: 715057bf1b149da459309bbe7fccfe69, type: 3}
+    - {fileID: 2800000, guid: 2ef922aba4839f54981da85cba9306bd, type: 3}
+    - {fileID: 0}
+    m_loop: 0
+    m_framesBetweenUpdates: 7
   m_renderer: {fileID: 5066023484704265629}
   m_autoStart: 0
 --- !u!114 &4498861159577946396
@@ -170,3 +174,4 @@ MonoBehaviour:
   m_moveSpeed: 20
   m_localPosition: 1
   m_objectTransform: {fileID: 0}
+  m_loop: 1

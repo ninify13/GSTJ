@@ -22,4 +22,7 @@ public class LevelMetaObject
     public Vector2 TimeBetweenFireSets;
 
     public int Coins;
+
+    public float WaterFillRate;
+    public float WaterReduceRate;
 }
