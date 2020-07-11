@@ -28,6 +28,8 @@ public class LevelManager : MonoBehaviour
         Max,
     }
 
+    [SerializeField] AudioSource m_mainMusic = default;
+
     [SerializeField] InputManager m_inputManager = default;
 
     [SerializeField] Transform m_driverNode = default;
@@ -35,6 +37,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] Transform m_fireTruck = default;
     [SerializeField] Transform m_countUpTransform = default;
 
+    [SerializeField] GameObject m_truckDust = default;
     [SerializeField] GameObject m_bossCharacter = default;
 
     [SerializeField] Vector3 m_truckStartPosition = default;
@@ -379,6 +382,8 @@ public class LevelManager : MonoBehaviour
 
             case LevelState.Starting:
                 StopCoroutine(DelayedCountUp());
+                m_fireTruck.GetComponent<Animation>().Play();
+                m_truckDust.gameObject.SetActive(true);
                 m_hud.EnableHUD(HUD.PlayerHUD.Player_01, true);
                 for (int i = 0; i < m_backgroundParallax.Length; i++)
                 {
@@ -389,6 +394,8 @@ public class LevelManager : MonoBehaviour
                 {
                     m_foregroundParallax[i].Pause();
                 }
+
+                m_mainMusic.Play();
                 break;
 
             case LevelState.Paused:
@@ -418,6 +425,8 @@ public class LevelManager : MonoBehaviour
                 break;
 
             case LevelState.BossMovie:
+                m_fireTruck.GetComponent<Animation>().Stop();
+                m_truckDust.gameObject.SetActive(false);
                 for (int i = 0; i < m_backgroundParallax.Length; i++)
                 {
                     m_backgroundParallax[i].Pause();
@@ -568,8 +577,8 @@ public class LevelManager : MonoBehaviour
                         if (index > -1 && index < m_fireSprites_Top.Length)
                         {
                             m_fireSprites_Top[index].gameObject.SetActive(true);
-                            m_fireSprites_Top[index].Play();
                             m_fireSprites_Top[index].SetClip(0);
+                            m_fireSprites_Top[index].Play();
                             m_fireSprites_Top[index].GetComponent<ScrollingObject>().SetStartPoint(firePosition);
                             m_fireSprites_Top[index].GetComponent<ScrollingObject>().SetEndPoint(new Vector3(-firePosition.x, firePosition.y, firePosition.z));
                             m_fireSprites_Top[index].GetComponent<ScrollingObject>().SetMoveSpeed(m_currentLevelSpeed);
@@ -592,6 +601,7 @@ public class LevelManager : MonoBehaviour
     {
         m_bossFireCurrentCount--;
         m_bossFireCurrentCount = Mathf.Clamp(m_bossFireCurrentCount, 0, 100);
+        m_levelPlayerCharacter.RemoveFire(scrollingObject.GetComponent<SpritePlayer>());
         scrollingObject.Pause();
         scrollingObject.OnScrollComplete -= CleanFire;
         scrollingObject.OnScrollComplete = null;
@@ -612,7 +622,7 @@ public class LevelManager : MonoBehaviour
 
     void ShowBossDialog(ScrollingObject scrollingObject)
     {
-        m_bossCharacter.GetComponent<Animator>().SetInteger(CharacterStateConstants.BossRunCycle, 0);
+        m_bossCharacter.GetComponent<Animator>().SetInteger(CharacterStateConstants.BossRunCycle, 1);
         m_hud.EnableBossDialog(true);
     }
 
@@ -646,6 +656,9 @@ public class LevelManager : MonoBehaviour
 
     void OnDestroy()
     {
+        m_inputManager.OnMouseDown -= OnMouseDown;
+        m_inputManager.OnMouseUp -= OnMouseUp;
+
         OnLevelStateChange -= LevelStateChange;       
     }
 
@@ -683,6 +696,8 @@ public class LevelManager : MonoBehaviour
                 m_coinSprites[i].GetComponent<ScrollingObject>().Pause();
             }
         }
+
+        m_mainMusic.Pause();
     }
 
     public void OnResume()
@@ -708,10 +723,14 @@ public class LevelManager : MonoBehaviour
                 m_coinSprites[i].GetComponent<ScrollingObject>().Play();
             }
         }
+
+        m_mainMusic.Play();
     }
 
     public void OnExit()
     {
+        m_mainMusic.Stop();
+
         m_inputManager.OnMouseDown -= OnMouseDown;
         m_inputManager.OnMouseUp -= OnMouseUp;
 

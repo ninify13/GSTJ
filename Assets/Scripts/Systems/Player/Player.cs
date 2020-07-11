@@ -75,6 +75,11 @@ public class Player : MonoBehaviour
         m_fire.Add(firePlayer);
     }
 
+    public void RemoveFire(SpritePlayer firePlayer)
+    {
+        m_fire.Remove(firePlayer);
+    }
+
     void OnWaterStart(Vector3 mousePostiion)
     {
         if (m_levelManager.State == LevelManager.LevelState.End || m_levelManager.State == LevelManager.LevelState.Paused)
@@ -131,8 +136,6 @@ public class Player : MonoBehaviour
                 {
                     // Water helper is looking mostly towards fire
                     m_levelManager.CleanFire(m_fire[i].GetComponent<ScrollingObject>());
-                    m_fire.Remove(m_fire[i]);                    
-
                     m_levelManager.AddScore(LevelManager.ScoreType.Fire);
                 }
             }
