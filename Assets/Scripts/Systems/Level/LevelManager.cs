@@ -187,18 +187,18 @@ public class LevelManager : MonoBehaviour
 
     void OnMouseDown(Vector3 mousePostiion)
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
+        //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit))
-        {
-            if (hit.transform.tag == "Coin")
-            {
-                hit.transform.gameObject.GetComponent<SpritePlayer>().Stop();
-                hit.transform.gameObject.SetActive(false);
-                AddScore(ScoreType.Coin);
-            }
-        }
+        //if (Physics.Raycast(ray, out hit))
+        //{
+        //    if (hit.transform.tag == "Coin")
+        //    {
+        //        hit.transform.gameObject.GetComponent<SpritePlayer>().Stop();
+        //        hit.transform.gameObject.SetActive(false);
+        //        AddScore(ScoreType.Coin);
+        //    }
+        //}
     }
 
     void OnMouseUp(Vector3 mousePostiion)
@@ -302,6 +302,7 @@ public class LevelManager : MonoBehaviour
                             m_coinSprites[index].GetComponent<ScrollingObject>().SetEndPoint(new Vector3(-coinPosition.x, coinPosition.y, coinPosition.z));
                             m_coinSprites[index].GetComponent<ScrollingObject>().Play();
                             m_coinSprites[index].GetComponent<ScrollingObject>().OnScrollComplete += CleanFire;
+                            m_levelPlayerCharacter.AddFire(m_coinSprites[index]);
                         }
                     }
                 }
@@ -610,6 +611,10 @@ public class LevelManager : MonoBehaviour
             scrollingObject.gameObject.GetComponent<SpritePlayer>().SetClip(1);
             scrollingObject.gameObject.GetComponent<SpritePlayer>().Play();
         }
+        else
+        {
+            scrollingObject.gameObject.GetComponent<SpritePlayer>().Stop();
+        }
     }
 
     void StartBossMovie(ScrollingObject scrollingObject)
@@ -678,6 +683,9 @@ public class LevelManager : MonoBehaviour
             m_pause.gameObject.SetActive(true);
             m_hud.gameObject.SetActive(false);
             m_pause.SetData(m_fireThisSession, m_fireThisSession + m_coinsThisSession);
+
+            m_fireTruck.GetComponent<Animation>().Stop();
+            m_truckDust.gameObject.SetActive(false);
         }
         for (int i = 0; i < m_fireSprites_Top.Length; i++)
         {
@@ -702,6 +710,12 @@ public class LevelManager : MonoBehaviour
 
     public void OnResume()
     {
+        if ((int)m_prePauseLevelState < (int)LevelState.BossMovie)
+        {
+            m_fireTruck.GetComponent<Animation>().Play();
+            m_truckDust.gameObject.SetActive(true);
+        }
+        
         OnLevelStateChange(m_prePauseLevelState);
         m_pause.gameObject.SetActive(false);
         m_hud.gameObject.SetActive(true);

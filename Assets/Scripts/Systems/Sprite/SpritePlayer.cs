@@ -63,7 +63,7 @@ public class SpritePlayer : MonoBehaviour
                     }
                     else
                     {
-                        Pause();
+                        Stop();
                         return;
                     }
                 }
@@ -107,7 +107,7 @@ public class SpritePlayer : MonoBehaviour
     public void Pause()
     {
         IsPlaying = false;
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
         if (m_audioSource != null)
         {
             m_audioSource.Stop();

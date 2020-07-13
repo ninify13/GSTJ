@@ -85,6 +85,9 @@ public class Player : MonoBehaviour
         if (m_levelManager.State == LevelManager.LevelState.End || m_levelManager.State == LevelManager.LevelState.Paused)
             return;
 
+        if (mousePostiion.x < (Screen.width / 10.0f))
+            return;
+
         if (m_levelManager.AvailableWater <= 0.0f  || m_levelManager.WaterFilling)
             return;
 
@@ -97,6 +100,9 @@ public class Player : MonoBehaviour
     void OnWaterSpray(Vector3 mousePostiion)
     {
         if (m_levelManager.State == LevelManager.LevelState.End || m_levelManager.State == LevelManager.LevelState.Paused)
+            return;
+
+        if (mousePostiion.x < (Screen.width / 10.0f))
             return;
 
         if (m_levelManager.AvailableWater <= 0.0f || m_levelManager.WaterFilling)
@@ -135,8 +141,15 @@ public class Player : MonoBehaviour
                 if (dotProd > margin)
                 {
                     // Water helper is looking mostly towards fire
+                    if (m_fire[i].GetComponent<ScrollingObject>().gameObject.tag.Contains("Coin"))
+                    {
+                        m_levelManager.AddScore(LevelManager.ScoreType.Coin);
+                    }
+                    else
+                    {
+                        m_levelManager.AddScore(LevelManager.ScoreType.Fire);
+                    }
                     m_levelManager.CleanFire(m_fire[i].GetComponent<ScrollingObject>());
-                    m_levelManager.AddScore(LevelManager.ScoreType.Fire);
                 }
             }
         }
@@ -147,10 +160,10 @@ public class Player : MonoBehaviour
         if (m_levelManager.State == LevelManager.LevelState.End || m_levelManager.State == LevelManager.LevelState.Paused)
             return;
 
-        m_waterSpritePlayer.SetClip(1);
-        m_waterSpritePlayer.Play();
+        //m_waterSpritePlayer.SetClip(1);
+        //m_waterSpritePlayer.Play();
 
-        if (m_levelManager.AvailableWater <= 0.0f || m_levelManager.WaterFilling)
+        //if (m_levelManager.AvailableWater <= 0.0f || m_levelManager.WaterFilling)
         {
             m_waterSpritePlayer.gameObject.SetActive(false);
             return;
