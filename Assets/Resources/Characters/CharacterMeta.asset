@@ -15,9 +15,9 @@ MonoBehaviour:
   Path: Characters/Prefabs/
   UnlockTexts: UNLOCK FOR {0}
   Characters:
-  - CharacterName: 0
-    CoinRequirement: 0
   - CharacterName: 1
+    CoinRequirement: 0
+  - CharacterName: 0
     CoinRequirement: 0
   - CharacterName: 2
     CoinRequirement: 400

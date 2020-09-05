@@ -11,6 +11,7 @@ public class MenuItem
         Characters,
         Scores,
         Game,
+        Difficulty,
     }
 
     [SerializeField] Menus m_key = default;
@@ -40,9 +41,9 @@ public class MenuManager : MonoBehaviour
         SwitchToScreen(0);
     }
 
-    public void SwitchToScreen(MenuItem.Menus screen)
+    public void SwitchToScreen(MenuItem.Menus screen, bool addToStack = true)
     {
-        DisableCurrentScreen();
+        DisableCurrentScreen(addToStack);
 
         m_currentMenu = m_menuItems.Find(m => m.Key == screen);
         m_currentMenu.Layout.gameObject.SetActive(true);
@@ -67,16 +68,18 @@ public class MenuManager : MonoBehaviour
             Debug.Log(m_menuStack.Count);
             MenuItem item = m_menuStack.Peek();
             m_menuStack.Pop();
-            SwitchToScreen(item.Key);
+            SwitchToScreen(item.Key, false);
         }
     }
 
-    void DisableCurrentScreen()
+    void DisableCurrentScreen(bool addToStack = true)
     {
         if (m_currentMenu != null)
         {
             m_currentMenu.Layout.gameObject.SetActive(false);
-            m_menuStack.Push(m_currentMenu);
+
+            if (addToStack)
+                m_menuStack.Push(m_currentMenu);
         }
     }
 

@@ -68,6 +68,9 @@ public class Characters : MenuLayout
             m_nonPlayerCharacter = (Character)Random.Range(0, (int)Character.Max);
         }
         while (m_nonPlayerCharacter == m_selectedCharacter);
+
+        GSTJ_Core.SelectedPlayerCharacter = m_selectedCharacter;
+        GSTJ_Core.SelectedNonPlayerCharacter = m_nonPlayerCharacter;
     }
 
     public void EnterGame()
@@ -76,7 +79,7 @@ public class Characters : MenuLayout
         GSTJ_Core.SelectedNonPlayerCharacter = m_nonPlayerCharacter;
 
         ExitScene();
-        SceneManager.LoadScene(SceneConstants.Game);
+        //SceneManager.LoadScene(SceneConstants.Game);
     }
 
     void EnterScene()
@@ -115,7 +118,7 @@ public class Characters : MenuLayout
     void ExitScene()
     {
         ScaleButtons(0.0f, 1.0f, 0.2f);
-        m_menuManager.SwitchToScreen(MenuItem.Menus.Game);
+        m_menuManager.SwitchToScreen(MenuItem.Menus.Difficulty);
     }
 
     void ScaleButtons(float scaleTo, float scaleFrom = 1.0f, float duration = 1.0f)

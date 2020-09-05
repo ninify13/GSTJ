@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using DG.Tweening;
+using Core.Pool;
+using Game.Collectible;
 
 public class LevelManager : MonoBehaviour
 {
@@ -29,8 +31,11 @@ public class LevelManager : MonoBehaviour
     }
 
     [SerializeField] AudioSource m_mainMusic = default;
+    [SerializeField] AudioSource m_coinSound = default;
 
     [SerializeField] InputManager m_inputManager = default;
+
+    [SerializeField] PoolManager m_poolManager = default;
 
     [SerializeField] Transform m_driverNode = default;
     [SerializeField] Transform m_playerNode = default;
@@ -47,9 +52,6 @@ public class LevelManager : MonoBehaviour
     [SerializeField] ScrollingObject[] m_foregroundParallax = default;
     [SerializeField] ScrollingObject m_groundObject = default;
     [SerializeField] ScrollingObject m_bossObject = default;
-
-    [SerializeField] SpritePlayer[] m_fireSprites_Top = default;
-    [SerializeField] SpritePlayer[] m_coinSprites = default;
 
     [SerializeField] HUD m_hud = default;
     [SerializeField] Pause m_pause = default;
@@ -94,6 +96,10 @@ public class LevelManager : MonoBehaviour
     float m_coinSpawnTime = default;
     float m_lastCoinTime = default;
 
+    // Easter egg time
+    float m_easterEggSpawnTime = default;
+    float m_lastEasterEggTime = default;
+
     // Score vars
     int m_coinsThisSession = default;
     int m_fireThisSession = default;
@@ -105,11 +111,18 @@ public class LevelManager : MonoBehaviour
     Player m_levelPlayerCharacter = default;
     Player m_levelNonPlayerCharacter = default;
 
+    // Pool Objects
+    List<Fire> m_firePoolItems = new List<Fire>();
+    List<Coin> m_coinPoolItems = new List<Coin>();
+    List<EasterEgg> m_easterEggItems = new List<EasterEgg>();
+
     // Misc
     int countUpIndex = default;
 
     void Awake()
     {
+        m_levelIndex = PlayerPrefs.GetInt("LEVEL", 0);
+
         OnLevelStateChange += LevelStateChange;
 
         // Level Details
@@ -124,8 +137,10 @@ public class LevelManager : MonoBehaviour
         m_coinSpawnTime = (m_levelTime - 5.0f) / GSTJ_Core.LevelMeta.Levels[m_levelIndex].Coins;
         m_lastCoinTime = Time.time;
 
+        m_easterEggSpawnTime = (m_levelTime - 5.0f) / 3;
+        m_lastEasterEggTime = Time.time;
+
         // Input handlers
-        m_inputManager.OnMouseDown += OnMouseDown;
         m_inputManager.OnMouseUp += OnMouseUp;
 
         // Character Details
@@ -184,23 +199,6 @@ public class LevelManager : MonoBehaviour
         m_levelNonPlayerCharacter.transform.localPosition = Vector3.zero;
     }
 
-
-    void OnMouseDown(Vector3 mousePostiion)
-    {
-        //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        //RaycastHit hit;
-
-        //if (Physics.Raycast(ray, out hit))
-        //{
-        //    if (hit.transform.tag == "Coin")
-        //    {
-        //        hit.transform.gameObject.GetComponent<SpritePlayer>().Stop();
-        //        hit.transform.gameObject.SetActive(false);
-        //        AddScore(ScoreType.Coin);
-        //    }
-        //}
-    }
-
     void OnMouseUp(Vector3 mousePostiion)
     {
         WaterFilling = false;
@@ -256,9 +254,19 @@ public class LevelManager : MonoBehaviour
                     m_foregroundParallax[i].SetMoveSpeed(m_currentLevelSpeed);
                 }
 
-                for (int i = 0; i < m_fireSprites_Top.Length; i++)
+                for (int i = 0; i < m_firePoolItems.Count; i++)
                 {
-                    m_fireSprites_Top[i].GetComponent<ScrollingObject>().SetMoveSpeed(m_currentLevelSpeed);
+                    m_firePoolItems[i].SetSpeed(m_currentLevelSpeed);
+                }
+
+                for (int i = 0; i < m_coinPoolItems.Count; i++)
+                {
+                    m_coinPoolItems[i].SetSpeed(m_currentLevelSpeed);
+                }
+
+                for (int i = 0; i < m_easterEggItems.Count; i++)
+                {
+                    m_easterEggItems[i].SetSpeed(m_currentLevelSpeed);
                 }
 
                 m_groundObject.SetMoveSpeed(m_currentLevelSpeed);
@@ -281,29 +289,33 @@ public class LevelManager : MonoBehaviour
                     {
                         m_lastCoinTime = Time.time;
 
-                        // Spawn coin at (Screen end, Random y, 0.0f)
-                        Vector3 coinPosition = Vector3.zero;
-                        int index = -1;
-                        coinPosition = new Vector3(30.0f, Random.Range(-2f, 8f), 0.0f);
-                        for (int i = 0; i < m_coinSprites.Length; i++)
+                        // Spawn coin at (Screen end, -2.0f, 0.0f)
+                        Vector3 coinPosition = new Vector3(30.0f, -2.0f, 0.0f);
+                        int coins = GSTJ_Core.LevelMeta.Levels[m_levelIndex].GetCoinClumpAmount();
+                        for (int i = 0; i < coins; i++)
                         {
-                            if (!m_coinSprites[i].IsPlaying || !m_coinSprites[i].gameObject.activeSelf)
-                            {
-                                index = i;
-                                break;
-                            }
-                        }
+                            coinPosition.x += 1.5f;
+                            PoolItem poolItem = m_poolManager.GetPoolItem(PoolType.Coin);
+                            Coin coin = poolItem.gameObject.GetComponent<Coin>();
+                            coin.Init(coinPosition, new Vector3(-coinPosition.x, coinPosition.y, coinPosition.z), new Coin.OnCollected(CollectCoin), m_poolManager);
 
-                        if (index > -1 && index < m_coinSprites.Length)
-                        {
-                            m_coinSprites[index].gameObject.SetActive(true);
-                            m_coinSprites[index].Play();
-                            m_coinSprites[index].GetComponent<ScrollingObject>().SetStartPoint(coinPosition);
-                            m_coinSprites[index].GetComponent<ScrollingObject>().SetEndPoint(new Vector3(-coinPosition.x, coinPosition.y, coinPosition.z));
-                            m_coinSprites[index].GetComponent<ScrollingObject>().Play();
-                            m_coinSprites[index].GetComponent<ScrollingObject>().OnScrollComplete += CleanFire;
-                            m_levelPlayerCharacter.AddFire(m_coinSprites[index]);
+                            m_coinPoolItems.Add(coin);
+                            m_levelPlayerCharacter.AddCoins(coin);
                         }
+                    }
+
+                    if ((Time.time - m_lastEasterEggTime) >= m_easterEggSpawnTime)
+                    {
+                        m_lastEasterEggTime = Time.time;
+
+                        // Spawn coin at (Screen end, -2.0f, 0.0f)
+                        Vector3 eggPosition = new Vector3(30.0f, -2.0f, 0.0f);
+                        PoolItem poolItem = m_poolManager.GetPoolItem(PoolType.EasterEgg);
+                        EasterEgg easterEgg = poolItem.gameObject.GetComponent<EasterEgg>();
+                        easterEgg.Init(eggPosition, new Vector3(-eggPosition.x, eggPosition.y, eggPosition.z), new EasterEgg.OnCollected(CollectEasterEgg), m_poolManager);
+
+                        m_easterEggItems.Add(easterEgg);
+                        m_levelPlayerCharacter.AddEasterEgg(easterEgg);
                     }
                 }
                 break;
@@ -319,47 +331,23 @@ public class LevelManager : MonoBehaviour
                             m_bossLastFireSpawn = Time.time;
                             Vector2 randomPos = Random.insideUnitCircle;
                             Vector3 bossFirePosition = new Vector3(randomPos.x * 4f, randomPos.y * 4f, 0.0f);
-                            int bossFireIndex = -1;
 
-                            if (m_bossFireCurrentCount < m_fireSprites_Top.Length)
-                            {
-                                for (int i = 0; i < m_fireSprites_Top.Length; i++)
-                                {
-                                    if (!m_fireSprites_Top[i].IsPlaying || !m_fireSprites_Top[i].gameObject.activeSelf)
-                                    {
-                                        bossFireIndex = i;
-                                        break;
-                                    }
-                                }
-                            }
+                            PoolItem poolItem = m_poolManager.GetPoolItem(PoolType.Flame);
+                            Fire fire = poolItem.gameObject.GetComponent<Fire>();
+                            fire.Init(m_bossObject.transform.position + bossFirePosition, Vector3.zero, false, new Fire.OnExtinguished(ExtinguishFire), m_poolManager);
+                            fire.SetSpeed(0.0f);
 
-                            if (bossFireIndex > -1 && bossFireIndex < m_fireSprites_Top.Length)
-                            {
-                                m_fireSprites_Top[bossFireIndex].gameObject.SetActive(true);
-                                m_fireSprites_Top[bossFireIndex].GetComponent<ScrollingObject>().enabled = false;
-                                m_fireSprites_Top[bossFireIndex].SetClip(0);
-                                m_fireSprites_Top[bossFireIndex].Play();
-                                m_fireSprites_Top[bossFireIndex].transform.position = m_bossObject.transform.position + bossFirePosition;
-                                SpritePlayer bossFireSprite = m_fireSprites_Top[bossFireIndex];
-                                m_levelPlayerCharacter.AddFire(bossFireSprite);
-                                m_bossFireTotalCount++;
-                                m_bossFireCurrentCount++;
-                            }
+                            m_firePoolItems.Add(fire);
+                            m_levelPlayerCharacter.AddFire(fire);
+
+                            m_bossFireTotalCount++;
+                            m_bossFireCurrentCount++;
                         }
                     }
                 }
                 else
                 {
-                    bool levelFinished = true;
-                    for (int i = 0; i < m_fireSprites_Top.Length; i++)
-                    {
-                        if (m_fireSprites_Top[i].gameObject.activeSelf)
-                        {
-                            levelFinished = false;
-                        }
-                    }
-
-                    if (levelFinished)
+                    if (m_firePoolItems.Count <= 0)
                     {
                         OnLevelStateChange(LevelState.End);
                     }
@@ -512,6 +500,7 @@ public class LevelManager : MonoBehaviour
             case ScoreType.Coin:
                 m_coinsThisSession += value;
                 m_hud.SetHUDCount(HUD.PlayerHUD.Player_01, scoreType, m_coinsThisSession);
+                m_coinSound.Play();
                 break;
 
             case ScoreType.Fire:
@@ -552,57 +541,39 @@ public class LevelManager : MonoBehaviour
             for (int i = 0; i < Mathf.RoundToInt(m_currentMaxFires); i++)
             {
                 // Spawn fire at (Screen end, Random y, 0.0f)
-                SpritePlayer fireSprite = null;
-                int position = Random.Range(0, 4);
-                Vector3 firePosition = Vector3.zero;
-                int index = -1;
-                switch (position)
-                {
-                    case 0:
-                    case 1:
-                    case 2:
-                    case 3:
-                    default:
-                        //Top
-                        Vector2 gaps = GSTJ_Core.LevelMeta.Levels[m_levelIndex].GapBetweenFiresInSet;
-                        firePosition = new Vector3(30.0f + (i * (Random.Range(gaps.x, gaps.y))), Random.Range(0f, 6f), 0.0f);
-                        for (int j = 0; j < m_fireSprites_Top.Length; j++)
-                        {
-                            if (!m_fireSprites_Top[j].IsPlaying || !m_fireSprites_Top[j].gameObject.activeSelf)
-                            {
-                                index = j;
-                                break;
-                            }
-                        }
+                Vector2 gaps = GSTJ_Core.LevelMeta.Levels[m_levelIndex].GapBetweenFiresInSet;
+                Vector3 firePosition = new Vector3(30.0f + (i * (Random.Range(gaps.x, gaps.y))), Random.Range(0f, 6f), 0.0f);
 
-                        if (index > -1 && index < m_fireSprites_Top.Length)
-                        {
-                            m_fireSprites_Top[index].gameObject.SetActive(true);
-                            m_fireSprites_Top[index].SetClip(0);
-                            m_fireSprites_Top[index].Play();
-                            m_fireSprites_Top[index].GetComponent<ScrollingObject>().SetStartPoint(firePosition);
-                            m_fireSprites_Top[index].GetComponent<ScrollingObject>().SetEndPoint(new Vector3(-firePosition.x, firePosition.y, firePosition.z));
-                            m_fireSprites_Top[index].GetComponent<ScrollingObject>().SetMoveSpeed(m_currentLevelSpeed);
-                            m_fireSprites_Top[index].GetComponent<ScrollingObject>().Play();
-                            m_fireSprites_Top[index].GetComponent<ScrollingObject>().OnScrollComplete += CleanFire;
-                            fireSprite = m_fireSprites_Top[index];
-                        }
-                        break;
-                }
+                PoolItem poolItem = m_poolManager.GetPoolItem(PoolType.Flame);
+                Fire fire = poolItem.gameObject.GetComponent<Fire>();
+                fire.Init(firePosition, new Vector3(-firePosition.x, firePosition.y, firePosition.z), true, new Fire.OnExtinguished(ExtinguishFire), m_poolManager);
+                fire.SetSpeed(m_currentLevelSpeed);
 
-                if (fireSprite != null)
-                {
-                    m_levelPlayerCharacter.AddFire(fireSprite);
-                }
+                m_firePoolItems.Add(fire);
+                m_levelPlayerCharacter.AddFire(fire);
             }
         }
+    }
+
+    public void CollectCoin(Coin coin)
+    {
+        m_coinPoolItems.Remove(coin);
+    }
+
+    public void CollectEasterEgg(EasterEgg easterEgg)
+    {
+        m_easterEggItems.Remove(easterEgg);
+    }
+
+    public void ExtinguishFire(Fire fire)
+    {
+        m_firePoolItems.Remove(fire);
     }
 
     public void CleanFire(ScrollingObject scrollingObject)
     {
         m_bossFireCurrentCount--;
         m_bossFireCurrentCount = Mathf.Clamp(m_bossFireCurrentCount, 0, 100);
-        m_levelPlayerCharacter.RemoveFire(scrollingObject.GetComponent<SpritePlayer>());
         scrollingObject.Pause();
         scrollingObject.OnScrollComplete -= CleanFire;
         scrollingObject.OnScrollComplete = null;
@@ -661,7 +632,6 @@ public class LevelManager : MonoBehaviour
 
     void OnDestroy()
     {
-        m_inputManager.OnMouseDown -= OnMouseDown;
         m_inputManager.OnMouseUp -= OnMouseUp;
 
         OnLevelStateChange -= LevelStateChange;       
@@ -687,22 +657,19 @@ public class LevelManager : MonoBehaviour
             m_fireTruck.GetComponent<Animation>().Stop();
             m_truckDust.gameObject.SetActive(false);
         }
-        for (int i = 0; i < m_fireSprites_Top.Length; i++)
+        for (int i = 0; i < m_firePoolItems.Count; i++)
         {
-            if (m_fireSprites_Top[i].IsPlaying)
-            {
-                m_fireSprites_Top[i].Pause();
-                m_fireSprites_Top[i].GetComponent<ScrollingObject>().Pause();
-            }
+            m_firePoolItems[i].TogglePause(true);
         }
 
-        for (int i = 0; i < m_coinSprites.Length; i++)
+        for (int i = 0; i < m_coinPoolItems.Count; i++)
         {
-            if (m_coinSprites[i].IsPlaying)
-            {
-                m_coinSprites[i].Pause();
-                m_coinSprites[i].GetComponent<ScrollingObject>().Pause();
-            }
+            m_coinPoolItems[i].TogglePause(true);
+        }
+
+        for (int i = 0; i < m_easterEggItems.Count; i++)
+        {
+            m_easterEggItems[i].TogglePause(true);
         }
 
         m_mainMusic.Pause();
@@ -720,22 +687,19 @@ public class LevelManager : MonoBehaviour
         m_pause.gameObject.SetActive(false);
         m_hud.gameObject.SetActive(true);
 
-        for (int i = 0; i < m_fireSprites_Top.Length; i++)
+        for (int i = 0; i < m_firePoolItems.Count; i++)
         {
-            if (m_fireSprites_Top[i].gameObject.activeSelf)
-            {
-                m_fireSprites_Top[i].Play();
-                m_fireSprites_Top[i].GetComponent<ScrollingObject>().Play();
-            }
+            m_firePoolItems[i].TogglePause(false);
         }
 
-        for (int i = 0; i < m_coinSprites.Length; i++)
+        for (int i = 0; i < m_coinPoolItems.Count; i++)
         {
-            if (m_coinSprites[i].gameObject.activeSelf)
-            {
-                m_coinSprites[i].Play();
-                m_coinSprites[i].GetComponent<ScrollingObject>().Play();
-            }
+            m_coinPoolItems[i].TogglePause(false);
+        }
+
+        for (int i = 0; i < m_easterEggItems.Count; i++)
+        {
+            m_easterEggItems[i].TogglePause(false);
         }
 
         m_mainMusic.Play();
@@ -745,7 +709,6 @@ public class LevelManager : MonoBehaviour
     {
         m_mainMusic.Stop();
 
-        m_inputManager.OnMouseDown -= OnMouseDown;
         m_inputManager.OnMouseUp -= OnMouseUp;
 
         SceneManager.LoadScene(SceneConstants.Home);

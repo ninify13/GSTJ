@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Game.Collectible;
 
 public class Player : MonoBehaviour
 {
@@ -25,8 +26,9 @@ public class Player : MonoBehaviour
 
     LevelManager m_levelManager;
 
-    List<SpritePlayer> m_fire = new List<SpritePlayer>();
-
+    List<Fire> m_fires = new List<Fire>();
+    List<Coin> m_coins = new List<Coin>();
+    List<EasterEgg> m_easterEggs = new List<EasterEgg>();
 
     public void Initialize(InputManager inputManager, LevelManager levelManager)
     {
@@ -70,14 +72,19 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void AddFire(SpritePlayer firePlayer)
+    public void AddFire(Fire fire)
     {
-        m_fire.Add(firePlayer);
+        m_fires.Add(fire);
     }
 
-    public void RemoveFire(SpritePlayer firePlayer)
+    public void AddCoins(Coin coin)
     {
-        m_fire.Remove(firePlayer);
+        m_coins.Add(coin);
+    }
+
+    public void AddEasterEgg(EasterEgg easterEgg)
+    {
+        m_easterEggs.Add(easterEgg);
     }
 
     void OnWaterStart(Vector3 mousePostiion)
@@ -113,26 +120,23 @@ public class Player : MonoBehaviour
 
         m_levelManager.ConsumeWater();
 
-        for (int i = (m_fire.Count - 1); i >= 0; i--)
+        bool dispel = false;
+        float margin = 0.92f;
+        if (m_levelManager.State == LevelManager.LevelState.BossFires)
         {
-            Transform fireTransform = m_fire[i].transform;
+            dispel = true;
+            margin = 0.98f;
+        }
+        else if (m_levelManager.State == LevelManager.LevelState.Progress)
+        {
+            margin = 0.92f;
+        }
 
-            bool dispel = false;
-            float margin = 0.92f;
-            if (m_levelManager.State == LevelManager.LevelState.BossFires)
-            {
-                dispel = true;
-                margin = 0.98f;
-            }
-            else if (m_levelManager.State == LevelManager.LevelState.Progress)
-            {
-                if (fireTransform.position.x < 6.5f && fireTransform.position.x > -6.5f)
-                {
-                    dispel = true;
-                    margin = 0.92f;
-                }
-            }
+        for (int i = (m_fires.Count - 1); i >= 0; i--)
+        {
+            Transform fireTransform = m_fires[i].transform;
 
+            dispel = (fireTransform.position.x < 6.5f && fireTransform.position.x > -6.5f);
             if (dispel)
             {
                 Vector3 dirFromAtoB = (fireTransform.position - m_waterHelper.position).normalized;
@@ -141,15 +145,49 @@ public class Player : MonoBehaviour
                 if (dotProd > margin)
                 {
                     // Water helper is looking mostly towards fire
-                    if (m_fire[i].GetComponent<ScrollingObject>().gameObject.tag.Contains("Coin"))
-                    {
-                        m_levelManager.AddScore(LevelManager.ScoreType.Coin);
-                    }
-                    else
-                    {
-                        m_levelManager.AddScore(LevelManager.ScoreType.Fire);
-                    }
-                    m_levelManager.CleanFire(m_fire[i].GetComponent<ScrollingObject>());
+                    m_levelManager.AddScore(LevelManager.ScoreType.Fire);
+                    m_fires[i].Extinguish();
+                    m_fires.Remove(m_fires[i]);
+                }
+            }
+        }
+
+        for (int i = (m_coins.Count - 1); i >= 0; i--)
+        {
+            Transform coinTransform = m_coins[i].transform;
+
+            dispel = (coinTransform.position.x < 6.5f && coinTransform.position.x > -6.5f);
+            if (dispel)
+            {
+                Vector3 dirFromAtoB = (coinTransform.position - m_waterHelper.position).normalized;
+                float dotProd = Vector3.Dot(dirFromAtoB, m_waterHelper.forward);
+
+                if (dotProd > margin)
+                {
+                    // Water helper is looking mostly towards coin
+                    m_levelManager.AddScore(LevelManager.ScoreType.Coin);
+                    m_coins[i].Collect();
+                    m_coins.Remove(m_coins[i]);
+                }
+            }
+        }
+
+        for (int i = (m_easterEggs.Count - 1); i >= 0; i--)
+        {
+            Transform easterEggTransform = m_easterEggs[i].transform;
+
+            dispel = (easterEggTransform.position.x < 6.5f && easterEggTransform.position.x > -6.5f);
+            if (dispel)
+            {
+                Vector3 dirFromAtoB = (easterEggTransform.position - m_waterHelper.position).normalized;
+                float dotProd = Vector3.Dot(dirFromAtoB, m_waterHelper.forward);
+
+                if (dotProd > margin)
+                {
+                    // Water helper is looking mostly towards coin
+                    m_levelManager.AddScore(LevelManager.ScoreType.Coin, 50);
+                    m_easterEggs[i].Collect();
+                    m_easterEggs.Remove(m_easterEggs[i]);
                 }
             }
         }
@@ -160,14 +198,7 @@ public class Player : MonoBehaviour
         if (m_levelManager.State == LevelManager.LevelState.End || m_levelManager.State == LevelManager.LevelState.Paused)
             return;
 
-        //m_waterSpritePlayer.SetClip(1);
-        //m_waterSpritePlayer.Play();
-
-        //if (m_levelManager.AvailableWater <= 0.0f || m_levelManager.WaterFilling)
-        {
-            m_waterSpritePlayer.gameObject.SetActive(false);
-            return;
-        }
+        m_waterSpritePlayer.gameObject.SetActive(false);
     }
 
     void LateUpdate()

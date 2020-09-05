@@ -13,13 +13,51 @@ MonoBehaviour:
   m_Name: LevelMeta
   m_EditorClassIdentifier: 
   Levels:
-  - LevelSpeedMinMax: {x: 5, y: 20}
-    LevelTime: 180
+  - DifficultyKey: Easy
+    LevelSpeedMinMax: {x: 5, y: 20}
+    LevelTime: 90
     BossTime: 20
     BossFires: 20
     FireMinMaxPerSet: {x: 1, y: 6}
     GapBetweenFiresInSet: {x: 3, y: 5}
     TimeBetweenFireSets: {x: 2, y: 3}
     Coins: 10
+    CoinClumpWeights:
+    - {x: 2, y: 4}
+    - {x: 3, y: 3}
+    - {x: 10, y: 1}
+    - {x: 5, y: 2}
+    WaterFillRate: 5
+    WaterReduceRate: 1
+  - DifficultyKey: Medium
+    LevelSpeedMinMax: {x: 5, y: 20}
+    LevelTime: 90
+    BossTime: 20
+    BossFires: 20
+    FireMinMaxPerSet: {x: 1, y: 6}
+    GapBetweenFiresInSet: {x: 3, y: 5}
+    TimeBetweenFireSets: {x: 2, y: 3}
+    Coins: 10
+    CoinClumpWeights:
+    - {x: 2, y: 4}
+    - {x: 3, y: 3}
+    - {x: 5, y: 1}
+    - {x: 10, y: 2}
+    WaterFillRate: 5
+    WaterReduceRate: 1
+  - DifficultyKey: Hard
+    LevelSpeedMinMax: {x: 5, y: 20}
+    LevelTime: 90
+    BossTime: 20
+    BossFires: 20
+    FireMinMaxPerSet: {x: 1, y: 6}
+    GapBetweenFiresInSet: {x: 3, y: 5}
+    TimeBetweenFireSets: {x: 2, y: 3}
+    Coins: 10
+    CoinClumpWeights:
+    - {x: 2, y: 3}
+    - {x: 3, y: 1}
+    - {x: 5, y: 4}
+    - {x: 10, y: 2}
     WaterFillRate: 5
     WaterReduceRate: 1
