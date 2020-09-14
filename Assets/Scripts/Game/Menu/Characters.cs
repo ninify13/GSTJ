@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using TMPro;
 using Core.Menu;
+using Core.Pool;
 
 namespace Game.Menu
 {
@@ -17,21 +19,18 @@ namespace Game.Menu
             Max,
         }
 
-        [SerializeField] GameObject[] m_selectionArrows = default;
+        [SerializeField] PoolManager m_poolManager = default;
 
-        [SerializeField] Transform[] m_characters = default;
+        [SerializeField] Transform m_contentParent = default;
 
-        [SerializeField] GameObject[] m_lockButtons = default;
-        [SerializeField] GameObject[] m_selectImages = default;
+        [SerializeField] ScrollRect m_scrollRect = default;
 
-        [SerializeField] Text[] m_lockTexts = default;
-        [SerializeField] Text m_coinCount = default;
+        [SerializeField] TextMeshProUGUI m_coinCount = default;
 
-        [SerializeField] Button[] m_selectButtons = default;
         [SerializeField] Button m_button_Play = default;
 
-        Character m_selectedCharacter = default;
-        Character m_nonPlayerCharacter = default;
+        PoolItem[] m_characterItems = default;
+        CharacterItem m_characterItem = default;
 
         protected override void Awake()
         {
@@ -52,6 +51,11 @@ namespace Game.Menu
             base.OnDisable();
 
             m_button_Play.onClick.RemoveAllListeners();
+
+            for (int i = 0; i < (int)Character.Max; i++)
+            {
+                m_poolManager.ReturnPoolItem(m_characterItems[i]);
+            }
         }
 
         protected override void OnDestroy()
@@ -59,75 +63,51 @@ namespace Game.Menu
             base.OnDestroy();
         }
 
-        public void SelectCharacter(int character)
-        {
-            m_selectionArrows[(int)m_selectedCharacter].SetActive(false);
-            m_selectedCharacter = (Character)character;
-            m_selectionArrows[(int)m_selectedCharacter].SetActive(true);
-
-            do
-            {
-                m_nonPlayerCharacter = (Character)Random.Range(0, (int)Character.Max);
-            }
-            while (m_nonPlayerCharacter == m_selectedCharacter);
-
-            GSTJ_Core.SelectedPlayerCharacter = m_selectedCharacter;
-            GSTJ_Core.SelectedNonPlayerCharacter = m_nonPlayerCharacter;
-        }
-
         public void EnterGame()
         {
-            GSTJ_Core.SelectedPlayerCharacter = m_selectedCharacter;
-            GSTJ_Core.SelectedNonPlayerCharacter = m_nonPlayerCharacter;
-
             ExitScene();
-            //SceneManager.LoadScene(SceneConstants.Game);
         }
 
         void EnterScene()
         {
-            m_coinCount.text = PlayerPrefs.GetInt(LevelManager.ScoreType.Coin.ToString(), 0).ToString();
+            int coins = PlayerPrefs.GetInt(LevelManager.ScoreType.Coin.ToString(), 0);
+            m_coinCount.text = coins.ToString();
 
-            // Selection Arrows
-            for (int i = 0; i < m_selectionArrows.Length; i++)
+            m_characterItems = new PoolItem[(int)Character.Max];
+            for (int i = 0; i < (int)Character.Max; i++)
             {
-                m_selectionArrows[i].SetActive(false);
+                m_characterItems[i] = m_poolManager.GetPoolItem(PoolType.CharacterItem);
+                m_characterItems[i].transform.SetParent(m_contentParent);
+                m_characterItems[i].transform.localScale = Vector3.one;
+                CharacterItem characterItem = m_characterItems[i].gameObject.GetComponent<CharacterItem>();
+                CharacterMeta characterMeta = GSTJ_Core.CharacterMeta.Characters[i];
+                characterItem.Init(characterMeta, coins < (characterMeta.CoinRequirement), OnSelectCharacter);
             }
 
-            // Lock Status
-            for (int i = 0; i < GSTJ_Core.CharacterMeta.Characters.Count; i++)
-            {
-                if (GSTJ_Core.Coins >= GSTJ_Core.CharacterMeta.Characters[i].CoinRequirement)
-                {
-                    m_lockButtons[i].SetActive(false);
-                    m_selectButtons[i].targetGraphic = m_selectImages[i].GetComponent<Image>();
-                    m_selectButtons[i].interactable = true;
-                    m_selectImages[i].gameObject.SetActive(true);
-                }
-                else
-                {
-                    m_lockButtons[i].SetActive(true);
-                    m_selectButtons[i].targetGraphic = m_lockButtons[i].GetComponent<Image>();
-                    m_selectButtons[i].interactable = false;
-                    m_selectImages[i].gameObject.SetActive(false);
-                    m_lockTexts[i].text = string.Format(GSTJ_Core.CharacterMeta.UnlockTexts, (GSTJ_Core.CharacterMeta.Characters[i].CoinRequirement).ToString());
-                }
-            }
+            m_scrollRect.horizontalScrollbar.value = 0.0f;
 
-            ScaleButtons(1.0f, 0.0f, 0.5f);
+            //ScaleButtons(1.0f, 0.0f, 0.5f);
+        }
+
+        void OnSelectCharacter(CharacterItem characterItem)
+        {
+            if (m_characterItem != null)
+                m_characterItem.SetSelected(false);
+
+            m_characterItem = characterItem;
         }
 
         void ExitScene()
         {
-            ScaleButtons(0.0f, 1.0f, 0.2f);
+            //ScaleButtons(0.0f, 1.0f, 0.2f);
             m_menuManager.SwitchToScreen(MenuItem.Menus.Difficulty);
         }
 
         void ScaleButtons(float scaleTo, float scaleFrom = 1.0f, float duration = 1.0f)
         {
-            for (int i = 0; i < m_characters.Length; i++)
+            for (int i = 0; i < m_characterItems.Length; i++)
             {
-                m_characters[i].transform.DOScale(scaleTo, duration).From(scaleFrom, true);
+                m_characterItems[i].transform.DOScale(scaleTo, duration).From(scaleFrom, true);
             }
         }
     }

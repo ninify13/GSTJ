@@ -18,4 +18,6 @@ public class CharacterMeta
     public Characters.Character CharacterName;
 
     public int CoinRequirement;
+
+    public Sprite Image;
 }

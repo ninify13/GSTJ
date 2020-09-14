@@ -13,15 +13,18 @@ MonoBehaviour:
   m_Name: PoolConfig
   m_EditorClassIdentifier: 
   PoolItems:
-  - Type: 2
+  - Type: 3
     Item: {fileID: 8189270412388632019, guid: 8692567eb0d52dd4790f05fbdc693854, type: 3}
     PreBakeCount: 15
-  - Type: 3
+  - Type: 4
     Item: {fileID: 8222778522421554060, guid: 5ce268bbad02ee34fb97aac3311c40ed, type: 3}
     PreBakeCount: 10
-  - Type: 0
+  - Type: 1
     Item: {fileID: 5556673177598991930, guid: edec4b6959f6a7244a1d8393938cc791, type: 3}
     PreBakeCount: 10
-  - Type: 1
+  - Type: 2
     Item: {fileID: 7381357215613251768, guid: 4cb4e330cacb73a45a3db47ba256083b, type: 3}
     PreBakeCount: 3
+  - Type: 0
+    Item: {fileID: 1836933273449567932, guid: aeefe8ca1a9ed02439d10dddef955273, type: 3}
+    PreBakeCount: 5

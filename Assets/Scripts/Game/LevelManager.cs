@@ -569,24 +569,9 @@ public class LevelManager : MonoBehaviour
     public void ExtinguishFire(Fire fire)
     {
         m_firePoolItems.Remove(fire);
-    }
 
-    public void CleanFire(ScrollingObject scrollingObject)
-    {
         m_bossFireCurrentCount--;
         m_bossFireCurrentCount = Mathf.Clamp(m_bossFireCurrentCount, 0, 100);
-        scrollingObject.Pause();
-        scrollingObject.OnScrollComplete -= CleanFire;
-        scrollingObject.OnScrollComplete = null;
-        if (scrollingObject.gameObject.GetComponent<SpritePlayer>().ClipCount > 1)
-        {
-            scrollingObject.gameObject.GetComponent<SpritePlayer>().SetClip(1);
-            scrollingObject.gameObject.GetComponent<SpritePlayer>().Play();
-        }
-        else
-        {
-            scrollingObject.gameObject.GetComponent<SpritePlayer>().Stop();
-        }
     }
 
     void StartBossMovie(ScrollingObject scrollingObject)

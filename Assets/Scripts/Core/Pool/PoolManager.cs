@@ -5,6 +5,7 @@ namespace Core.Pool
 {
     public enum PoolType
     {
+        CharacterItem,
         Coin,
         EasterEgg,
         Flame,
@@ -105,6 +106,9 @@ namespace Core.Pool
             {
                 for (int i = 0; i < poolItems.Value.Count; i++)
                 {
+                    if (poolItems.Value[i].Object == null)
+                        continue;
+
                     Destroy(poolItems.Value[i].Object);
                 }
             }
