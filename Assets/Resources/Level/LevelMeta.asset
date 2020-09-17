@@ -23,10 +23,10 @@ MonoBehaviour:
     TimeBetweenFireSets: {x: 2, y: 3}
     Coins: 10
     CoinClumpWeights:
-    - {x: 16, y: 1}
-    - {x: 12, y: 2}
-    - {x: 8, y: 3}
-    - {x: 4, y: 4}
+    - {x: 25, y: 1}
+    - {x: 20, y: 2}
+    - {x: 15, y: 3}
+    - {x: 10, y: 4}
     WaterFillRate: 5
     WaterReduceRate: 1
   - DifficultyKey: Medium
@@ -39,10 +39,10 @@ MonoBehaviour:
     TimeBetweenFireSets: {x: 2, y: 3}
     Coins: 10
     CoinClumpWeights:
-    - {x: 20, y: 1}
-    - {x: 16, y: 2}
-    - {x: 12, y: 3}
-    - {x: 8, y: 4}
+    - {x: 35, y: 1}
+    - {x: 30, y: 2}
+    - {x: 25, y: 3}
+    - {x: 15, y: 4}
     WaterFillRate: 5
     WaterReduceRate: 1
   - DifficultyKey: Hard
@@ -55,9 +55,9 @@ MonoBehaviour:
     TimeBetweenFireSets: {x: 2, y: 3}
     Coins: 10
     CoinClumpWeights:
-    - {x: 24, y: 1}
-    - {x: 20, y: 2}
-    - {x: 16, y: 3}
-    - {x: 12, y: 4}
+    - {x: 45, y: 1}
+    - {x: 40, y: 2}
+    - {x: 30, y: 3}
+    - {x: 20, y: 4}
     WaterFillRate: 5
     WaterReduceRate: 1
