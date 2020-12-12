@@ -699,5 +699,10 @@ public class LevelManager : MonoBehaviour
 
         SceneManager.LoadScene(SceneConstants.Home);
     }
+
+    public void OnHighscore()
+    {
+        //put functionality for showing highscore screen
+    }
     #endregion
 }

@@ -17,7 +17,8 @@ namespace Core.Pool
 
         public virtual void OnDeallocate()
         {
-            Object.SetActive(false);
+            if (Object)
+                Object.SetActive(false);
         }
     }
 }

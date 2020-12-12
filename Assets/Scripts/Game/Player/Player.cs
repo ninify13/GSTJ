@@ -196,7 +196,7 @@ public class Player : MonoBehaviour
 
                 if (dotProd > margin)
                 {
-                    // Water helper is looking mostly towards coin
+                    // Water helper is looking mostly towards easter egg
                     m_levelManager.AddScore(LevelManager.ScoreType.Coin, 50);
                     m_easterEggs[i].Collect();
                     m_easterEggs.Remove(m_easterEggs[i]);
@@ -207,8 +207,11 @@ public class Player : MonoBehaviour
 
     void OnWaterRelease(Vector3 mousePosition)
     {
-        if (m_levelManager.State == LevelManager.LevelState.End || m_levelManager.State == LevelManager.LevelState.Paused)
+        if (m_levelManager.State == LevelManager.LevelState.Paused)
             return;
+
+        //if (m_levelManager.State == LevelManager.LevelState.End)
+          //  return;
 
         m_waterPlayer.Stop();
     }
