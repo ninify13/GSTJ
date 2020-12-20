@@ -30,6 +30,7 @@ public class Player : MonoBehaviour
     List<Fire> m_fires = new List<Fire>();
     List<Coin> m_coins = new List<Coin>();
     List<EasterEgg> m_easterEggs = new List<EasterEgg>();
+    int m_easterEggCollectedCount = 0;
 
     Vector3 m_screenEnd = default;
 
@@ -49,6 +50,8 @@ public class Player : MonoBehaviour
     public void SetRole(Role role)
     {
         m_role = role;
+        //set collectible count back to 0
+        m_easterEggCollectedCount = 0;
 
         switch(m_role)
         {
@@ -196,6 +199,12 @@ public class Player : MonoBehaviour
 
                 if (dotProd > margin)
                 {
+                    //add the easter egg image to the UI 
+                    m_easterEggCollectedCount += 1;
+                    m_levelManager.AddCollectibletoUI(HUD.PlayerHUD.Player_01, 
+                                                      m_easterEggs[i].GetSpriteResource(), 
+                                                      m_easterEggCollectedCount);
+
                     // Water helper is looking mostly towards easter egg
                     m_levelManager.AddScore(LevelManager.ScoreType.Coin, 50);
                     m_easterEggs[i].Collect();

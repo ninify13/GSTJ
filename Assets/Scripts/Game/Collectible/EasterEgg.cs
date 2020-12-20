@@ -26,6 +26,7 @@ namespace Game.Collectible
                 EasterEggs[i].SetActive(false);
             }
 
+            //allocate an easter egg
             EasterEggs[Random.Range(0, EasterEggs.Length)].SetActive(true);
         }
 
@@ -62,6 +63,22 @@ namespace Game.Collectible
         public void Collect()
         {
             OnCollect(m_scrollingObject);
+        }
+
+        public Sprite GetSpriteResource()
+        {
+            //find out which easter egg is active
+            int objID = -1;
+            for (int i = 0; i < EasterEggs.Length; i++)
+            {
+                if (EasterEggs[i].gameObject.activeSelf)
+                {
+                    objID = i;
+                    break;
+                }
+            }
+            //now that the object ID is found return the sprite resource associated with it
+            return EasterEggs[objID].GetComponent<SpriteRenderer>().sprite;
         }
 
         void OnCollect(ScrollingObject scrollingObject)

@@ -42,6 +42,8 @@ public class LevelManager : MonoBehaviour
     [SerializeField] Transform m_playerNode = default;
     [SerializeField] Transform m_fireTruck = default;
     [SerializeField] Transform m_countUpTransform = default;
+    [SerializeField] Transform m_countUpPreTextTransform = default;
+    [SerializeField] Transform m_opponentSearchTextTransform = default;
 
     [SerializeField] GameObject m_truckDust = default;
     [SerializeField] GameObject m_bossCharacter = default;
@@ -59,6 +61,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] Pause m_end = default;
 
     [SerializeField] Text m_countUpText = default;
+    [SerializeField] Text m_opponentSearchText = default;
 
     public System.Action<LevelState> OnLevelStateChange = default;
 
@@ -365,8 +368,18 @@ public class LevelManager : MonoBehaviour
         {
             case LevelState.Countup:
                 countUpIndex = 4;
-                m_countUpTransform.gameObject.SetActive(true);
-                StartCoroutine(DelayedCountUp());
+                //check if it's multiplayer mode and enable "looking for..." text
+                if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
+                {
+                    m_opponentSearchTextTransform.gameObject.SetActive(true);
+                    StartCoroutine(DelayedCountUp());
+                }
+                if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Single)
+                {
+                    m_countUpPreTextTransform.gameObject.SetActive(true);
+                    m_countUpTransform.gameObject.SetActive(true);
+                    StartCoroutine(DelayedCountUp());
+                }
                 m_hud.EnableHUD(HUD.PlayerHUD.Player_01, false);
                 break;
 
@@ -454,16 +467,38 @@ public class LevelManager : MonoBehaviour
 
     IEnumerator DelayedCountUp()
     {
+        //if multiplayer mode in count up state
+        if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi &&
+            State == LevelState.Countup)
+        {
+            //wait for a random interval between 2-5s
+            yield return new WaitForSeconds(Random.Range(2.0f, 5.0f));
+
+            //now that the waiting has finished, declare opponent found
+            m_opponentSearchText.text = "Opponent found!";
+            //enable the count up etc. texts
+            m_countUpPreTextTransform.gameObject.SetActive(true);
+            m_countUpTransform.gameObject.SetActive(true);
+        }
+
+        //start the count down process
         while (State == LevelState.Countup)
         {
             countUpIndex--;
             m_countUpText.text = (countUpIndex == 0) ? "GO" : countUpIndex.ToString();
-            m_countUpTransform.DOScale(2.0f, 0.5f).From(0.0f);
+            m_countUpTransform.DOScale(1.2f, 0.5f).From(0.0f);
 
             yield return new WaitForSeconds(1f);
             
             if (countUpIndex <= 0)
             {
+                //if multiplayer mode, disable the opponent search text
+                if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
+                {
+                    m_opponentSearchTextTransform.gameObject.SetActive(false);
+                }
+
+                m_countUpPreTextTransform.gameObject.SetActive(false);
                 m_countUpTransform.gameObject.SetActive(false);
                 OnLevelStateChange?.Invoke(LevelState.Starting);
             }
@@ -517,6 +552,10 @@ public class LevelManager : MonoBehaviour
         m_hud.SetHUDCount(HUD.PlayerHUD.Player_01, ScoreType.Score, m_coinsThisSession +  m_fireThisSession);
     }
 
+    public void AddCollectibletoUI(HUD.PlayerHUD playerHUD, Sprite sp, int ID)
+    {
+        m_hud.SetHUDCollectible(playerHUD, sp, ID);
+    }
     public void CleanForegroundScroll(ScrollingObject scrollingObject)
     {
         scrollingObject.Stop();

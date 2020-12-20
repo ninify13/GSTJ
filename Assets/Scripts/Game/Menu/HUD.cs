@@ -88,6 +88,20 @@ public class HUD : MonoBehaviour
         }
     }
 
+    public void SetHUDCollectible(PlayerHUD playerHUD, Sprite sp, int ID)
+    {
+        switch (playerHUD)
+        {
+            case PlayerHUD.Player_01:
+            m_player_01_HUD.SetCollectibleImage(sp, ID);
+            break;
+
+            case PlayerHUD.Player_02:
+            m_player_01_HUD.SetCollectibleImage(sp, ID);
+            break;
+        }
+    }
+
     public void SetProgress(PlayerHUD playerHUD, float normalizedVaue)
     {
         switch(playerHUD)
@@ -123,6 +137,9 @@ public class HUDElements
     [SerializeField] RectTransform m_progressBar = default;
 
     [SerializeField] Vector2 m_barLimits = default;
+    [SerializeField] Image m_collectible01 = default;
+    [SerializeField] Image m_collectible02 = default;
+    [SerializeField] Image m_collectible03 = default;
 
     public void SetFireCount(int value)
     {
@@ -148,5 +165,31 @@ public class HUDElements
         float diff = endValue - startValue;
         float currentValue = diff * normalizedValue;
         m_progressBar.sizeDelta = new Vector2(startValue + currentValue, m_progressBar.sizeDelta.y);
+    }
+
+    public void SetCollectibleImage(Sprite sp, int ID)
+    {
+        //if ID is between 1 and 3, set image accordingly
+        switch (ID)
+        {
+            case 1:
+            m_collectible01.gameObject.SetActive(true);
+            m_collectible01.sprite = sp;
+            break;
+
+            case 2:
+            m_collectible02.gameObject.SetActive(true);
+            m_collectible02.sprite = sp;
+            break;
+
+            case 3:
+            m_collectible03.gameObject.SetActive(true);
+            m_collectible03.sprite = sp;
+            break;
+
+            default:
+            Debug.LogWarning("The collectible count was invalid: " + ID.ToString());
+            break;
+        }
     }
 }
