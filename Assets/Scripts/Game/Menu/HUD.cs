@@ -122,6 +122,27 @@ public class HUD : MonoBehaviour
                                             availableWater,
                                             m_waterBar.localScale.z);
     }
+
+    public bool IsEasterEggCollected(PlayerHUD playerHUD, Sprite sp, int ID)
+    {
+        bool isCol = false;
+        //if none has been collected so far, return false
+        if (ID == 0) return isCol;
+
+        //if easter eggs are collected, let's check
+        switch (playerHUD)
+        {
+            case PlayerHUD.Player_01:
+            isCol = m_player_01_HUD.IsCollectibleCollected(sp, ID);
+            break;
+
+            case PlayerHUD.Player_02:
+            isCol = m_player_02_HUD.IsCollectibleCollected(sp, ID);
+            break;
+        }
+
+        return isCol;
+    }
 }
 
 [System.Serializable]
@@ -191,5 +212,29 @@ public class HUDElements
             Debug.LogWarning("The collectible count was invalid: " + ID.ToString());
             break;
         }
+    }
+
+    //for checking if a collectible is already collected
+    public bool IsCollectibleCollected(Sprite sp, int ID)
+    {
+        bool isCol = false;
+
+        //if ID is between 1 and 3, check image accordingly
+        switch (ID)
+        {
+            case 1:
+            if (sp == m_collectible01.sprite) isCol = true;
+            break;
+
+            case 2:
+            if (sp == m_collectible02.sprite) isCol = true;
+            break;
+
+            case 3:
+            if (sp == m_collectible03.sprite) isCol = true;
+            break;
+        }
+
+        return isCol;
     }
 }

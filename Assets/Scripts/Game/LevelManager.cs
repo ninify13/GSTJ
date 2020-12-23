@@ -59,6 +59,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] HUD m_hud = default;
     [SerializeField] Pause m_pause = default;
     [SerializeField] Pause m_end = default;
+    [SerializeField] Pause m_endMP = default;
 
     [SerializeField] Text m_countUpText = default;
     [SerializeField] Text m_opponentSearchText = default;
@@ -552,10 +553,41 @@ public class LevelManager : MonoBehaviour
         m_hud.SetHUDCount(HUD.PlayerHUD.Player_01, ScoreType.Score, m_coinsThisSession +  m_fireThisSession);
     }
 
+    //for checking if an easter egg is already collected
+    public bool IsEasterEggCollected(HUD.PlayerHUD playerHUD, Sprite sp, int ID)
+    {
+        return m_hud.IsEasterEggCollected(playerHUD, sp, ID);
+    }
+
+    //for adding the easter egg to hud/end-game ui
     public void AddCollectibletoUI(HUD.PlayerHUD playerHUD, Sprite sp, int ID)
     {
         m_hud.SetHUDCollectible(playerHUD, sp, ID);
+        
+        //also add collectible and score to pause screen and end-game UI
+        //note that collectible score is hard coded to 50.0f
+        m_pause.SetCollectibleDataForPlayer(playerHUD, sp, 50.0f, ID);
+        //set appropriate data for single/multi player mode
+        if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Single)
+            m_end.SetCollectibleDataForPlayer(playerHUD, sp, 50.0f, ID);
+        else if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
+            m_endMP.SetCollectibleDataForPlayer(playerHUD, sp, 50.0f, ID);
+
     }
+
+    //updating score for the easter egg in hud/end-game ui
+    public void AddCollectibleScore(HUD.PlayerHUD playerHUD, int ID)
+    {
+        //note that collectible score is hard coded to 50.0f
+        m_pause.AddCollectibleScoreForPlayer(playerHUD, 50.0f, ID);
+        //set appropriate data for single/multi player mode
+        if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Single)
+            m_end.AddCollectibleScoreForPlayer(playerHUD, 50.0f, ID);
+        else if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
+            m_endMP.AddCollectibleScoreForPlayer(playerHUD, 50.0f, ID);
+
+    }
+
     public void CleanForegroundScroll(ScrollingObject scrollingObject)
     {
         scrollingObject.Stop();

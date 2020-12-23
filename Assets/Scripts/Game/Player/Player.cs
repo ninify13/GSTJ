@@ -199,11 +199,23 @@ public class Player : MonoBehaviour
 
                 if (dotProd > margin)
                 {
-                    //add the easter egg image to the UI 
-                    m_easterEggCollectedCount += 1;
-                    m_levelManager.AddCollectibletoUI(HUD.PlayerHUD.Player_01, 
-                                                      m_easterEggs[i].GetSpriteResource(), 
-                                                      m_easterEggCollectedCount);
+                    //check if easter egg is already collected
+                    bool isEasEggCol = m_levelManager.IsEasterEggCollected(HUD.PlayerHUD.Player_01, 
+                                                            m_easterEggs[i].GetSpriteResource(), 
+                                                            m_easterEggCollectedCount);
+                    if (isEasEggCol == true)
+                    {
+                        //only add score for this collectible
+                        m_levelManager.AddCollectibleScore(HUD.PlayerHUD.Player_01, m_easterEggCollectedCount);
+                    }
+                    else
+                    {
+                        //add the easter egg image to the in-game HUD and end-game UI
+                        m_easterEggCollectedCount += 1;
+                        m_levelManager.AddCollectibletoUI(HUD.PlayerHUD.Player_01, 
+                                                        m_easterEggs[i].GetSpriteResource(), 
+                                                        m_easterEggCollectedCount);
+                    }
 
                     // Water helper is looking mostly towards easter egg
                     m_levelManager.AddScore(LevelManager.ScoreType.Coin, 50);
