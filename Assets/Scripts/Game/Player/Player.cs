@@ -151,6 +151,9 @@ public class Player : MonoBehaviour
                 {
                     // Water helper is looking mostly towards fire
                     m_levelManager.AddScore(LevelManager.ScoreType.Fire);
+                    //check if player 2 also collected something
+                    if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
+                        m_levelManager.AddScoreForOpponent(LevelManager.ScoreType.Fire);
                     m_fires[i].Extinguish();
                     m_fires.Remove(m_fires[i]);
                 }
@@ -176,6 +179,9 @@ public class Player : MonoBehaviour
                 {
                     // Water helper is looking mostly towards coin
                     m_levelManager.AddScore(LevelManager.ScoreType.Coin);
+                    //check if player 2 also collected something
+                    if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
+                        m_levelManager.AddScoreForOpponent(LevelManager.ScoreType.Coin);
                     m_coins[i].Collect();
                     m_coins.Remove(m_coins[i]);
                 }
@@ -219,6 +225,9 @@ public class Player : MonoBehaviour
 
                     // Water helper is looking mostly towards easter egg
                     m_levelManager.AddScore(LevelManager.ScoreType.Coin, 50);
+                    //check if easter egg is also collected by the opponent
+                    if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
+                        m_levelManager.CheckEasterEggForOpponent(m_easterEggs[i].GetSpriteResource(), 50);
                     m_easterEggs[i].Collect();
                     m_easterEggs.Remove(m_easterEggs[i]);
                 }

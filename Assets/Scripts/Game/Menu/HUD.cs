@@ -97,7 +97,7 @@ public class HUD : MonoBehaviour
             break;
 
             case PlayerHUD.Player_02:
-            m_player_01_HUD.SetCollectibleImage(sp, ID);
+            m_player_02_HUD.SetCollectibleImage(sp, ID);
             break;
         }
     }

@@ -109,6 +109,11 @@ public class LevelManager : MonoBehaviour
     int m_coinsThisSession = default;
     int m_fireThisSession = default;
 
+    //for tracking player 02's progress
+    int m_oppCoinsThisSession = default;
+    int m_oppFireThisSession = default;
+    int m_oppEasterEggCollected = default;
+
     // Foreground assets
     List<ScrollingObject> m_foregroundObjects = new List<ScrollingObject>();
 
@@ -145,6 +150,11 @@ public class LevelManager : MonoBehaviour
         m_easterEggSpawnTime = (m_levelTime - 5.0f) / 3;
         m_lastEasterEggTime = Time.time;
 
+        //initializing opponent data
+        m_oppCoinsThisSession = 0;
+        m_oppFireThisSession = 0;
+        m_oppEasterEggCollected = 0;
+
         // Input handlers
         m_inputManager.OnMouseUp += OnMouseUp;
 
@@ -175,6 +185,13 @@ public class LevelManager : MonoBehaviour
 
         m_pause.gameObject.SetActive(false);
         m_end.gameObject.SetActive(false);
+
+        //if it's multiplayer mode, disable pause button
+        if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
+            m_hud.EnablePause(false);
+        //and if it is single player, enable pause button
+        if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Single)
+            m_hud.EnablePause(true);
 
         m_hud.EnableHUD(HUD.PlayerHUD.Player_01, false);
         m_hud.EnableHUD(HUD.PlayerHUD.Player_02, false);
@@ -276,10 +293,16 @@ public class LevelManager : MonoBehaviour
 
                 m_groundObject.SetMoveSpeed(m_currentLevelSpeed);
 
+                //update level progress simulation for player 02
+                if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
+                {
+                    //set the progress in level progress bar for player 02
+                    m_hud.SetProgress(HUD.PlayerHUD.Player_02, normalizedTime);
+                }
 
                 if (m_elapsedLevelTime > m_levelTime)
                 {
-                    OnLevelStateChange?.Invoke(LevelState.Boss);    
+                    OnLevelStateChange?.Invoke(LevelState.Boss);
                 }
                 else
                 {
@@ -389,6 +412,11 @@ public class LevelManager : MonoBehaviour
                 m_fireTruck.GetComponent<Animation>().Play();
                 m_truckDust.gameObject.SetActive(true);
                 m_hud.EnableHUD(HUD.PlayerHUD.Player_01, true);
+                //enable player 2's hud if multi player mode is selected
+                if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
+                {
+                    m_hud.EnableHUD(HUD.PlayerHUD.Player_02, true);
+                }
                 for (int i = 0; i < m_backgroundParallax.Length; i++)
                 {
                     m_backgroundParallax[i].Pause();
@@ -526,6 +554,150 @@ public class LevelManager : MonoBehaviour
         yield return null;
     }
 
+    //this function will also make sure that player 02's progress is added
+    public void AddScoreForOpponent(ScoreType scoreType, int value = 1)
+    {
+        //check difficulty level selected
+        int difficultyID = PlayerPrefs.GetInt("LEVEL", -1);
+        float chance = Random.Range(0.0f, 1.0f);
+        switch (scoreType)
+        {
+            case ScoreType.Coin:
+                //player 02 will collect this coin based on difficulty mode
+                switch (difficultyID)
+                {
+                    case 0: //easy
+                    //there's 66.66% chance player 2 will collect this coin
+                    if (chance <= (2.0f/3.0f)) //collect the coin
+                        m_oppCoinsThisSession += value;
+                    //and 10% chance to collect an additional coin
+                    chance = Random.Range(0.0f, 1.0f);
+                    if (chance <= 0.1f) m_oppCoinsThisSession += value;
+                    break;
+
+                    case 1: //medium
+                    //there's 90% chance player 2 will collect this coin
+                    if (chance <= 0.9f) //collect the coin
+                        m_oppCoinsThisSession += value;
+                    //and 20% chance to collect an additional coin
+                    chance = Random.Range(0.0f, 1.0f);
+                    if (chance <= 0.2f) m_oppCoinsThisSession += value;
+                    break;
+
+                    case 2: //hard
+                    //there's 100% chance player 2 will collect this coin
+                    m_oppCoinsThisSession += value;
+                    //and 30% chance to collect an additional coin
+                    chance = Random.Range(0.0f, 1.0f);
+                    if (chance <= 0.3f) m_oppCoinsThisSession += value;
+                    break;
+
+                    default:
+                    Debug.LogWarning("Difficulty ID was not found while checking coins");
+                    break;
+                }
+                //set the coins for player 02
+                m_hud.SetHUDCount(HUD.PlayerHUD.Player_02, scoreType, m_oppCoinsThisSession);
+                break;
+
+            case ScoreType.Fire:
+                switch (difficultyID)
+                {
+                    case 0: //easy
+                    //there's 66.66% chance player 2 will collect this fire
+                    if (chance <= (2.0f/3.0f)) //collect the fire
+                        m_oppFireThisSession += value;
+                    //and 10% chance to collect an additional fire
+                    chance = Random.Range(0.0f, 1.0f);
+                    if (chance <= 0.1f) m_oppFireThisSession += value;
+                    break;
+
+                    case 1: //medium
+                    //there's 90% chance player 2 will collect this fire
+                    if (chance <= 0.9f) //collect the fire
+                        m_oppFireThisSession += value;
+                    //and 20% chance to collect an additional fire
+                    chance = Random.Range(0.0f, 1.0f);
+                    if (chance <= 0.2f) m_oppFireThisSession += value;
+                    break;
+
+                    case 2: //hard
+                    //there's 100% chance player 2 will collect this fire
+                    m_oppFireThisSession += value;
+                    //and 30% chance to collect an additional fire
+                    chance = Random.Range(0.0f, 1.0f);
+                    if (chance <= 0.3f) m_oppFireThisSession += value;
+                    break;
+
+                    default:
+                    Debug.LogWarning("Difficulty ID was not found while checking fire");
+                    break;
+                }
+                //set the fire for player 02
+                m_hud.SetHUDCount(HUD.PlayerHUD.Player_02, scoreType, m_oppFireThisSession);
+                break;
+        }
+
+        //update player 02's score as well
+        m_hud.SetHUDCount(HUD.PlayerHUD.Player_02, ScoreType.Score, 
+                              m_oppCoinsThisSession +  m_oppFireThisSession);
+    }
+
+    //this function takes care of easter egg collection for player 02
+    public void CheckEasterEggForOpponent(Sprite easterEgg, int value)
+    {
+        //easter egg collection % is based on difficulty chosen, so again
+        int difficultyID = PlayerPrefs.GetInt("LEVEL", -1);
+        float chance = Random.Range(0.0f, 1.0f);
+        bool isEasterEggCollected = false;
+        switch (difficultyID)
+        {
+            case 0: //easy
+            //there's 50% chance player 2 will collect this easter egg
+            if (chance <= 0.5f) isEasterEggCollected = true;
+            break;
+
+            case 1: //medium
+            //there's 60% chance player 2 will collect this easter egg
+            if (chance <= 0.6f) isEasterEggCollected = true;
+            break;
+
+            case 2: //hard
+            //there's 75% chance player 2 will collect this easter egg
+            if (chance <= 0.75f) isEasterEggCollected = true;
+            break;
+
+            default:
+            Debug.LogWarning("Difficulty ID was not found while checking easter egg");
+            break;
+        }
+
+        //if easter egg is collected, add it to the opponent hud and update their score
+        if (isEasterEggCollected == true)
+        {
+            //update coin hud score for player 02
+            m_oppCoinsThisSession += value;
+            m_hud.SetHUDCount(HUD.PlayerHUD.Player_02, ScoreType.Coin, m_oppCoinsThisSession);
+            //update overall score as well
+            m_hud.SetHUDCount(HUD.PlayerHUD.Player_02, ScoreType.Score, 
+                              m_oppCoinsThisSession +  m_oppFireThisSession);
+
+            //check if easter egg image is already added to hud
+            bool isAddedToHUD = IsEasterEggCollected(HUD.PlayerHUD.Player_02, easterEgg, 
+                                                     m_oppEasterEggCollected);
+            if (isAddedToHUD == true)
+            {
+                //only add score for this easter egg
+                AddCollectibleScore(HUD.PlayerHUD.Player_02, m_oppEasterEggCollected);
+            }
+            else
+            {
+                m_oppEasterEggCollected += 1;
+                //add image and score both
+                AddCollectibletoUI(HUD.PlayerHUD.Player_02, easterEgg, m_oppEasterEggCollected);
+            }
+        }
+    }
     public void AddScore(ScoreType scoreType, int value = 1)
     {
         int score = PlayerPrefs.GetInt(scoreType.ToString(), 0);
@@ -565,12 +737,15 @@ public class LevelManager : MonoBehaviour
         m_hud.SetHUDCollectible(playerHUD, sp, ID);
         
         //also add collectible and score to pause screen and end-game UI
-        //note that collectible score is hard coded to 50.0f
-        m_pause.SetCollectibleDataForPlayer(playerHUD, sp, 50.0f, ID);
         //set appropriate data for single/multi player mode
         if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Single)
+        {
+            //note that collectible score is hard coded to 50.0f
+            m_pause.SetCollectibleDataForPlayer(playerHUD, sp, 50.0f, ID);
             m_end.SetCollectibleDataForPlayer(playerHUD, sp, 50.0f, ID);
-        else if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
+        }
+        
+        if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
             m_endMP.SetCollectibleDataForPlayer(playerHUD, sp, 50.0f, ID);
 
     }
@@ -578,12 +753,15 @@ public class LevelManager : MonoBehaviour
     //updating score for the easter egg in hud/end-game ui
     public void AddCollectibleScore(HUD.PlayerHUD playerHUD, int ID)
     {
-        //note that collectible score is hard coded to 50.0f
-        m_pause.AddCollectibleScoreForPlayer(playerHUD, 50.0f, ID);
         //set appropriate data for single/multi player mode
         if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Single)
+        {
+            //note that collectible score is hard coded to 50.0f
+            m_pause.AddCollectibleScoreForPlayer(playerHUD, 50.0f, ID);
             m_end.AddCollectibleScoreForPlayer(playerHUD, 50.0f, ID);
-        else if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
+        }
+        
+        if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
             m_endMP.AddCollectibleScoreForPlayer(playerHUD, 50.0f, ID);
 
     }
@@ -647,7 +825,10 @@ public class LevelManager : MonoBehaviour
 
     void StartBossMovie(ScrollingObject scrollingObject)
     {
-        m_hud.EnablePause(false);
+        //pause only needs to be disabled in single player
+        if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Single)
+            m_hud.EnablePause(false);
+
         scrollingObject.Pause();
         scrollingObject.OnScrollComplete = null;
         OnLevelStateChange(LevelState.BossMovie);
@@ -679,7 +860,10 @@ public class LevelManager : MonoBehaviour
 
     void StartBossFires(ScrollingObject scrollingObject)
     {
-        m_hud.EnablePause(true);
+        //we only enable the pause again, if it is single player
+        if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Single)
+            m_hud.EnablePause(true);
+
         m_bossCharacter.SetActive(false);
         scrollingObject.Pause();
         scrollingObject.OnScrollComplete = null;
@@ -699,9 +883,24 @@ public class LevelManager : MonoBehaviour
     {
         if (State == LevelState.End)
         {
-            m_end.gameObject.SetActive(true);
+            //disable the in-game hud
             m_hud.gameObject.SetActive(false);
-            m_end.SetData(m_fireThisSession, m_fireThisSession + m_coinsThisSession);
+            //enable appropriate result screen
+            if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Single)
+            {
+                m_end.gameObject.SetActive(true);
+                m_end.SetData(m_fireThisSession, m_fireThisSession + m_coinsThisSession, 
+                              HUD.PlayerHUD.Player_01);
+            }
+            //for multiplayer mode set data for both player 01 and player 02
+            if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
+            {
+                m_endMP.gameObject.SetActive(true);
+                m_endMP.SetData(m_fireThisSession, m_fireThisSession + m_coinsThisSession, 
+                                HUD.PlayerHUD.Player_01);
+                m_endMP.SetData(m_oppFireThisSession, m_oppFireThisSession + m_oppCoinsThisSession, 
+                                HUD.PlayerHUD.Player_02);
+            }
         }
         else
         {

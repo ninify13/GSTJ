@@ -732,6 +732,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: FemaleDonkey
       objectReference: {fileID: 0}
+    - target: {fileID: 5043524891237054, guid: a238386e46bd9af47af7fb981bdc70cb, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3912135866202990765, guid: a238386e46bd9af47af7fb981bdc70cb,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4489,7 +4493,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 100
+  m_Text: 000
 --- !u!222 &448562200
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10261,7 +10265,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 100
+  m_Text: 000
 --- !u!222 &974453138
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -11779,7 +11783,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 100
+  m_Text: 000
 --- !u!222 &1131702567
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -12402,7 +12406,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 100
+  m_Text: 000
 --- !u!222 &1162789447
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -15130,6 +15134,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: FireTruck
       objectReference: {fileID: 0}
+    - target: {fileID: 4459794812965612174, guid: c8b393ab73710f34185ad568999b1a27,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c8b393ab73710f34185ad568999b1a27, type: 3}
 --- !u!1 &1375680920 stripped
@@ -15604,7 +15613,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1425820156}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -26.16, y: 1.49, z: 0}
+  m_LocalPosition: {x: -26.16, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1231040690}
@@ -17623,7 +17632,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 100
+  m_Text: 000
 --- !u!222 &1547513100
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -23309,7 +23318,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 100
+  m_Text: 000
 --- !u!222 &2068192651
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -23343,7 +23352,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2068314085}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.14, y: 0.14, z: 0}
+  m_LocalPosition: {x: -2.14, y: -0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1231040690}
