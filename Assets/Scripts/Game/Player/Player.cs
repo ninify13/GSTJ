@@ -228,6 +228,7 @@ public class Player : MonoBehaviour
                     //check if easter egg is also collected by the opponent
                     if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
                         m_levelManager.CheckEasterEggForOpponent(m_easterEggs[i].GetSpriteResource(), 50);
+
                     m_easterEggs[i].Collect();
                     m_easterEggs.Remove(m_easterEggs[i]);
                 }

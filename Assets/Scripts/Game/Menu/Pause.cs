@@ -1,9 +1,88 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
+using System.Collections;
 
 public class Pause : MonoBehaviour
 {
+    //for deciding if this is an in-game pause screen or end screen
+    [SerializeField] bool isThisEndLevelScreen = true;
     [SerializeField] NewHUDElements[] m_players = default;
+
+    //for showing the collectible data in sequence
+    IEnumerator dispSeq = default;
+    public void OnEnable()
+    {
+        //start the display sequence
+        dispSeq = ShowDisplaySequence();
+        StartCoroutine(dispSeq);
+
+    }
+    public void OnDisable()
+    {
+        StopCoroutine(dispSeq);
+    }
+
+    //coroutine for displaying the reveal sequence
+    private IEnumerator ShowDisplaySequence()
+    {
+        //first reveal the final score for player(s)
+        for (int i=0; i < m_players.Length; i++)
+        {
+            Transform t = m_players[i].GetFinalScoreRoot();
+            t.DOScale(1.0f, 0.9f).From(0.0f);
+        }
+        //wait for the final score(s) to scale up
+        yield return new WaitForSeconds(2.0f);
+
+        //now scale up the collectibles, if any
+        for (int i=0; i < m_players.Length; i++)
+        {
+            Transform t = m_players[i].GetCollectibleRoot();
+            t.gameObject.SetActive(true);
+            t.DOScale(1.0f, 0.9f).From(0.0f);
+        }
+        //wait for the collectibles to scale up
+        yield return new WaitForSeconds(2.0f);
+
+        //for multiplayer, first show the winner if game has ended
+        if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi
+            && isThisEndLevelScreen == true)
+        {
+            Transform winner = default;
+
+            //determine who is the winner
+            float p1Score = m_players[0].GetFinalScore();
+            float p2Score = m_players[1].GetFinalScore();
+            //grab the winner transform
+            if (p1Score > p2Score) 
+                winner = m_players[0].GetWinnerRoot();
+            else 
+                winner = m_players[1].GetWinnerRoot();
+
+            //scale the winner transform up
+            winner.gameObject.SetActive(true);
+            winner.DOScale(1.0f, 0.9f).From(0.0f);
+            //wait for scaling up to finish
+            yield return new WaitForSeconds(2.0f);
+        }
+
+        //now we show the high score tag for all players
+        if (isThisEndLevelScreen == true)
+        {
+            //check if a player has highscore
+            for (int i=0; i < m_players.Length; i++)
+            {
+                if (m_players[i].HighScoreCheck() == true)
+                {
+                    Transform t = m_players[i].GetHighScoreTagRoot();
+                    t.gameObject.SetActive(true);
+                    t.DOScale(1.0f, 0.9f).From(0.0f);
+                }
+            }
+        }
+        //that's it, reveal sequence is over
+    }
 
     //func for setting score data in the pause screen ui
     //by default the player is assumed to be player 01
@@ -33,7 +112,7 @@ public class Pause : MonoBehaviour
         {
             case HUD.PlayerHUD.Player_01:
             //if it's the first collectible then reset data
-            if (ID == 1) m_players[0].ResetCollectibleData();
+            if (ID == 1) m_players[0].ResetData();
             //et the data
             m_players[0].SetCollectibleData(sp, score, ID);
             break;
@@ -43,7 +122,7 @@ public class Pause : MonoBehaviour
             if (m_players.Length > 1)
             {
                 //if it's the first collectible then reset data
-                if (ID == 1) m_players[1].ResetCollectibleData();
+                if (ID == 1) m_players[1].ResetData();
                 //set the data
                 m_players[1].SetCollectibleData(sp, score, ID);
             }
@@ -84,6 +163,19 @@ public class Pause : MonoBehaviour
         [SerializeField] Text m_score = default;
 
         //for setting collectible image/score data
+        public float GetFinalScore()
+        {
+            return float.Parse(m_score.text, System.Globalization.NumberStyles.Float);
+        }
+        public Transform GetFinalScoreRoot()
+        {
+            return m_score.transform;
+        }
+        [SerializeField] Transform m_collectRoot = default;
+        public Transform GetCollectibleRoot()
+        {
+            return m_collectRoot;
+        }
         [SerializeField] Image m_col01 = default;
         [SerializeField] Image m_col02 = default;
         [SerializeField] Image m_col03 = default;
@@ -91,6 +183,18 @@ public class Pause : MonoBehaviour
         [SerializeField] Text m_col01Text = default;
         [SerializeField] Text m_col02Text = default;
         [SerializeField] Text m_col03Text = default;
+
+        //the winner and new highscore transforms
+        [SerializeField] Transform winner = default;
+        public Transform GetWinnerRoot()
+        {
+            return winner;
+        }
+        [SerializeField] Transform highScoreTag = default;
+        public Transform GetHighScoreTagRoot()
+        {
+            return highScoreTag;
+        }
 
         //for setting score and firecount
         public void SetData(int fireCount, int score)
@@ -163,8 +267,14 @@ public class Pause : MonoBehaviour
             }
         }
 
+        //for checking if this player got high score
+        public bool HighScoreCheck()
+        {
+            return true;
+        }
+
         //for clearing collectible data
-        public void ResetCollectibleData()
+        public void ResetData()
         {
             m_col01.gameObject.SetActive(false);
             m_col02.gameObject.SetActive(false);
@@ -172,6 +282,9 @@ public class Pause : MonoBehaviour
             m_col01Text.gameObject.SetActive(false);
             m_col02Text.gameObject.SetActive(false);
             m_col03Text.gameObject.SetActive(false);
+            m_collectRoot.gameObject.SetActive(false);
+            winner.gameObject.SetActive(false);
+            highScoreTag.gameObject.SetActive(false);
         }
     }
 }
