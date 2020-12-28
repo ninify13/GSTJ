@@ -16,6 +16,10 @@ public class GSTJ_Core : MonoBehaviour
 
     public static LevelMeta LevelMeta { get { return m_instance.m_levelMeta; } }
 
+    //for highscores
+    public static HighScoreMeta HighScoreList { get { return m_instance.m_highScoreList; } }
+    //public static Transform HighScoreContainer;
+
     public static CharacterMetaList CharacterMeta { get { return m_instance.m_characterMeta; } }
 
     public static int Coins { get { return PlayerPrefs.GetInt(LevelManager.ScoreType.Coin.ToString(), 0); } }    
@@ -24,6 +28,7 @@ public class GSTJ_Core : MonoBehaviour
 
     [SerializeField] LevelMeta m_levelMeta = default;
     [SerializeField] CharacterMetaList m_characterMeta = default;
+    [SerializeField] HighScoreMeta m_highScoreList = default;
 
     void Awake()
     {

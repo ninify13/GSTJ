@@ -21,6 +21,12 @@ public class Pause : MonoBehaviour
     public void OnDisable()
     {
         StopCoroutine(dispSeq);
+        //now hide the collectibles for reveal later
+        for (int i=0; i < m_players.Length; i++)
+        {
+            Transform t = m_players[i].GetCollectibleRoot();
+            t.gameObject.SetActive(false);
+        }
     }
 
     //coroutine for displaying the reveal sequence
@@ -30,20 +36,20 @@ public class Pause : MonoBehaviour
         for (int i=0; i < m_players.Length; i++)
         {
             Transform t = m_players[i].GetFinalScoreRoot();
-            t.DOScale(1.0f, 0.9f).From(0.0f);
+            t.DOScale(1.0f, 0.5f).From(0.0f);
         }
         //wait for the final score(s) to scale up
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(1.0f);
 
         //now scale up the collectibles, if any
         for (int i=0; i < m_players.Length; i++)
         {
             Transform t = m_players[i].GetCollectibleRoot();
             t.gameObject.SetActive(true);
-            t.DOScale(1.0f, 0.9f).From(0.0f);
+            t.DOScale(1.0f, 0.5f).From(0.0f);
         }
         //wait for the collectibles to scale up
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(1.5f);
 
         //for multiplayer, first show the winner if game has ended
         if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi
@@ -52,8 +58,8 @@ public class Pause : MonoBehaviour
             Transform winner = default;
 
             //determine who is the winner
-            float p1Score = m_players[0].GetFinalScore();
-            float p2Score = m_players[1].GetFinalScore();
+            int p1Score = m_players[0].GetFinalScore();
+            int p2Score = m_players[1].GetFinalScore();
             //grab the winner transform
             if (p1Score > p2Score) 
                 winner = m_players[0].GetWinnerRoot();
@@ -75,6 +81,13 @@ public class Pause : MonoBehaviour
             {
                 if (m_players[i].HighScoreCheck() == true)
                 {
+                    //generate a random name for player 02
+                    string name = GenerateNewName();
+                    //add this score to the list
+                    GSTJ_Core.HighScoreList.AddHighScore(name, m_players[i].GetFlameScore(),
+                                                               m_players[i].GetFinalScore());
+
+                    //show high score tag
                     Transform t = m_players[i].GetHighScoreTagRoot();
                     t.gameObject.SetActive(true);
                     t.DOScale(1.0f, 0.9f).From(0.0f);
@@ -82,6 +95,19 @@ public class Pause : MonoBehaviour
             }
         }
         //that's it, reveal sequence is over
+    }
+
+    //a small function for denerating a 3 letter name
+    public string GenerateNewName()
+    {
+        string name = "";
+        name = char.ConvertFromUtf32(Random.Range(97, 123)) +
+               char.ConvertFromUtf32(Random.Range(97, 123)) +
+               char.ConvertFromUtf32(Random.Range(97, 123)) +
+               char.ConvertFromUtf32(Random.Range(97, 123));
+        
+        //return the randomly generated name
+        return name;
     }
 
     //func for setting score data in the pause screen ui
@@ -160,12 +186,16 @@ public class Pause : MonoBehaviour
         [SerializeField] string name;
 
         [SerializeField] Text m_fireCount = default;
+        public int GetFlameScore()
+        {
+            return int.Parse(m_fireCount.text, System.Globalization.NumberStyles.Integer);
+        }
         [SerializeField] Text m_score = default;
 
         //for setting collectible image/score data
-        public float GetFinalScore()
+        public int GetFinalScore()
         {
-            return float.Parse(m_score.text, System.Globalization.NumberStyles.Float);
+            return int.Parse(m_score.text, System.Globalization.NumberStyles.Integer);
         }
         public Transform GetFinalScoreRoot()
         {
@@ -270,7 +300,8 @@ public class Pause : MonoBehaviour
         //for checking if this player got high score
         public bool HighScoreCheck()
         {
-            return true;
+            int finalScore = int.Parse(m_score.text, System.Globalization.NumberStyles.Integer);
+            return GSTJ_Core.HighScoreList.IsThisHighScore(finalScore);
         }
 
         //for clearing collectible data
@@ -283,8 +314,10 @@ public class Pause : MonoBehaviour
             m_col02Text.gameObject.SetActive(false);
             m_col03Text.gameObject.SetActive(false);
             m_collectRoot.gameObject.SetActive(false);
-            winner.gameObject.SetActive(false);
-            highScoreTag.gameObject.SetActive(false);
+            if (winner != null) 
+                winner.gameObject.SetActive(false);
+            if (highScoreTag != null)
+                highScoreTag.gameObject.SetActive(false);
         }
     }
 }
