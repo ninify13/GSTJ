@@ -10,6 +10,7 @@ namespace Core.Pool
         EasterEgg,
         Flame,
         Smoke,
+        LongFlame,
     }
 
     public class PoolManager : MonoBehaviour

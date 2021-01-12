@@ -15,7 +15,10 @@ MonoBehaviour:
   PoolItems:
   - Type: 3
     Item: {fileID: 8189270412388632019, guid: 8692567eb0d52dd4790f05fbdc693854, type: 3}
-    PreBakeCount: 15
+    PreBakeCount: 12
+  - Type: 5
+    Item: {fileID: 8189270412388632019, guid: ac33ce844b0bd4d4abae1b8992c4477e, type: 3}
+    PreBakeCount: 8
   - Type: 4
     Item: {fileID: 8222778522421554060, guid: 5ce268bbad02ee34fb97aac3311c40ed, type: 3}
     PreBakeCount: 10

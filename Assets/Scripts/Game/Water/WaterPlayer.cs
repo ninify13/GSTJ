@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace Game.Water
 {
@@ -8,6 +9,8 @@ namespace Game.Water
     {
         public Vector2 WaterXAxisBounds = default;
         public SpritePlayer WaterPlayer = default;
+        //for getting information about water tip
+        public Transform WaterTip = default;
     }
 
     public class WaterPlayer : MonoBehaviour
@@ -16,6 +19,9 @@ namespace Game.Water
 
         WaterConfig m_currentWaterConfig = null;
 
+        //for maintaining information on which obj tip is colliding with 
+        private List<Transform> colObjList = default;
+
         public void Init(Transform parent)
         {
             transform.SetParent(parent);
@@ -23,7 +29,56 @@ namespace Game.Water
             transform.localRotation = Quaternion.identity;
 
             m_currentWaterConfig = m_waterConfigs[0];
+            //resetting the collision list
+            if (colObjList != null)
+                colObjList.Clear();
             StopAll();
+        }
+
+        //for getting information about the collision of water tip
+        public bool CheckCollisionWith(Transform obj)
+        {
+            //only if some list has been initialized
+            if (colObjList == null)
+                return false;
+            //only if tip is colliding with anything
+            if (colObjList.Count <= 0)
+                return false;
+            
+            bool isColliding = false;
+            for (int i = 0; i < colObjList.Count; i++)
+            {
+                if (colObjList[i] == obj)
+                {
+                    isColliding = true;
+                    break;
+                }
+            }
+            //return the result
+            return isColliding;
+        }
+        //for use when we want to remove an obj after dipelling or collecting it
+        public void RemoveFromList(Transform obj)
+        {
+            if (colObjList != null)
+            {
+                colObjList.Remove(obj);
+            }
+        }
+
+        void OnTriggerEnter2D(Collider2D col)
+        {
+            //initialize if not done so already
+            if (colObjList == null)
+                colObjList = new List<Transform>();
+            
+            //check if we collided with fire
+            //we have different trigger sizes for different fire types
+            //so we need to get the parent's transform
+            if (col.gameObject.name.Contains("Fire"))
+                colObjList.Add(col.transform.parent);
+            else
+                colObjList.Add(col.transform);
         }
 
         public void Spray(Vector3 toPosition)

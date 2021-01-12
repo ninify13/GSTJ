@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using Core.InputManager;
 using Game.Collectible;
@@ -122,118 +123,140 @@ public class Player : MonoBehaviour
         m_levelManager.ConsumeWater();
 
         bool dispel = false;
-        float margin = 0.92f;
-        if (m_levelManager.State == LevelManager.LevelState.BossFires)
-        {
-            margin = 0.98f;
-        }
-        else if (m_levelManager.State == LevelManager.LevelState.Progress)
-        {
-            margin = 0.92f;
-        }
 
         for (int i = (m_fires.Count - 1); i >= 0; i--)
         {
-            Transform fireTransform = m_fires[i].transform;
-
-            float distFromHelperToScreenEnd = Mathf.Abs(m_screenEnd.x - m_waterHelper.position.x);
-            Vector2 waterConfigBounds = m_waterPlayer.GetXAxisBounds();
-            Vector2 bounds = new Vector2(m_waterHelper.position.x/* + (distFromHelperToScreenEnd * waterConfigBounds.x)*/, m_waterHelper.position.x + (distFromHelperToScreenEnd * waterConfigBounds.y));
-            float xPos = fireTransform.position.x;
-            dispel = (xPos >= Math.Min(bounds.x, bounds.y) && xPos <= Math.Max(bounds.x, bounds.y));
-
-            if (dispel)
+            //to determine if the fire is dispelled, we check if it collided with tip
+            dispel = m_waterPlayer.CheckCollisionWith(m_fires[i].transform);
+            //let's dispel this fire!
+            if (dispel == true)
             {
-                Vector3 dirFromAtoB = (fireTransform.position - m_waterHelper.position).normalized;
-                float dotProd = Vector3.Dot(dirFromAtoB, m_waterHelper.forward);
-
-                if (dotProd > margin)
-                {
-                    // Water helper is looking mostly towards fire
-                    m_levelManager.AddScore(LevelManager.ScoreType.Fire);
-                    //check if player 2 also collected something
-                    if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
-                        m_levelManager.AddScoreForOpponent(LevelManager.ScoreType.Fire);
-                    m_fires[i].Extinguish();
-                    m_fires.Remove(m_fires[i]);
-                }
+                // Water tip is mostly on fire
+                m_levelManager.AddScore(LevelManager.ScoreType.Fire);
+                //check if player 2 also collected something
+                //note that this is simulated play for player 2
+                if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
+                    m_levelManager.AddScoreForOpponent(LevelManager.ScoreType.Fire);
+                m_fires[i].Extinguish();
+                //remove it from the water player collision list
+                m_waterPlayer.RemoveFromList(m_fires[i].transform);
+                m_fires.Remove(m_fires[i]);
             }
         }
 
         for (int i = (m_coins.Count - 1); i >= 0; i--)
         {
-            Transform coinTransform = m_coins[i].transform;
-
-            float distFromHelperToScreenEnd = Mathf.Abs(m_screenEnd.x - m_waterHelper.position.x);
-            Vector2 waterConfigBounds = m_waterPlayer.GetXAxisBounds();
-            Vector2 bounds = new Vector2(m_waterHelper.position.x/* + (distFromHelperToScreenEnd * waterConfigBounds.x)*/, m_waterHelper.position.x + (distFromHelperToScreenEnd * waterConfigBounds.y));
-            float xPos = coinTransform.position.x;
-            dispel = (xPos >= Math.Min(bounds.x, bounds.y) && xPos <= Math.Max(bounds.x, bounds.y));
-
-            if (dispel)
+            //to determine if the coin can be collected, we check if it collided with tip
+            dispel = m_waterPlayer.CheckCollisionWith(m_coins[i].transform);
+            //let's collect this coin!
+            if (dispel == true)
             {
-                Vector3 dirFromAtoB = (coinTransform.position - m_waterHelper.position).normalized;
-                float dotProd = Vector3.Dot(dirFromAtoB, m_waterHelper.forward);
-
-                if (dotProd > margin)
-                {
-                    // Water helper is looking mostly towards coin
-                    m_levelManager.AddScore(LevelManager.ScoreType.Coin);
-                    //check if player 2 also collected something
-                    if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
-                        m_levelManager.AddScoreForOpponent(LevelManager.ScoreType.Coin);
-                    m_coins[i].Collect();
-                    m_coins.Remove(m_coins[i]);
-                }
+                //start a co-routine to take care of flying coin image to the counter
+                FlyItemToCounter(m_coins[i].transform, dur: 1.0f, scaleDown: true);
+                // Water tip is mostly on coin
+                m_levelManager.AddScore(LevelManager.ScoreType.Coin);
+                
+                //check if player 2 also collected something
+                if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
+                    m_levelManager.AddScoreForOpponent(LevelManager.ScoreType.Coin);
+                
+                m_coins[i].Collect();
+                //first remove it from the water player collision list
+                m_waterPlayer.RemoveFromList(m_coins[i].transform);
+                m_coins.Remove(m_coins[i]);
             }
         }
 
         for (int i = (m_easterEggs.Count - 1); i >= 0; i--)
         {
-            Transform easterEggTransform = m_easterEggs[i].transform;
-
-            float distFromHelperToScreenEnd = Mathf.Abs(m_screenEnd.x - m_waterHelper.position.x);
-            Vector2 waterConfigBounds = m_waterPlayer.GetXAxisBounds();
-            Vector2 bounds = new Vector2(m_waterHelper.position.x/* + (distFromHelperToScreenEnd * waterConfigBounds.x)*/, m_waterHelper.position.x + (distFromHelperToScreenEnd * waterConfigBounds.y));
-            float xPos = easterEggTransform.position.x;
-            dispel = (xPos >= Math.Min(bounds.x, bounds.y) && xPos <= Math.Max(bounds.x, bounds.y));
-
-            if (dispel)
+            //to determine if the easter egg can be collected, we check if it collided with tip
+            dispel = m_waterPlayer.CheckCollisionWith(m_easterEggs[i].transform);
+            //let's collect this easter egg!
+            if (dispel == true)
             {
-                Vector3 dirFromAtoB = (easterEggTransform.position - m_waterHelper.position).normalized;
-                float dotProd = Vector3.Dot(dirFromAtoB, m_waterHelper.forward);
-
-                if (dotProd > margin)
-                {
-                    //check if easter egg is already collected
-                    bool isEasEggCol = m_levelManager.IsEasterEggCollected(HUD.PlayerHUD.Player_01, 
-                                                            m_easterEggs[i].GetSpriteResource(), 
-                                                            m_easterEggCollectedCount);
-                    if (isEasEggCol == true)
-                    {
-                        //only add score for this collectible
-                        m_levelManager.AddCollectibleScore(HUD.PlayerHUD.Player_01, m_easterEggCollectedCount);
-                    }
-                    else
-                    {
-                        //add the easter egg image to the in-game HUD and end-game UI
-                        m_easterEggCollectedCount += 1;
-                        m_levelManager.AddCollectibletoUI(HUD.PlayerHUD.Player_01, 
+                //check if easter egg is already collected
+                bool isEasEggCol = m_levelManager.IsEasterEggCollected(HUD.PlayerHUD.Player_01, 
                                                         m_easterEggs[i].GetSpriteResource(), 
                                                         m_easterEggCollectedCount);
-                    }
-
-                    // Water helper is looking mostly towards easter egg
-                    m_levelManager.AddScore(LevelManager.ScoreType.Coin, 50);
-                    //check if easter egg is also collected by the opponent
-                    if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
-                        m_levelManager.CheckEasterEggForOpponent(m_easterEggs[i].GetSpriteResource(), 50);
-
-                    m_easterEggs[i].Collect();
-                    m_easterEggs.Remove(m_easterEggs[i]);
+                if (isEasEggCol == true)
+                {
+                    //only add score for this collectible
+                    m_levelManager.AddCollectibleScore(HUD.PlayerHUD.Player_01, m_easterEggCollectedCount);
                 }
+                else
+                {
+                    //add the easter egg image to the in-game HUD and end-game UI
+                    m_easterEggCollectedCount += 1;
+                    m_levelManager.AddCollectibletoUI(HUD.PlayerHUD.Player_01, 
+                                                    m_easterEggs[i].GetSpriteResource(), 
+                                                    m_easterEggCollectedCount);
+                }
+
+                // Water helper is looking mostly towards easter egg
+                m_levelManager.AddScore(LevelManager.ScoreType.Coin, 50);
+                //check if easter egg is also collected by the opponent
+                if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
+                    m_levelManager.CheckEasterEggForOpponent(m_easterEggs[i].GetSpriteResource(), 50);
+
+                m_easterEggs[i].Collect();
+                //first remove it from the water player collision list
+                m_waterPlayer.RemoveFromList(m_easterEggs[i].transform);
+                m_easterEggs.Remove(m_easterEggs[i]);
             }
         }
+    }
+
+    //for flying and collecting coins/collectibles etc. in counter
+    private void FlyItemToCounter(Transform item, float dur = 1.0f, bool scaleDown = true)
+    {
+        //create a copy of this item
+        GameObject go = Instantiate(item.gameObject, item.position, item.rotation);
+        //strip components from this 
+        Destroy(go.GetComponent<Coin>());
+        Destroy(go.GetComponent<ScrollingObject>());
+        Destroy(go.GetComponent<CircleCollider2D>());
+        go.transform.position = item.position;
+        //start a new routine for flying this item
+        IEnumerator flyItem = FlyingItemToCounter(go.transform, dur, scaleDown);
+        StartCoroutine(flyItem);
+    }
+    private IEnumerator FlyingItemToCounter(Transform item, float dur, bool scaleDown)
+    {
+        Vector3 startPos = item.position;
+        Vector3 finalPos = m_levelManager.GetFlyItemDestination();
+        Vector3 startScale = item.localScale;
+        float timeLapsed = 0.0f;
+        float percent = 0.0f;
+        //let's begin moving the object
+        while (percent <=1.0f)
+        {
+            //if for whatever reason the game ends, end this loop immediately
+            if (m_levelManager.State == LevelManager.LevelState.End)
+                break;
+            
+            //only fly an item if the game is running (and not paused, etc.)
+            if (m_levelManager.State != LevelManager.LevelState.Paused)
+            {
+                //update the position and scale (if specified)
+                item.position = Vector3.Lerp(startPos, finalPos, percent);
+                Vector3 newScale = Vector3.zero;
+                if (scaleDown == true)
+                {
+                    newScale = Vector3.Lerp(startScale, Vector3.zero, percent);
+                    item.localScale = newScale;
+                }
+                //update counters and wait
+                timeLapsed += Time.deltaTime;
+                percent = (timeLapsed)/dur;
+                yield return new WaitForEndOfFrame();
+            }
+            else //skip this frame and do nothing
+                yield return new WaitForEndOfFrame();
+        }
+
+        //item has reached destination, destroy it
+        Destroy(item.gameObject);
+        yield return null;
     }
 
     void OnWaterRelease(Vector3 mousePosition)

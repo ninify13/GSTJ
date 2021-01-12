@@ -81,8 +81,10 @@ public class Pause : MonoBehaviour
             {
                 if (m_players[i].HighScoreCheck() == true)
                 {
-                    //generate a random name for player 02
-                    string name = GenerateNewName();
+                    //generate a random name only for player 02
+                    string name = "you";
+                    if (i > 0) name = GenerateNewName();
+                    
                     //add this score to the list
                     GSTJ_Core.HighScoreList.AddHighScore(name, m_players[i].GetFlameScore(),
                                                                m_players[i].GetFinalScore());

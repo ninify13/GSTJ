@@ -335,6 +335,7 @@ GameObject:
   - component: {fileID: 8734453525731891627}
   - component: {fileID: 9089955574900322126}
   - component: {fileID: 7381357215613251768}
+  - component: {fileID: 4153926677871569515}
   m_Layer: 8
   m_Name: EasterEgg
   m_TagString: Fire
@@ -397,6 +398,22 @@ MonoBehaviour:
   - {fileID: 8841930408870949624}
   - {fileID: 8274811080680483871}
   - {fileID: 1338397746242131319}
+--- !u!58 &4153926677871569515
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8734453525731891622}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 1.3
 --- !u!1 &8841930408870949624
 GameObject:
   m_ObjectHideFlags: 0
