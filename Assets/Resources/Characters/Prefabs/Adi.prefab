@@ -1747,10 +1747,20 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2193233223864307361}
     m_Modifications:
+    - target: {fileID: 3453797410610979557, guid: 5b3d39d8a8eeffe438f581701221bcc5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5735231935829168993, guid: 5b3d39d8a8eeffe438f581701221bcc5,
         type: 3}
       propertyPath: m_Name
       value: WaterPlayer
+      objectReference: {fileID: 0}
+    - target: {fileID: 6705305657121109932, guid: 5b3d39d8a8eeffe438f581701221bcc5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6831149616632352301, guid: 5b3d39d8a8eeffe438f581701221bcc5,
         type: 3}
@@ -1807,14 +1817,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7036984941342234801, guid: 5b3d39d8a8eeffe438f581701221bcc5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5b3d39d8a8eeffe438f581701221bcc5, type: 3}
---- !u!4 &3516641165172846996 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6831149616632352301, guid: 5b3d39d8a8eeffe438f581701221bcc5,
-    type: 3}
-  m_PrefabInstance: {fileID: 7926477060347690937}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1981780377432413454 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -756549611392554313, guid: 5b3d39d8a8eeffe438f581701221bcc5,
@@ -1827,3 +1836,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a150f67528ced6e49bf42f1063719979, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &3516641165172846996 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6831149616632352301, guid: 5b3d39d8a8eeffe438f581701221bcc5,
+    type: 3}
+  m_PrefabInstance: {fileID: 7926477060347690937}
+  m_PrefabAsset: {fileID: 0}
