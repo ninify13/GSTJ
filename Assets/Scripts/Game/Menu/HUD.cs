@@ -190,22 +190,30 @@ public class HUDElements
 
     public void SetCollectibleImage(Sprite sp, int ID)
     {
+        Image shadow = null;
         //if ID is between 1 and 3, set image accordingly
         switch (ID)
         {
             case 1:
             m_collectible01.gameObject.SetActive(true);
             m_collectible01.sprite = sp;
+            //remove the shadow behind it
+            shadow = m_collectible01.transform.parent.gameObject.GetComponent<Image>();
+            if (shadow != null) shadow.enabled = false;
             break;
 
             case 2:
             m_collectible02.gameObject.SetActive(true);
             m_collectible02.sprite = sp;
+            shadow = m_collectible02.transform.parent.gameObject.GetComponent<Image>();
+            if (shadow != null) shadow.enabled = false;
             break;
 
             case 3:
             m_collectible03.gameObject.SetActive(true);
             m_collectible03.sprite = sp;
+            shadow = m_collectible03.transform.parent.gameObject.GetComponent<Image>();
+            if (shadow != null) shadow.enabled = false;
             break;
 
             default:

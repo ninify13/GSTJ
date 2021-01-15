@@ -238,6 +238,7 @@ public class Pause : MonoBehaviour
         //for setting collectible image and score with ID
         public void SetCollectibleData(Sprite sp, float score, int ID)
         {
+            Image shadow = null;
             //if ID is between 1 and 3, set image accordingly
             switch (ID)
             {
@@ -246,6 +247,9 @@ public class Pause : MonoBehaviour
                 m_col01.sprite = sp;
                 m_col01Text.gameObject.SetActive(true);
                 m_col01Text.text = score.ToString();
+                //remove shadow behind the collectible
+                shadow = m_col01.transform.parent.gameObject.GetComponent<Image>();
+                if (shadow != null) shadow.enabled = false;
                 break;
 
                 case 2:
@@ -253,6 +257,9 @@ public class Pause : MonoBehaviour
                 m_col02.sprite = sp;
                 m_col02Text.gameObject.SetActive(true);
                 m_col02Text.text = score.ToString();
+                //remove shadow behind the collectible
+                shadow = m_col02.transform.parent.gameObject.GetComponent<Image>();
+                if (shadow != null) shadow.enabled = false;
                 break;
 
                 case 3:
@@ -260,6 +267,9 @@ public class Pause : MonoBehaviour
                 m_col03.sprite = sp;
                 m_col03Text.gameObject.SetActive(true);
                 m_col03Text.text = score.ToString();
+                //remove shadow behind the collectible
+                shadow = m_col03.transform.parent.gameObject.GetComponent<Image>();
+                if (shadow != null) shadow.enabled = false;
                 break;
 
                 default:
