@@ -125,7 +125,7 @@ Material:
     - _TextureHeight: 512
     - _TextureWidth: 512
     - _UnderlayDilate: 1
-    - _UnderlayOffsetX: 1
+    - _UnderlayOffsetX: 0
     - _UnderlayOffsetY: -1
     - _UnderlaySoftness: 0
     - _VertexOffsetX: 0
@@ -157,7 +157,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hashCode: 1902107595
   material: {fileID: -1277436096327413643}
-  materialHashCode: 301940576
+  materialHashCode: 1010048011
   m_Version: 1.1.0
   m_SourceFontFileGUID: ec0300d3bd7c4f74492c08a6261f0d60
   m_SourceFontFile_EditorRef: {fileID: 0}
@@ -1934,6 +1934,8 @@ MonoBehaviour:
   m_AtlasTextures:
   - {fileID: -8132950027299190103}
   m_AtlasTextureIndex: 0
+  m_IsMultiAtlasTexturesEnabled: 0
+  m_ClearDynamicDataOnBuild: 0
   m_UsedGlyphRects:
   - m_X: 0
     m_Y: 0
