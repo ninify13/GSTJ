@@ -8,6 +8,10 @@ namespace Game.Collectible
         public delegate void OnCollected(EasterEgg egg);
 
         [SerializeField] GameObject[] EasterEggs = default;
+        public int GetMaxEasterEggs()
+        {
+            return EasterEggs.Length;
+        }
 
         OnCollected m_onCollected = default;
 
@@ -27,11 +31,13 @@ namespace Game.Collectible
             }
 
             //allocate an easter egg
-            EasterEggs[Random.Range(0, EasterEggs.Length)].SetActive(true);
+            //EasterEggs[Random.Range(0, EasterEggs.Length)].SetActive(true);
         }
 
-        public void Init(Vector3 startPosition, Vector3 endPosition, OnCollected onCollected, PoolManager poolManager)
+        public void Init(int eggID, Vector3 startPosition, Vector3 endPosition, OnCollected onCollected, PoolManager poolManager)
         {
+            //allocate the specified easter egg
+            EasterEggs[eggID].SetActive(true);
             m_scrollingObject.SetStartPoint(startPosition);
             m_scrollingObject.SetEndPoint(endPosition);
 
@@ -41,6 +47,7 @@ namespace Game.Collectible
             m_onCollected = onCollected;
 
             m_poolManager = poolManager;
+            
         }
 
         public void TogglePause(bool pause)

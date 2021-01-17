@@ -34,11 +34,17 @@ public class LevelManager : MonoBehaviour
     [SerializeField] AudioSource m_mainMusic = default;
     [SerializeField] AudioSource m_coinSound = default;
     [SerializeField] AudioSource m_waterEmptySound = default;
-    public AudioSource GetWaterEmptyAudioSource()
+    public void PlayWaterEmptyAudio()
     {
-        return m_waterEmptySound;
+        m_waterEmptySound.Play();
     }
-
+    [SerializeField] AudioSource m_itemCollectionSound = default;
+    public void PlayItemColAudio()
+    {
+        m_itemCollectionSound.Play();
+    }
+    [SerializeField] AudioSource m_countDownSound = default;
+    [SerializeField] AudioSource m_raceBeginSound = default;
     [SerializeField] InputManager m_inputManager = default;
 
     [SerializeField] PoolManager m_poolManager = default;
@@ -122,6 +128,7 @@ public class LevelManager : MonoBehaviour
     // Easter egg time
     float m_easterEggSpawnTime = default;
     float m_lastEasterEggTime = default;
+    int[] spawnedEasterEggs = default;
 
     // Score vars
     int m_coinsThisSession = default;
@@ -167,6 +174,8 @@ public class LevelManager : MonoBehaviour
 
         m_easterEggSpawnTime = (m_levelTime - 5.0f) / 3;
         m_lastEasterEggTime = Time.time;
+        spawnedEasterEggs = new int[3];
+        spawnedEasterEggs[0] = spawnedEasterEggs[1] = spawnedEasterEggs[2] = -1;
 
         //initializing opponent data
         m_oppCoinsThisSession = 0;
@@ -357,7 +366,46 @@ public class LevelManager : MonoBehaviour
                         Vector3 eggPosition = new Vector3(30.0f, -2.0f, 0.0f);
                         PoolItem poolItem = m_poolManager.GetPoolItem(PoolType.EasterEgg);
                         EasterEgg easterEgg = poolItem.gameObject.GetComponent<EasterEgg>();
-                        easterEgg.Init(eggPosition, new Vector3(-eggPosition.x, eggPosition.y, eggPosition.z), new EasterEgg.OnCollected(CollectEasterEgg), m_poolManager);
+                        int eggID = -1;
+                        bool isEggIDUnique = false;
+                        while (isEggIDUnique == false)
+                        {
+                            //generate a random egg ID
+                            eggID = Random.Range(0, easterEgg.GetMaxEasterEggs());
+                            //check against all the spawned eggs
+                            bool isEggIDFound = false;
+                            for (int i = 0; i < spawnedEasterEggs.Length; i++)
+                            {
+                                //if the stored egg ID is valid, 
+                                //it means that an egg has spawned earlier
+                                if (spawnedEasterEggs[i] >= 0)
+                                {
+                                    //check if we have a unique ID
+                                    if (eggID == spawnedEasterEggs[i])
+                                    {
+                                        isEggIDFound = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            //if the egg ID is not found in generated eggs
+                            if (isEggIDFound == false)
+                            {
+                                isEggIDUnique = true;
+                                //add this to the spawned egg IDs
+                                for (int i = 0; i < spawnedEasterEggs.Length; i++)
+                                {
+                                    //look for the first negative value position
+                                    if (spawnedEasterEggs[i] < 0)
+                                    {
+                                        //add the spawned egg ID
+                                        spawnedEasterEggs[i] = eggID;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        easterEgg.Init(eggID, eggPosition, new Vector3(-eggPosition.x, eggPosition.y, eggPosition.z), new EasterEgg.OnCollected(CollectEasterEgg), m_poolManager);
 
                         m_easterEggItems.Add(easterEgg);
                         m_levelPlayerCharacter.AddEasterEgg(easterEgg);
@@ -531,9 +579,23 @@ public class LevelManager : MonoBehaviour
         while (State == LevelState.Countup)
         {
             countUpIndex--;
-            m_countUpText.text = (countUpIndex == 0) ? "GO" : countUpIndex.ToString();
+            if (countUpIndex > 0)
+            {
+                //this means we are counting down
+                m_countUpText.text = countUpIndex.ToString();
+                //play the audio
+                m_countDownSound.Play();
+            }
+            
+            if (countUpIndex == 0)
+            {
+                //this means we are set to go
+                m_countUpText.text = "GO";
+                //play the audio
+                m_raceBeginSound.Play();
+            }
+            //scale up and wait for 1s
             m_countUpTransform.DOScale(1.2f, 0.5f).From(0.0f);
-
             yield return new WaitForSeconds(1f);
             
             if (countUpIndex <= 0)

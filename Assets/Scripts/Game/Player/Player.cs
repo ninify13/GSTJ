@@ -105,7 +105,7 @@ public class Player : MonoBehaviour
         if (m_levelManager.AvailableWater <= 0.0f  || m_levelManager.WaterFilling)
         {
             //play the audio sfx for water empty
-            m_levelManager.GetWaterEmptyAudioSource().Play();
+            m_levelManager.PlayWaterEmptyAudio();
             //pop the bucket
             Transform btn = m_levelManager.GetHUD().GetWaterButton();
             btn.DOPunchScale(Vector3.one * 0.15f, 0.25f, 1);
@@ -201,6 +201,8 @@ public class Player : MonoBehaviour
 
                 // Water helper is looking mostly towards easter egg
                 m_levelManager.AddScore(LevelManager.ScoreType.Coin, 50);
+                //play the easter egg (item) collection sound
+                m_levelManager.PlayItemColAudio();
                 //check if easter egg is also collected by the opponent
                 if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
                     m_levelManager.CheckEasterEggForOpponent(m_easterEggs[i].GetSpriteResource(), 50);
