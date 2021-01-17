@@ -16,8 +16,9 @@ public class GSTJ_Core : MonoBehaviour
 
     public static LevelMeta LevelMeta { get { return m_instance.m_levelMeta; } }
 
-    //for highscores
+    //for highscores - single player and multiplayer
     public static HighScoreMeta HighScoreList { get { return m_instance.m_highScoreList; } }
+    public static HighScoreMeta HighScoreListMP { get { return m_instance.m_highScoreListMP; } }
     //public static Transform HighScoreContainer;
 
     public static CharacterMetaList CharacterMeta { get { return m_instance.m_characterMeta; } }
@@ -29,6 +30,7 @@ public class GSTJ_Core : MonoBehaviour
     [SerializeField] LevelMeta m_levelMeta = default;
     [SerializeField] CharacterMetaList m_characterMeta = default;
     [SerializeField] HighScoreMeta m_highScoreList = default;
+    [SerializeField] HighScoreMeta m_highScoreListMP = default;
 
     void Awake()
     {

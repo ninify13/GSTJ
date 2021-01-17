@@ -5,6 +5,7 @@ using UnityEngine;
 using Core.InputManager;
 using Game.Collectible;
 using Game.Water;
+using DG.Tweening;
 
 public class Player : MonoBehaviour
 {
@@ -102,9 +103,15 @@ public class Player : MonoBehaviour
             return;
 
         if (m_levelManager.AvailableWater <= 0.0f  || m_levelManager.WaterFilling)
+        {
+            //play the audio sfx for water empty
+            m_levelManager.GetWaterEmptyAudioSource().Play();
+            //pop the bucket
+            Transform btn = m_levelManager.GetHUD().GetWaterButton();
+            btn.DOPunchScale(Vector3.one * 0.15f, 0.25f, 1);
             return;
+        }
     }
-
     void OnWaterSpray(Vector3 mousePostiion)
     {
         if (m_levelManager.State == LevelManager.LevelState.End || m_levelManager.State == LevelManager.LevelState.Paused)

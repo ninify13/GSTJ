@@ -13,6 +13,11 @@ public class HUD : MonoBehaviour
     [SerializeField] HUDElements m_player_01_HUD = default;
     [SerializeField] HUDElements m_player_02_HUD = default;
 
+    [SerializeField] Transform m_waterButton = default;
+    public Transform GetWaterButton()
+    {
+        return m_waterButton;
+    }
     [SerializeField] Transform m_waterBar = default;
 
     [SerializeField] Button m_pauseButton = default;

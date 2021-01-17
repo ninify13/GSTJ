@@ -86,9 +86,12 @@ public class Pause : MonoBehaviour
                     if (i > 0) name = GenerateNewName();
                     
                     //add this score to the list
-                    GSTJ_Core.HighScoreList.AddHighScore(name, m_players[i].GetFlameScore(),
+                    if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Single)
+                        GSTJ_Core.HighScoreList.AddHighScore(name, m_players[i].GetFlameScore(),
                                                                m_players[i].GetFinalScore());
-
+                    else //if it's multiplayer mode
+                        GSTJ_Core.HighScoreListMP.AddHighScore(name, m_players[i].GetFlameScore(),
+                                                               m_players[i].GetFinalScore());
                     //show high score tag
                     Transform t = m_players[i].GetHighScoreTagRoot();
                     t.gameObject.SetActive(true);
@@ -99,7 +102,7 @@ public class Pause : MonoBehaviour
         //that's it, reveal sequence is over
     }
 
-    //a small function for denerating a 3 letter name
+    //a small function for generating a 4 letter name
     public string GenerateNewName()
     {
         string name = "";
@@ -313,7 +316,15 @@ public class Pause : MonoBehaviour
         public bool HighScoreCheck()
         {
             int finalScore = int.Parse(m_score.text, System.Globalization.NumberStyles.Integer);
-            return GSTJ_Core.HighScoreList.IsThisHighScore(finalScore);
+            //list is different for single player and multiplayer mode 
+            if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Single)
+            {
+                return GSTJ_Core.HighScoreList.IsThisHighScore(finalScore);
+            }
+            else //for multiplayer mode
+            {
+                return GSTJ_Core.HighScoreListMP.IsThisHighScore(finalScore);
+            }
         }
 
         //for clearing collectible data

@@ -33,6 +33,11 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField] AudioSource m_mainMusic = default;
     [SerializeField] AudioSource m_coinSound = default;
+    [SerializeField] AudioSource m_waterEmptySound = default;
+    public AudioSource GetWaterEmptyAudioSource()
+    {
+        return m_waterEmptySound;
+    }
 
     [SerializeField] InputManager m_inputManager = default;
 
@@ -57,6 +62,10 @@ public class LevelManager : MonoBehaviour
     [SerializeField] ScrollingObject m_bossObject = default;
 
     [SerializeField] HUD m_hud = default;
+    public HUD GetHUD()
+    {
+        return m_hud;
+    }
     [SerializeField] Transform m_HUDItemFlyDestination = default;
     public Vector3 GetFlyItemDestination()
     {
@@ -360,7 +369,7 @@ public class LevelManager : MonoBehaviour
                 //Boss
                 if (m_bossFireTotalCount < GSTJ_Core.LevelMeta.Levels[m_levelIndex].BossFires)
                 {
-                    if (m_bossFireCurrentCount < 2)
+                    if (m_bossFireCurrentCount < 8)
                     {
                         if ((Time.time - m_bossLastFireSpawn) >= m_bossFireSpawnTime)
                         {
