@@ -11,6 +11,8 @@ namespace Game.Water
         public SpritePlayer WaterPlayer = default;
         //for getting information about water tip
         public Transform WaterTip = default;
+        //for rotating and scaling operations
+        public Transform hinge = default;
     }
 
     public class WaterPlayer : MonoBehaviour
@@ -21,6 +23,9 @@ namespace Game.Water
 
         //for maintaining information on which obj tip is colliding with 
         private List<Transform> colObjList = default;
+
+        //for scaling the water stream
+        float baseLen = 0.0f;
 
         public void Init(Transform parent)
         {
@@ -33,6 +38,9 @@ namespace Game.Water
             if (colObjList != null)
                 colObjList.Clear();
             StopAll();
+
+            //calculate base length 
+            baseLen = (m_currentWaterConfig.WaterTip.position - m_currentWaterConfig.hinge.position).magnitude;
         }
 
         //for getting information about the collision of water tip
@@ -84,6 +92,15 @@ namespace Game.Water
         public void Spray(Vector3 toPosition)
         {
             WaterConfig waterConfig = GetWaterConfig(toPosition.x);
+            Vector3 worldPos = Camera.main.ScreenToWorldPoint(toPosition);
+            //scale it according to input position
+            float newLen, newScale = 0.0f;
+            //get required scale (due to input)
+            newLen = (worldPos - waterConfig.hinge.position).magnitude;
+            //min and max scale mentioned below are determined by trial and error
+            newScale = Mathf.Clamp(newLen/baseLen, 0.13f, 1.3f);
+            //apply new scale 
+            waterConfig.hinge.localScale = Vector3.one * newScale;
 
             if (!waterConfig.WaterPlayer.IsPlaying)
             {

@@ -179,13 +179,17 @@ public class HUDElements
 
     public void SetBarValue(float normalizedValue = 0)
     {
-        float startValue = m_barLimits.x;
-        float endValue = m_barLimits.y;
-        m_progressBar.sizeDelta = new Vector2(startValue, m_progressBar.sizeDelta.y);
+        
+        if (m_progressBar != null)
+        {
+            float startValue = m_barLimits.x;
+            float endValue = m_barLimits.y;
+            m_progressBar.sizeDelta = new Vector2(startValue, m_progressBar.sizeDelta.y);
 
-        float diff = endValue - startValue;
-        float currentValue = diff * normalizedValue;
-        m_progressBar.sizeDelta = new Vector2(startValue + currentValue, m_progressBar.sizeDelta.y);
+            float diff = endValue - startValue;
+            float currentValue = diff * normalizedValue;
+            m_progressBar.sizeDelta = new Vector2(startValue + currentValue, m_progressBar.sizeDelta.y);
+        }
     }
 
     public void SetCollectibleImage(Sprite sp, int ID)

@@ -19,5 +19,7 @@ public class CharacterMeta
 
     public int CoinRequirement;
 
+    public bool isCharUnlocked;
+
     public Sprite Image;
 }

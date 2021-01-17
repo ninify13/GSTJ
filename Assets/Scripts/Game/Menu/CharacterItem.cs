@@ -7,7 +7,7 @@ namespace Game.Menu
 {
     public class CharacterItem : PoolItem
     {
-        public delegate void OnSelected(CharacterItem characterItem);
+        public delegate void OnSelected(CharacterItem characterItem, bool coinUpdateNeeded = false);
 
         [SerializeField] Button m_selectButton = default;
 
@@ -33,12 +33,14 @@ namespace Game.Menu
             m_selectButton.onClick.AddListener(OnSelect);
         }
 
-        public void Init(CharacterMeta meta, bool isLocked, OnSelected onSelected)
+        public void Init(CharacterMeta meta, OnSelected onSelected)
         {
             m_image.sprite = meta.Image;
             m_name.text = $"{meta.CharacterName}";
 
             m_coinValue.text = $"{meta.CoinRequirement}";
+            //check if the character is unlocked
+            bool isLocked = !(meta.isCharUnlocked);
 
             m_lockedObject.SetActive(isLocked);
             m_unlockedObject.SetActive(!isLocked);
@@ -59,10 +61,31 @@ namespace Game.Menu
 
         void OnSelect()
         {
-            if (m_isLocked)
-                return;
+            //for detemining if the character can be unlocked or not
+            bool isCoinAmountSufficient = false;
 
-            m_onSelected?.Invoke(this);
+            if (m_isLocked)
+            {
+                //check if this char can be unlocked
+                int coins = PlayerPrefs.GetInt(LevelManager.ScoreType.Coin.ToString(), 0);
+                isCoinAmountSufficient = (m_meta.CoinRequirement <= coins);
+
+                if (isCoinAmountSufficient == true)
+                {
+                    //unlock the character
+                    m_isLocked = false;
+                    m_meta.isCharUnlocked = false;
+                    m_lockedObject.SetActive(m_isLocked);
+                    m_unlockedObject.SetActive(!m_isLocked);
+                    //deduct the required number of coins
+                    coins -= m_meta.CoinRequirement;
+                    PlayerPrefs.SetInt(LevelManager.ScoreType.Coin.ToString(), coins);
+                }
+                else //do nothing and return
+                    return;
+            }
+            //select the character and update coins if we unlocked it
+            m_onSelected?.Invoke(this, isCoinAmountSufficient);
 
             GSTJ_Core.SelectedPlayerCharacter = m_meta.CharacterName;
 

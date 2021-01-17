@@ -81,7 +81,7 @@ namespace Game.Menu
                 m_characterItems[i].transform.localScale = Vector3.one;
                 CharacterItem characterItem = m_characterItems[i].gameObject.GetComponent<CharacterItem>();
                 CharacterMeta characterMeta = GSTJ_Core.CharacterMeta.Characters[i];
-                characterItem.Init(characterMeta, coins < (characterMeta.CoinRequirement), OnSelectCharacter);
+                characterItem.Init(characterMeta, OnSelectCharacter);
             }
 
             m_scrollRect.horizontalScrollbar.value = 0.0f;
@@ -89,11 +89,17 @@ namespace Game.Menu
             //ScaleButtons(1.0f, 0.0f, 0.5f);
         }
 
-        void OnSelectCharacter(CharacterItem characterItem)
+        void OnSelectCharacter(CharacterItem characterItem, bool coinUpdateNeeded = false)
         {
             if (m_characterItem != null)
                 m_characterItem.SetSelected(false);
 
+            //if coins need to be updated, do so now
+            if (coinUpdateNeeded == true)
+            {
+                int coins = PlayerPrefs.GetInt(LevelManager.ScoreType.Coin.ToString(), 0);
+                m_coinCount.text = coins.ToString();
+            }
             m_characterItem = characterItem;
         }
 

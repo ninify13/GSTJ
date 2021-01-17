@@ -802,8 +802,6 @@ public class LevelManager : MonoBehaviour
                 Vector2 gaps = GSTJ_Core.LevelMeta.Levels[m_levelIndex].GapBetweenFiresInSet;
                 Vector3 firePosition = new Vector3(30.0f + (i * (Random.Range(gaps.x, gaps.y))), Random.Range(0f, 6f), 0.0f);
 
-                //-6, -2.5
-
                 PoolItem poolItem;
                 //42% chances of spawning long flame
                 if (Random.Range(0.0f, 1.0f) > 0.58f)
@@ -992,7 +990,7 @@ public class LevelManager : MonoBehaviour
 
     public void OnHighscore()
     {
-        //put functionality for showing highscore screen
+        //put hghscore functionality?
     }
     #endregion
 }
