@@ -159,7 +159,7 @@ public class Player : MonoBehaviour
             if (dispel == true)
             {
                 //start a co-routine to take care of flying coin image to the counter
-                FlyItemToCounter(m_coins[i].transform, dur: 1.0f, scaleDown: true);
+                FlyItemToCounter(m_coins[i].transform, dur: 1.0f, scaleDown: false);
                 // Water tip is mostly on coin
                 m_levelManager.AddScore(LevelManager.ScoreType.Coin);
                 

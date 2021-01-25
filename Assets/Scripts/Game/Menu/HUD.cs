@@ -12,7 +12,7 @@ public class HUD : MonoBehaviour
 
     [SerializeField] HUDElements m_player_01_HUD = default;
     [SerializeField] HUDElements m_player_02_HUD = default;
-
+    [SerializeField] GameObject m_extraHUD = default;
     [SerializeField] Transform m_waterButton = default;
     public Transform GetWaterButton()
     {
@@ -37,6 +37,14 @@ public class HUD : MonoBehaviour
                 m_player_02_HUD.Root.SetActive(enable);
                 break;
         }
+
+        //set the non-player specific HUD
+        ToggleExtraHUD(enable);
+    }
+
+    public void ToggleExtraHUD(bool activeState)
+    {
+        m_extraHUD.SetActive(activeState);
     }
 
     public void EnablePause(bool enable)
@@ -159,10 +167,7 @@ public class HUDElements
     [SerializeField] Text m_flameCount = default;
     [SerializeField] Text m_coinCount = default;
     [SerializeField] Text m_scoreCount = default;
-
-    [SerializeField] RectTransform m_progressBar = default;
-
-    [SerializeField] Vector2 m_barLimits = default;
+    [SerializeField] Slider m_playerProgress = default;
     [SerializeField] Image m_collectible01 = default;
     [SerializeField] Image m_collectible02 = default;
     [SerializeField] Image m_collectible03 = default;
@@ -184,17 +189,8 @@ public class HUDElements
 
     public void SetBarValue(float normalizedValue = 0)
     {
-        
-        if (m_progressBar != null)
-        {
-            float startValue = m_barLimits.x;
-            float endValue = m_barLimits.y;
-            m_progressBar.sizeDelta = new Vector2(startValue, m_progressBar.sizeDelta.y);
-
-            float diff = endValue - startValue;
-            float currentValue = diff * normalizedValue;
-            m_progressBar.sizeDelta = new Vector2(startValue + currentValue, m_progressBar.sizeDelta.y);
-        }
+        //just set the player's progress in the UI
+        m_playerProgress.value = normalizedValue;
     }
 
     public void SetCollectibleImage(Sprite sp, int ID)
