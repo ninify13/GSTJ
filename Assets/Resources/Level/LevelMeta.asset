@@ -30,7 +30,7 @@ MonoBehaviour:
     WaterFillRate: 5
     WaterReduceRate: 1
   - DifficultyKey: Medium
-    LevelSpeedMinMax: {x: 8, y: 15}
+    LevelSpeedMinMax: {x: 6, y: 13}
     LevelTime: 90
     BossTime: 20
     BossFires: 72

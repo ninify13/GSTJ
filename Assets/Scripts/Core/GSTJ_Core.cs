@@ -31,6 +31,7 @@ public class GSTJ_Core : MonoBehaviour
     [SerializeField] CharacterMetaList m_characterMeta = default;
     [SerializeField] HighScoreMeta m_highScoreList = default;
     [SerializeField] HighScoreMeta m_highScoreListMP = default;
+    public static bool m_ShowFTUE = true;
 
     void Awake()
     {

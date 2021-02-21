@@ -1,6 +1,8 @@
 ﻿using Core.Menu;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 namespace Game.Menu
 {
@@ -8,6 +10,7 @@ namespace Game.Menu
     {
         [SerializeField] private Transform scoreContainer;
         [SerializeField] private GameObject sampleScoreEntry;
+        [SerializeField] private Button m_defSelectedButton;
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -71,6 +74,17 @@ namespace Game.Menu
         public void ShowMultiPlayerData()
         {
             PopulateHighScoreListData(GSTJ_Core.GameMode.Multi);
+        }
+
+        //for resetting the normal state color on SP button
+        public void ResetSPButtonState()
+        {
+            if (m_defSelectedButton.colors.normalColor != Color.white)
+            {
+                ColorBlock cb = m_defSelectedButton.colors;
+                cb.normalColor = Color.white;
+                m_defSelectedButton.colors = cb;
+            }
         }
     }
 }

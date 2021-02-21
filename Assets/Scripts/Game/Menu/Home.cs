@@ -12,7 +12,7 @@ namespace Game.Menu
         [SerializeField] Button m_button_MultiPlayer = default;
         [SerializeField] Button m_button_Highscores = default;
         [SerializeField] Button m_button_Exit = default;
-
+        [SerializeField] Button m_button_Instructions = default;
         MenuItem.Menus m_transitionToScene = default;
 
         protected override void Awake()
@@ -22,6 +22,7 @@ namespace Game.Menu
             m_button_SinglePlayer.onClick.AddListener(OnButtonSinglePlayer);
             m_button_MultiPlayer.onClick.AddListener(OnButtonMultiPlayer);
             m_button_Highscores.onClick.AddListener(OnButtonHighscores);
+            m_button_Instructions.onClick.AddListener(OnButtonInstruction);
             m_button_Exit.onClick.AddListener(OnButtonExit);
         }
 
@@ -39,6 +40,7 @@ namespace Game.Menu
             m_button_SinglePlayer.onClick.RemoveAllListeners();
             m_button_MultiPlayer.onClick.RemoveAllListeners();
             m_button_Highscores.onClick.RemoveAllListeners();
+            m_button_Instructions.onClick.RemoveAllListeners();
             m_button_Exit.onClick.RemoveAllListeners();
         }
 
@@ -63,6 +65,11 @@ namespace Game.Menu
             // Switch to High scores
             BounceButton(m_button_Highscores).onComplete = ExitScene;
             m_transitionToScene = MenuItem.Menus.Scores;
+        }
+        void OnButtonInstruction()
+        {
+            BounceButton(m_button_Instructions).onComplete = ExitScene;
+            m_transitionToScene = MenuItem.Menus.Instructions;
         }
 
         void OnButtonExit()
@@ -103,6 +110,7 @@ namespace Game.Menu
             m_button_SinglePlayer.transform.DOScale(scaleTo, duration).From(scaleFrom, true);
             m_button_MultiPlayer.transform.DOScale(scaleTo, duration).From(scaleFrom, true);
             m_button_Highscores.transform.DOScale(scaleTo, duration).From(scaleFrom, true);
+            m_button_Instructions.transform.DOScale(scaleTo, duration).From(scaleFrom, true);
             m_button_Exit.transform.DOScale(scaleTo, duration).From(scaleFrom, true);
         }
         //

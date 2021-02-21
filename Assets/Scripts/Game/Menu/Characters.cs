@@ -28,6 +28,8 @@ namespace Game.Menu
         [SerializeField] TextMeshProUGUI m_coinCount = default;
 
         [SerializeField] Button m_button_Play = default;
+        //for setting scroll options at the start
+        [SerializeField] Scrollbar m_scrollBar = default;
 
         PoolItem[] m_characterItems = default;
         CharacterItem m_characterItem = default;
@@ -40,7 +42,8 @@ namespace Game.Menu
         protected override void OnEnable()
         {
             base.OnEnable();
-
+            //setting the scroll bar to the left
+            m_scrollBar.value = 0;
             m_button_Play.onClick.AddListener(EnterGame);
 
             EnterScene();

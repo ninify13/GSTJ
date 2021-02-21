@@ -14,6 +14,7 @@ namespace Core.Menu
             Scores,
             Game,
             Difficulty,
+            Instructions,
         }
 
         [SerializeField] Menus m_key = default;

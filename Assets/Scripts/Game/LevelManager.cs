@@ -52,10 +52,12 @@ public class LevelManager : MonoBehaviour
     [SerializeField] Transform m_driverNode = default;
     [SerializeField] Transform m_playerNode = default;
     [SerializeField] Transform m_fireTruck = default;
+    [SerializeField] Transform m_bgPanelTransform = default;
     [SerializeField] Transform m_countUpTransform = default;
     [SerializeField] Transform m_countUpPreTextTransform = default;
+    [SerializeField] Transform m_sprayWaterText = default;
+    [SerializeField] Transform m_refillWaterText = default;
     [SerializeField] Transform m_opponentSearchTextTransform = default;
-
     [SerializeField] GameObject m_truckDust = default;
     [SerializeField] GameObject m_bossCharacter = default;
 
@@ -476,6 +478,11 @@ public class LevelManager : MonoBehaviour
                 StopCoroutine(DelayedCountUp());
                 m_fireTruck.GetComponent<Animation>().Play();
                 m_truckDust.gameObject.SetActive(true);
+                //check if we need to show the FTUE first
+                if (GSTJ_Core.m_ShowFTUE == true) //TODO-update this predicate to fetch data from GSTJ Core Meta
+                {
+                    StartCoroutine(ShowFTUEPrompts());
+                }
                 m_hud.EnableHUD(HUD.PlayerHUD.Player_01, true);
                 //enable player 2's hud if multi player mode is selected
                 if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
@@ -561,6 +568,9 @@ public class LevelManager : MonoBehaviour
 
     IEnumerator DelayedCountUp()
     {
+        //enable the bg panel
+        m_bgPanelTransform.gameObject.SetActive(true);
+
         //if multiplayer mode in count up state
         if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi &&
             State == LevelState.Countup)
@@ -595,7 +605,7 @@ public class LevelManager : MonoBehaviour
                 m_raceBeginSound.Play();
             }
             //scale up and wait for 1s
-            m_countUpTransform.DOScale(1.2f, 0.5f).From(0.0f);
+            m_countUpTransform.DOScale(1.0f, 0.5f).From(0.0f);
             yield return new WaitForSeconds(1f);
             
             if (countUpIndex <= 0)
@@ -608,11 +618,27 @@ public class LevelManager : MonoBehaviour
 
                 m_countUpPreTextTransform.gameObject.SetActive(false);
                 m_countUpTransform.gameObject.SetActive(false);
+                m_bgPanelTransform.gameObject.SetActive(false);
                 OnLevelStateChange?.Invoke(LevelState.Starting);
             }
         }
         
         yield return null;
+    }
+
+    IEnumerator ShowFTUEPrompts()
+    {
+        m_sprayWaterText.gameObject.SetActive(true);
+        m_sprayWaterText.DOScale(1.2f, 0.5f).From(0.0f);
+        //wait for 2 seconds
+        yield return new WaitForSeconds(2.0f);
+        m_sprayWaterText.DOScale(0.0f, 0.5f).From(1.0f);
+        m_refillWaterText.gameObject.SetActive(true);
+        m_refillWaterText.DOScale(1.2f, 0.5f).From(0.0f);
+        //wait for 2 seconds
+        yield return new WaitForSeconds(2.0f);
+        m_sprayWaterText.gameObject.SetActive(false);
+        m_refillWaterText.gameObject.SetActive(false);
     }
 
     IEnumerator SpawnRandomForeground()
@@ -1059,9 +1085,9 @@ public class LevelManager : MonoBehaviour
         SceneManager.LoadScene(SceneConstants.Home);
     }
 
-    public void OnHighscore()
+    public void RestartGame()
     {
-        //put hghscore functionality?
+        SceneManager.LoadScene(SceneConstants.Game);
     }
     #endregion
 }
