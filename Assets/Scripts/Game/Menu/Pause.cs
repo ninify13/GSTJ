@@ -10,6 +10,7 @@ public class Pause : MonoBehaviour
     [SerializeField] AudioSource m_gameEndSound = default;
     [SerializeField] NewHUDElements[] m_players = default;
     [SerializeField] Transform m_mainMenuBTN = default;
+    [SerializeField] Transform m_restartBTN = default;
 
     //for showing the collectible data in sequence
     IEnumerator dispSeq = default;
@@ -34,8 +35,9 @@ public class Pause : MonoBehaviour
     //coroutine for displaying the reveal sequence
     private IEnumerator ShowDisplaySequence()
     {
-        //disable main menu button at start
+        //disable main menu/restart button at start
         if (m_mainMenuBTN != null)  m_mainMenuBTN.gameObject.SetActive(false);
+        if (m_restartBTN != null)  m_restartBTN.gameObject.SetActive(false);
         //if this is level end screen, start the bgm
         if (isThisEndLevelScreen == true)
         {
@@ -109,11 +111,16 @@ public class Pause : MonoBehaviour
                 }
             }
         }
-        //enable the main menu button
+        //enable the main menu/restart buttons
         if (m_mainMenuBTN != null)  
         {
             m_mainMenuBTN.gameObject.SetActive(true);
             m_mainMenuBTN.DOScale(1.0f, 0.2f).From(0.0f);
+        }
+        if (m_restartBTN != null)  
+        {
+            m_restartBTN.gameObject.SetActive(true);
+            m_restartBTN.DOScale(1.0f, 0.2f).From(0.0f);
         }
         //that's it, reveal sequence is over
     }

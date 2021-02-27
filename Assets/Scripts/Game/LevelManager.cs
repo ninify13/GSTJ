@@ -14,6 +14,7 @@ public class LevelManager : MonoBehaviour
     {
         Countup,
         Starting,
+        FTUE,
         Paused,
         Progress,
         Boss,
@@ -55,8 +56,6 @@ public class LevelManager : MonoBehaviour
     [SerializeField] Transform m_bgPanelTransform = default;
     [SerializeField] Transform m_countUpTransform = default;
     [SerializeField] Transform m_countUpPreTextTransform = default;
-    [SerializeField] Transform m_sprayWaterText = default;
-    [SerializeField] Transform m_refillWaterText = default;
     [SerializeField] Transform m_opponentSearchTextTransform = default;
     [SerializeField] GameObject m_truckDust = default;
     [SerializeField] GameObject m_bossCharacter = default;
@@ -357,6 +356,12 @@ public class LevelManager : MonoBehaviour
 
                             m_coinPoolItems.Add(coin);
                             m_levelPlayerCharacter.AddCoins(coin);
+                            //marking the first coin transform
+                            if (isFirstCoinSpawned == false)
+                            {
+                                isFirstCoinSpawned = true;
+                                firstCoin = coin.transform;
+                            }
                         }
                     }
 
@@ -411,6 +416,12 @@ public class LevelManager : MonoBehaviour
 
                         m_easterEggItems.Add(easterEgg);
                         m_levelPlayerCharacter.AddEasterEgg(easterEgg);
+                        //marking the first Item transform
+                        if (isFirstItemSpawned == false)
+                        {
+                            isFirstItemSpawned = true;
+                            firstItem = easterEgg.transform;
+                        }
                     }
                 }
                 break;
@@ -625,20 +636,172 @@ public class LevelManager : MonoBehaviour
         
         yield return null;
     }
+    [System.Serializable]
+    private struct FTUEDataStructure
+    {
+        public Transform ftueParent;
+        public Transform focusCircle;
+        public Transform screenBG;
+        public Transform sprayWaterText;
+        public Transform collectCoinText;
+        public Transform collectItemsText;
+        public Transform refillWaterText;
+    }
+    private Transform firstFire;
+    private Transform firstCoin;
+    private Transform firstItem;
+    private bool isFirstCoinSpawned = false;
+    private bool isFirstFireSpawned = false;
+    private bool isFirstItemSpawned = false;
 
+    [SerializeField] FTUEDataStructure ftueData;
+    //coroutine to show the FTUE if it is enabled in the 
+    //main menu, it needs access to ftud data set in the inspector
     IEnumerator ShowFTUEPrompts()
     {
-        m_sprayWaterText.gameObject.SetActive(true);
-        m_sprayWaterText.DOScale(1.2f, 0.5f).From(0.0f);
-        //wait for 2 seconds
+        //waiting till first fire, coin, or item has spawned
+        yield return new WaitUntil (() => ((isFirstFireSpawned == true) || 
+                                           (isFirstCoinSpawned == true) || 
+                                           (isFirstItemSpawned == true)));
+        //if the first fire has spawned
+        if (isFirstFireSpawned == true)
+        {
+            //show the FTUE for fire
+            yield return new WaitForSeconds(1.0f);
+            //pause the game 
+            State = LevelState.FTUE;
+            OnPause();
+            //set the focus circle position
+            Vector3 initPos = firstFire.position;
+            Vector3 newPos = m_fireTruck.transform.position;
+            newPos.x += 20.0f;
+            firstFire.position = newPos;
+            ftueData.focusCircle.position = Camera.main.WorldToScreenPoint(newPos);
+            //set the focus now
+            ftueData.screenBG.parent = ftueData.focusCircle;
+            ftueData.focusCircle.gameObject.SetActive(true);
+            ftueData.screenBG.gameObject.SetActive(true);
+            //set position and scale up the text
+            newPos.y += 5.0f;
+            ftueData.sprayWaterText.position = Camera.main.WorldToScreenPoint(newPos);
+            ftueData.sprayWaterText.gameObject.SetActive(true);
+            ftueData.sprayWaterText.DOScale(1.2f, 0.5f).From(0.0f);
+            //wait for a few seconds
+            yield return new WaitForSeconds(2.0f);
+            ftueData.sprayWaterText.DOScale(0.0f, 0.5f).From(1.0f);
+            yield return new WaitForSeconds(0.4f);
+            ftueData.screenBG.gameObject.SetActive(false);
+            ftueData.focusCircle.gameObject.SetActive(false);
+            ftueData.sprayWaterText.gameObject.SetActive(false);
+            ftueData.screenBG.parent = ftueData.ftueParent;
+            //reset fire position so the game can resume
+            firstFire.position = initPos;
+            //resume the game
+            OnResume();
+        }
+
+        //wait for 1-2s before showing the next FTUE
+        yield return new WaitForSeconds(Random.Range(2.3f, 3.0f));
+
+        //if the first coin has spawned
+        if (isFirstCoinSpawned == true)
+        {
+            //show the FTUE for coin
+            //pause the game 
+            State = LevelState.FTUE;
+            OnPause();
+            //set the focus circle position
+            Vector3 initPos = firstCoin.position;
+            Vector3 newPos = m_fireTruck.transform.position;
+            newPos.x += 20.0f;
+            firstCoin.position = newPos;
+            ftueData.focusCircle.position = Camera.main.WorldToScreenPoint(newPos);
+            //set the focus now
+            ftueData.screenBG.parent = ftueData.focusCircle;
+            ftueData.focusCircle.gameObject.SetActive(true);
+            ftueData.screenBG.gameObject.SetActive(true);
+            //set position and scale up the text
+            newPos.y += 5.0f;
+            ftueData.collectCoinText.position = Camera.main.WorldToScreenPoint(newPos);
+            ftueData.collectCoinText.gameObject.SetActive(true);
+            ftueData.collectCoinText.DOScale(1.2f, 0.5f).From(0.0f);
+            //wait for a few seconds
+            yield return new WaitForSeconds(2.0f);
+            ftueData.collectCoinText.DOScale(0.0f, 0.5f).From(1.0f);
+            yield return new WaitForSeconds(0.4f);
+            ftueData.screenBG.gameObject.SetActive(false);
+            ftueData.focusCircle.gameObject.SetActive(false);
+            ftueData.collectCoinText.gameObject.SetActive(false);
+            ftueData.screenBG.parent = ftueData.ftueParent;
+            //reset coin position so the game can resume
+            firstCoin.position = initPos;
+            //resume the game
+            OnResume();
+        }
+
+        //wait for 1-2s before showing the next FTUE
+        yield return new WaitForSeconds(Random.Range(2.3f, 3.0f));
+
+        //if the first item has spawned
+        if (isFirstItemSpawned == true)
+        {
+            //show the FTUE for item/easter egg
+            //pause the game 
+            State = LevelState.FTUE;
+            OnPause();
+            //set the focus circle position
+            Vector3 initPos = firstItem.position;
+            Vector3 newPos = m_fireTruck.transform.position;
+            newPos.x += 20.0f;
+            firstItem.position = newPos;
+            ftueData.focusCircle.position = Camera.main.WorldToScreenPoint(newPos);
+            //set the focus now
+            ftueData.screenBG.parent = ftueData.focusCircle;
+            ftueData.focusCircle.gameObject.SetActive(true);
+            ftueData.screenBG.gameObject.SetActive(true);
+            //set position and scale up the text
+            newPos.y += 5.0f;
+            ftueData.collectItemsText.position = Camera.main.WorldToScreenPoint(newPos);
+            ftueData.collectItemsText.gameObject.SetActive(true);
+            ftueData.collectItemsText.DOScale(1.2f, 0.5f).From(0.0f);
+            //wait for a few seconds
+            yield return new WaitForSeconds(2.0f);
+            ftueData.collectItemsText.DOScale(0.0f, 0.5f).From(1.0f);
+            yield return new WaitForSeconds(0.4f);
+            ftueData.screenBG.gameObject.SetActive(false);
+            ftueData.focusCircle.gameObject.SetActive(false);
+            ftueData.collectItemsText.gameObject.SetActive(false);
+            ftueData.screenBG.parent = ftueData.ftueParent;
+            //reset item position so the game can resume
+            firstItem.position = initPos;
+            //resume the game
+            OnResume();
+        }
+        
+        //wait for some time before showing refill ftue
+        yield return new WaitForSeconds(Random.Range(7.0f, 10.0f));
+        
+        //show the FTUE for item/easter egg
+        //pause the game 
+        State = LevelState.FTUE;
+        OnPause();
+        ftueData.focusCircle.position = m_hud.GetWaterButton().position;
+        //set the focus now
+        ftueData.screenBG.parent = ftueData.focusCircle;
+        ftueData.focusCircle.gameObject.SetActive(true);
+        ftueData.screenBG.gameObject.SetActive(true);
+        ftueData.refillWaterText.gameObject.SetActive(true);
+        ftueData.refillWaterText.DOScale(1.2f, 0.5f).From(0.0f);
+        //wait for a few seconds
         yield return new WaitForSeconds(2.0f);
-        m_sprayWaterText.DOScale(0.0f, 0.5f).From(1.0f);
-        m_refillWaterText.gameObject.SetActive(true);
-        m_refillWaterText.DOScale(1.2f, 0.5f).From(0.0f);
-        //wait for 2 seconds
-        yield return new WaitForSeconds(2.0f);
-        m_sprayWaterText.gameObject.SetActive(false);
-        m_refillWaterText.gameObject.SetActive(false);
+        ftueData.refillWaterText.DOScale(0.0f, 0.5f).From(1.0f);
+        yield return new WaitForSeconds(0.4f);
+        ftueData.screenBG.gameObject.SetActive(false);
+        ftueData.focusCircle.gameObject.SetActive(false);
+        ftueData.refillWaterText.gameObject.SetActive(false);
+        ftueData.screenBG.parent = ftueData.ftueParent;
+        //resume the game
+        OnResume();
     }
 
     IEnumerator SpawnRandomForeground()
@@ -916,6 +1079,12 @@ public class LevelManager : MonoBehaviour
 
                 m_firePoolItems.Add(fire);
                 m_levelPlayerCharacter.AddFire(fire);
+                //marking the first fire transform
+                if (isFirstFireSpawned == false)
+                {
+                    isFirstFireSpawned = true;
+                    firstFire = fire.transform;
+                }
             }
         }
     }
@@ -996,7 +1165,15 @@ public class LevelManager : MonoBehaviour
     #region Buttons
     public void OnPause()
     {
-        if (State == LevelState.End)
+        //if it's just ftue, then 
+        if (State == LevelState.FTUE)
+        {
+            m_prePauseLevelState = LevelState.Progress;
+            OnLevelStateChange(LevelState.Paused);
+            m_fireTruck.GetComponent<Animation>().Stop();
+            m_truckDust.gameObject.SetActive(false);
+        }
+        else if (State == LevelState.End)
         {
             //disable the in-game hud
             m_hud.gameObject.SetActive(false);
@@ -1028,6 +1205,8 @@ public class LevelManager : MonoBehaviour
             m_fireTruck.GetComponent<Animation>().Stop();
             m_truckDust.gameObject.SetActive(false);
         }
+
+        //turning off fires and coins and easter eggs
         for (int i = 0; i < m_firePoolItems.Count; i++)
         {
             m_firePoolItems[i].TogglePause(true);
