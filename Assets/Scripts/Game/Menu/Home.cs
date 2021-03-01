@@ -34,6 +34,10 @@ namespace Game.Menu
         protected override void OnEnable()
         {
             base.OnEnable();
+            //set the state of tutorial check mark
+            //if the player has seen FTUE
+            if (GSTJ_Core.hasPlayerSeenFTUE == true)
+                OnButtonTutorial();
 
             StartCoroutine(EnterHome());
         }

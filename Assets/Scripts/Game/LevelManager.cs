@@ -217,9 +217,15 @@ public class LevelManager : MonoBehaviour
         //if it's multiplayer mode, disable pause button
         if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
             m_hud.EnablePause(false);
-        //and if it is single player, enable pause button
+        //and if it is single player
         if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Single)
-            m_hud.EnablePause(true);
+        {
+            //only enable pause button if ftue is not shown
+            if (GSTJ_Core.m_ShowFTUE == false)
+                m_hud.EnablePause(true);
+            else
+                m_hud.EnablePause(false);
+        }
 
         m_hud.EnableHUD(HUD.PlayerHUD.Player_01, false);
         m_hud.EnableHUD(HUD.PlayerHUD.Player_02, false);
@@ -827,6 +833,12 @@ public class LevelManager : MonoBehaviour
         ftueData.screenBG.SetParent(ftueData.ftueParent, worldPositionStays: true);
         //resume the game
         OnResume();
+
+        //indicate that the player has seen ftue
+        GSTJ_Core.hasPlayerSeenFTUE = true;
+        //enable the pause button if it's single player mode
+        if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Single)
+            m_hud.EnablePause(true);
     }
 
     IEnumerator SpawnRandomForeground()

@@ -31,7 +31,10 @@ public class GSTJ_Core : MonoBehaviour
     [SerializeField] CharacterMetaList m_characterMeta = default;
     [SerializeField] HighScoreMeta m_highScoreList = default;
     [SerializeField] HighScoreMeta m_highScoreListMP = default;
+    //to determine if the FTUE is to be shown (based on check mark in main menu)
     public static bool m_ShowFTUE = true;
+    //to determine if the m_ShowFTUE will be set to true by default in main menu
+    public static bool hasPlayerSeenFTUE = false;
 
     void Awake()
     {
