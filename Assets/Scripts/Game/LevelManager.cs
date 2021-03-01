@@ -495,8 +495,8 @@ public class LevelManager : MonoBehaviour
                 StopCoroutine(DelayedCountUp());
                 m_fireTruck.GetComponent<Animation>().Play();
                 m_truckDust.gameObject.SetActive(true);
-                //check if we need to show the FTUE first
-                if (GSTJ_Core.m_ShowFTUE == true) //TODO-update this predicate to fetch data from GSTJ Core Meta
+                //check if we need to show the FTUE first - only for single player mode
+                if (GSTJ_Core.m_ShowFTUE == true && GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Single) 
                 {
                     StartCoroutine(ShowFTUEPrompts());
                 }
@@ -672,6 +672,7 @@ public class LevelManager : MonoBehaviour
         public Transform collectItemsText;
         public Transform refillWaterText;
         public Transform waterFillButton;
+        public Transform tapToContinueText;
     }
     private Transform firstFire;
     private Transform firstCoin;
@@ -718,7 +719,11 @@ public class LevelManager : MonoBehaviour
             newPos.y += 5.0f;
             ftueData.sprayWaterText.position = Camera.main.WorldToScreenPoint(newPos);
             ftueData.sprayWaterText.gameObject.SetActive(true);
-            ftueData.sprayWaterText.DOScale(1.2f, 0.5f).From(0.0f);
+            ftueData.sprayWaterText.DOScale(1.0f, 0.5f).From(0.0f);
+            //wait for the player to read the message then ask them to tap
+            yield return new WaitForSeconds(1.5f);
+            ftueData.tapToContinueText.gameObject.SetActive(true);
+            ftueData.tapToContinueText.DOScale(1.0f, 0.5f).From(0.0f);
             //wait until the player has tapped on screen
             hasPlayerTappedinFTUE = false;
             yield return new WaitUntil(() => (hasPlayerTappedinFTUE == true));
@@ -726,6 +731,7 @@ public class LevelManager : MonoBehaviour
             ftueData.screenBG.gameObject.SetActive(false);
             ftueData.focusCircle.gameObject.SetActive(false);
             ftueData.sprayWaterText.gameObject.SetActive(false);
+            ftueData.tapToContinueText.gameObject.SetActive(false);
             ftueData.screenBG.SetParent(ftueData.ftueParent, worldPositionStays: true);
             //resume the game
             OnResume();
@@ -755,7 +761,11 @@ public class LevelManager : MonoBehaviour
             newPos.y += 5.0f;
             ftueData.collectCoinText.position = Camera.main.WorldToScreenPoint(newPos);
             ftueData.collectCoinText.gameObject.SetActive(true);
-            ftueData.collectCoinText.DOScale(1.2f, 0.5f).From(0.0f);
+            ftueData.collectCoinText.DOScale(1.0f, 0.5f).From(0.0f);
+            //wait for the player to read the message then ask them to tap
+            yield return new WaitForSeconds(1.5f);
+            ftueData.tapToContinueText.gameObject.SetActive(true);
+            ftueData.tapToContinueText.DOScale(1.0f, 0.5f).From(0.0f);
             //wait until the player has tapped on screen
             hasPlayerTappedinFTUE = false;
             yield return new WaitUntil(() => (hasPlayerTappedinFTUE == true));
@@ -763,6 +773,7 @@ public class LevelManager : MonoBehaviour
             ftueData.screenBG.gameObject.SetActive(false);
             ftueData.focusCircle.gameObject.SetActive(false);
             ftueData.collectCoinText.gameObject.SetActive(false);
+            ftueData.tapToContinueText.gameObject.SetActive(false);
             ftueData.screenBG.SetParent(ftueData.ftueParent, worldPositionStays: true);
             //resume the game
             OnResume();
@@ -792,7 +803,11 @@ public class LevelManager : MonoBehaviour
             newPos.y += 5.0f;
             ftueData.collectItemsText.position = Camera.main.WorldToScreenPoint(newPos);
             ftueData.collectItemsText.gameObject.SetActive(true);
-            ftueData.collectItemsText.DOScale(1.2f, 0.5f).From(0.0f);
+            ftueData.collectItemsText.DOScale(1.0f, 0.5f).From(0.0f);
+            //wait for the player to read the message then ask them to tap
+            yield return new WaitForSeconds(1.5f);
+            ftueData.tapToContinueText.gameObject.SetActive(true);
+            ftueData.tapToContinueText.DOScale(1.0f, 0.5f).From(0.0f);
             //wait until the player has tapped on screen
             hasPlayerTappedinFTUE = false;
             yield return new WaitUntil(() => (hasPlayerTappedinFTUE == true));
@@ -800,6 +815,7 @@ public class LevelManager : MonoBehaviour
             ftueData.screenBG.gameObject.SetActive(false);
             ftueData.focusCircle.gameObject.SetActive(false);
             ftueData.collectItemsText.gameObject.SetActive(false);
+            ftueData.tapToContinueText.gameObject.SetActive(false);
             ftueData.screenBG.SetParent(ftueData.ftueParent, worldPositionStays: true);
             //resume the game
             OnResume();
@@ -818,7 +834,11 @@ public class LevelManager : MonoBehaviour
         ftueData.focusCircle.gameObject.SetActive(true);
         ftueData.screenBG.gameObject.SetActive(true);
         ftueData.refillWaterText.gameObject.SetActive(true);
-        ftueData.refillWaterText.DOScale(1.2f, 0.5f).From(0.0f);
+        ftueData.refillWaterText.DOScale(1.0f, 0.5f).From(0.0f);
+        //wait for the player to read the message then ask them to tap
+        yield return new WaitForSeconds(1.5f);
+        ftueData.tapToContinueText.gameObject.SetActive(true);
+        ftueData.tapToContinueText.DOScale(1.0f, 0.5f).From(0.0f);
         //wait until the player has tapped on screen
         hasPlayerTappedinFTUE = false;
         yield return new WaitUntil(() => (hasPlayerTappedinFTUE == true));
@@ -826,6 +846,7 @@ public class LevelManager : MonoBehaviour
         ftueData.screenBG.gameObject.SetActive(false);
         ftueData.focusCircle.gameObject.SetActive(false);
         ftueData.refillWaterText.gameObject.SetActive(false);
+        ftueData.tapToContinueText.gameObject.SetActive(false);
         ftueData.screenBG.SetParent(ftueData.ftueParent, worldPositionStays: true);
         //resume the game
         OnResume();
