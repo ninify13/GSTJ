@@ -13,10 +13,13 @@ public class LongClickButton : MonoBehaviour, IPointerDownHandler, IPointerUpHan
 
 	public UnityEvent onLongClick;
 	public UnityEvent onLongHolding;
+	public UnityEvent onPointerDown;
 
 	public void OnPointerDown(PointerEventData eventData)
 	{
 		pointerDown = true;
+		if (onPointerDown != null)
+			onPointerDown.Invoke();
 	}
 
 	public void OnPointerUp(PointerEventData eventData)

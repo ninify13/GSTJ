@@ -96,6 +96,12 @@ public class Player : MonoBehaviour
 
     void OnWaterStart(Vector3 mousePostiion)
     {
+        //if it's the FTUE state, send out a signal that player has tapped on screen
+        if (m_levelManager.State == LevelManager.LevelState.FTUE)
+        {
+            m_levelManager.IndicatePlayerInput(true);
+        }
+
         if (m_levelManager.State == LevelManager.LevelState.End || m_levelManager.State == LevelManager.LevelState.Paused)
             return;
 

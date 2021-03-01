@@ -525,15 +525,34 @@ public class LevelManager : MonoBehaviour
                 }
                 break;
 
+            //in case of FTUE also, we need to pause the parallax and level movement
+            case LevelState.FTUE:
+                for (int i = 0; i < m_backgroundParallax.Length; i++)
+                {
+                    m_backgroundParallax[i].Pause();
+                }
+
+                for (int i = 0; i < m_foregroundParallax.Length; i++)
+                {
+                    m_foregroundParallax[i].Pause();
+                }
+                break;
+
             case LevelState.Progress:
                 for (int i = 0; i < m_backgroundParallax.Length; i++)
                 {
                     m_backgroundParallax[i].Play();
                 }
+                for (int i = 0; i < m_foregroundParallax.Length; i++)
+                {
+                    m_foregroundParallax[i].Play();
+                }
 
                 break;
 
             case LevelState.Boss:
+                //stop the ftue coroutine if it's still running somehow
+                StopCoroutine(ShowFTUEPrompts());
                 m_bossObject.gameObject.SetActive(true);
                 m_bossObject.Play();
                 m_bossObject.OnScrollComplete = StartBossMovie;
@@ -646,6 +665,7 @@ public class LevelManager : MonoBehaviour
         public Transform collectCoinText;
         public Transform collectItemsText;
         public Transform refillWaterText;
+        public Transform waterFillButton;
     }
     private Transform firstFire;
     private Transform firstCoin;
@@ -653,6 +673,11 @@ public class LevelManager : MonoBehaviour
     private bool isFirstCoinSpawned = false;
     private bool isFirstFireSpawned = false;
     private bool isFirstItemSpawned = false;
+    private bool hasPlayerTappedinFTUE = false;
+    public void IndicatePlayerInput(bool hasTaped)
+    {
+        hasPlayerTappedinFTUE = hasTaped;
+    }
 
     [SerializeField] FTUEDataStructure ftueData;
     //coroutine to show the FTUE if it is enabled in the 
@@ -667,7 +692,7 @@ public class LevelManager : MonoBehaviour
         if (isFirstFireSpawned == true)
         {
             //show the FTUE for fire
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(1.5f);
             //pause the game 
             State = LevelState.FTUE;
             OnPause();
@@ -678,7 +703,7 @@ public class LevelManager : MonoBehaviour
             firstFire.position = newPos;
             ftueData.focusCircle.position = Camera.main.WorldToScreenPoint(newPos);
             //set the focus now
-            ftueData.screenBG.parent = ftueData.focusCircle;
+            ftueData.screenBG.SetParent(ftueData.focusCircle, worldPositionStays: true);
             ftueData.focusCircle.gameObject.SetActive(true);
             ftueData.screenBG.gameObject.SetActive(true);
             //set position and scale up the text
@@ -686,14 +711,14 @@ public class LevelManager : MonoBehaviour
             ftueData.sprayWaterText.position = Camera.main.WorldToScreenPoint(newPos);
             ftueData.sprayWaterText.gameObject.SetActive(true);
             ftueData.sprayWaterText.DOScale(1.2f, 0.5f).From(0.0f);
-            //wait for a few seconds
-            yield return new WaitForSeconds(2.0f);
+            //wait until the player has tapped on screen
+            hasPlayerTappedinFTUE = false;
+            yield return new WaitUntil(() => (hasPlayerTappedinFTUE == true));
             ftueData.sprayWaterText.DOScale(0.0f, 0.5f).From(1.0f);
-            yield return new WaitForSeconds(0.4f);
             ftueData.screenBG.gameObject.SetActive(false);
             ftueData.focusCircle.gameObject.SetActive(false);
             ftueData.sprayWaterText.gameObject.SetActive(false);
-            ftueData.screenBG.parent = ftueData.ftueParent;
+            ftueData.screenBG.SetParent(ftueData.ftueParent, worldPositionStays: true);
             //reset fire position so the game can resume
             firstFire.position = initPos;
             //resume the game
@@ -717,7 +742,7 @@ public class LevelManager : MonoBehaviour
             firstCoin.position = newPos;
             ftueData.focusCircle.position = Camera.main.WorldToScreenPoint(newPos);
             //set the focus now
-            ftueData.screenBG.parent = ftueData.focusCircle;
+            ftueData.screenBG.SetParent(ftueData.focusCircle, worldPositionStays: true);
             ftueData.focusCircle.gameObject.SetActive(true);
             ftueData.screenBG.gameObject.SetActive(true);
             //set position and scale up the text
@@ -725,14 +750,14 @@ public class LevelManager : MonoBehaviour
             ftueData.collectCoinText.position = Camera.main.WorldToScreenPoint(newPos);
             ftueData.collectCoinText.gameObject.SetActive(true);
             ftueData.collectCoinText.DOScale(1.2f, 0.5f).From(0.0f);
-            //wait for a few seconds
-            yield return new WaitForSeconds(2.0f);
+            //wait until the player has tapped on screen
+            hasPlayerTappedinFTUE = false;
+            yield return new WaitUntil(() => (hasPlayerTappedinFTUE == true));
             ftueData.collectCoinText.DOScale(0.0f, 0.5f).From(1.0f);
-            yield return new WaitForSeconds(0.4f);
             ftueData.screenBG.gameObject.SetActive(false);
             ftueData.focusCircle.gameObject.SetActive(false);
             ftueData.collectCoinText.gameObject.SetActive(false);
-            ftueData.screenBG.parent = ftueData.ftueParent;
+            ftueData.screenBG.SetParent(ftueData.ftueParent, worldPositionStays: true);
             //reset coin position so the game can resume
             firstCoin.position = initPos;
             //resume the game
@@ -756,7 +781,7 @@ public class LevelManager : MonoBehaviour
             firstItem.position = newPos;
             ftueData.focusCircle.position = Camera.main.WorldToScreenPoint(newPos);
             //set the focus now
-            ftueData.screenBG.parent = ftueData.focusCircle;
+            ftueData.screenBG.SetParent(ftueData.focusCircle, worldPositionStays: true);
             ftueData.focusCircle.gameObject.SetActive(true);
             ftueData.screenBG.gameObject.SetActive(true);
             //set position and scale up the text
@@ -764,14 +789,14 @@ public class LevelManager : MonoBehaviour
             ftueData.collectItemsText.position = Camera.main.WorldToScreenPoint(newPos);
             ftueData.collectItemsText.gameObject.SetActive(true);
             ftueData.collectItemsText.DOScale(1.2f, 0.5f).From(0.0f);
-            //wait for a few seconds
-            yield return new WaitForSeconds(2.0f);
+            //wait until the player has tapped on screen
+            hasPlayerTappedinFTUE = false;
+            yield return new WaitUntil(() => (hasPlayerTappedinFTUE == true));
             ftueData.collectItemsText.DOScale(0.0f, 0.5f).From(1.0f);
-            yield return new WaitForSeconds(0.4f);
             ftueData.screenBG.gameObject.SetActive(false);
             ftueData.focusCircle.gameObject.SetActive(false);
             ftueData.collectItemsText.gameObject.SetActive(false);
-            ftueData.screenBG.parent = ftueData.ftueParent;
+            ftueData.screenBG.SetParent(ftueData.ftueParent, worldPositionStays: true);
             //reset item position so the game can resume
             firstItem.position = initPos;
             //resume the game
@@ -779,27 +804,27 @@ public class LevelManager : MonoBehaviour
         }
         
         //wait for some time before showing refill ftue
-        yield return new WaitForSeconds(Random.Range(7.0f, 10.0f));
+        yield return new WaitForSeconds(Random.Range(8.0f, 13.0f));
         
         //show the FTUE for item/easter egg
         //pause the game 
         State = LevelState.FTUE;
         OnPause();
-        ftueData.focusCircle.position = m_hud.GetWaterButton().position;
+        ftueData.focusCircle.position = ftueData.waterFillButton.position;
         //set the focus now
-        ftueData.screenBG.parent = ftueData.focusCircle;
+        ftueData.screenBG.SetParent(ftueData.focusCircle, worldPositionStays: true);
         ftueData.focusCircle.gameObject.SetActive(true);
         ftueData.screenBG.gameObject.SetActive(true);
         ftueData.refillWaterText.gameObject.SetActive(true);
         ftueData.refillWaterText.DOScale(1.2f, 0.5f).From(0.0f);
-        //wait for a few seconds
-        yield return new WaitForSeconds(2.0f);
+        //wait until the player has tapped on screen
+        hasPlayerTappedinFTUE = false;
+        yield return new WaitUntil(() => (hasPlayerTappedinFTUE == true));
         ftueData.refillWaterText.DOScale(0.0f, 0.5f).From(1.0f);
-        yield return new WaitForSeconds(0.4f);
         ftueData.screenBG.gameObject.SetActive(false);
         ftueData.focusCircle.gameObject.SetActive(false);
         ftueData.refillWaterText.gameObject.SetActive(false);
-        ftueData.screenBG.parent = ftueData.ftueParent;
+        ftueData.screenBG.SetParent(ftueData.ftueParent, worldPositionStays: true);
         //resume the game
         OnResume();
     }
@@ -1169,7 +1194,7 @@ public class LevelManager : MonoBehaviour
         if (State == LevelState.FTUE)
         {
             m_prePauseLevelState = LevelState.Progress;
-            OnLevelStateChange(LevelState.Paused);
+            OnLevelStateChange(LevelState.FTUE);
             m_fireTruck.GetComponent<Animation>().Stop();
             m_truckDust.gameObject.SetActive(false);
         }

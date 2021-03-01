@@ -11,8 +11,12 @@ namespace Game.Menu
         [SerializeField] Button m_button_SinglePlayer = default;
         [SerializeField] Button m_button_MultiPlayer = default;
         [SerializeField] Button m_button_Highscores = default;
-        [SerializeField] Button m_button_Exit = default;
         [SerializeField] Button m_button_Instructions = default;
+        [SerializeField] Button m_button_Tutorial = default;
+        [SerializeField] Button m_button_Exit = default;
+
+        //check mark for tutorial button
+        [SerializeField] private GameObject tutorialCheckMark;
         MenuItem.Menus m_transitionToScene = default;
 
         protected override void Awake()
@@ -23,6 +27,7 @@ namespace Game.Menu
             m_button_MultiPlayer.onClick.AddListener(OnButtonMultiPlayer);
             m_button_Highscores.onClick.AddListener(OnButtonHighscores);
             m_button_Instructions.onClick.AddListener(OnButtonInstruction);
+            m_button_Tutorial.onClick.AddListener(OnButtonTutorial);
             m_button_Exit.onClick.AddListener(OnButtonExit);
         }
 
@@ -41,6 +46,7 @@ namespace Game.Menu
             m_button_MultiPlayer.onClick.RemoveAllListeners();
             m_button_Highscores.onClick.RemoveAllListeners();
             m_button_Instructions.onClick.RemoveAllListeners();
+            m_button_Tutorial.onClick.RemoveAllListeners();
             m_button_Exit.onClick.RemoveAllListeners();
         }
 
@@ -72,6 +78,16 @@ namespace Game.Menu
             m_transitionToScene = MenuItem.Menus.Instructions;
         }
 
+        void OnButtonTutorial()
+        {
+            //toggle check mark
+            if (tutorialCheckMark != null)
+            {
+                tutorialCheckMark.gameObject.SetActive(!tutorialCheckMark.gameObject.activeSelf);
+                GSTJ_Core.m_ShowFTUE = !GSTJ_Core.m_ShowFTUE;
+            }
+        }
+
         void OnButtonExit()
         {
             // Fuck off out of code
@@ -86,6 +102,8 @@ namespace Game.Menu
             m_button_SinglePlayer.interactable = true;
             m_button_MultiPlayer.interactable = true;
             m_button_Highscores.interactable = true;
+            m_button_Instructions.interactable = true;
+            m_button_Tutorial.interactable = true;
             m_button_Exit.interactable = true;
 
             yield return null;

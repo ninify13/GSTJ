@@ -13,8 +13,8 @@ namespace Core.Menu
             Characters,
             Scores,
             Game,
-            Difficulty,
             Instructions,
+            Difficulty,
         }
 
         [SerializeField] Menus m_key = default;
