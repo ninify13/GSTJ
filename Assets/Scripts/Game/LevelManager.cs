@@ -691,6 +691,8 @@ public class LevelManager : MonoBehaviour
     IEnumerator ShowFTUEPrompts()
     {
         //waiting till first fire, coin, or item has spawned
+        //note that this check is not required once the game has begun
+        //but we just want to be on the safe side of things
         yield return new WaitUntil (() => ((isFirstFireSpawned == true) || 
                                            (isFirstCoinSpawned == true) || 
                                            (isFirstItemSpawned == true)));
@@ -703,9 +705,9 @@ public class LevelManager : MonoBehaviour
             State = LevelState.FTUE;
             OnPause();
             //set the focus circle position
-            Vector3 initPos = firstFire.position;
             Vector3 newPos = m_fireTruck.transform.position;
             newPos.x += 20.0f;
+            newPos.y += 5.0f;
             firstFire.position = newPos;
             ftueData.focusCircle.position = Camera.main.WorldToScreenPoint(newPos);
             //set the focus now
@@ -725,8 +727,6 @@ public class LevelManager : MonoBehaviour
             ftueData.focusCircle.gameObject.SetActive(false);
             ftueData.sprayWaterText.gameObject.SetActive(false);
             ftueData.screenBG.SetParent(ftueData.ftueParent, worldPositionStays: true);
-            //reset fire position so the game can resume
-            firstFire.position = initPos;
             //resume the game
             OnResume();
         }
@@ -742,9 +742,9 @@ public class LevelManager : MonoBehaviour
             State = LevelState.FTUE;
             OnPause();
             //set the focus circle position
-            Vector3 initPos = firstCoin.position;
             Vector3 newPos = m_fireTruck.transform.position;
             newPos.x += 20.0f;
+            newPos.y += 5.0f;
             firstCoin.position = newPos;
             ftueData.focusCircle.position = Camera.main.WorldToScreenPoint(newPos);
             //set the focus now
@@ -764,8 +764,6 @@ public class LevelManager : MonoBehaviour
             ftueData.focusCircle.gameObject.SetActive(false);
             ftueData.collectCoinText.gameObject.SetActive(false);
             ftueData.screenBG.SetParent(ftueData.ftueParent, worldPositionStays: true);
-            //reset coin position so the game can resume
-            firstCoin.position = initPos;
             //resume the game
             OnResume();
         }
@@ -781,9 +779,9 @@ public class LevelManager : MonoBehaviour
             State = LevelState.FTUE;
             OnPause();
             //set the focus circle position
-            Vector3 initPos = firstItem.position;
             Vector3 newPos = m_fireTruck.transform.position;
             newPos.x += 20.0f;
+            newPos.y += 5.0f;
             firstItem.position = newPos;
             ftueData.focusCircle.position = Camera.main.WorldToScreenPoint(newPos);
             //set the focus now
@@ -803,8 +801,6 @@ public class LevelManager : MonoBehaviour
             ftueData.focusCircle.gameObject.SetActive(false);
             ftueData.collectItemsText.gameObject.SetActive(false);
             ftueData.screenBG.SetParent(ftueData.ftueParent, worldPositionStays: true);
-            //reset item position so the game can resume
-            firstItem.position = initPos;
             //resume the game
             OnResume();
         }
