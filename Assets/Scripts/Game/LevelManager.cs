@@ -680,6 +680,11 @@ public class LevelManager : MonoBehaviour
     private bool isFirstCoinSpawned = false;
     private bool isFirstFireSpawned = false;
     private bool isFirstItemSpawned = false;
+    private bool isInputAllowedInFTUE = false;
+    public bool IsInputAllowedInFTUE()
+    {
+        return isInputAllowedInFTUE;
+    } 
     private bool hasPlayerTappedinFTUE = false;
     public void IndicatePlayerInput(bool hasTaped)
     {
@@ -721,10 +726,12 @@ public class LevelManager : MonoBehaviour
             ftueData.sprayWaterText.gameObject.SetActive(true);
             ftueData.sprayWaterText.DOScale(1.0f, 0.5f).From(0.0f);
             //wait for the player to read the message then ask them to tap
+            isInputAllowedInFTUE = false;
             yield return new WaitForSeconds(1.5f);
             ftueData.tapToContinueText.gameObject.SetActive(true);
             ftueData.tapToContinueText.DOScale(1.0f, 0.5f).From(0.0f);
             //wait until the player has tapped on screen
+            isInputAllowedInFTUE = true;
             hasPlayerTappedinFTUE = false;
             yield return new WaitUntil(() => (hasPlayerTappedinFTUE == true));
             ftueData.sprayWaterText.DOScale(0.0f, 0.5f).From(1.0f);
@@ -763,10 +770,12 @@ public class LevelManager : MonoBehaviour
             ftueData.collectCoinText.gameObject.SetActive(true);
             ftueData.collectCoinText.DOScale(1.0f, 0.5f).From(0.0f);
             //wait for the player to read the message then ask them to tap
+            isInputAllowedInFTUE = false;
             yield return new WaitForSeconds(1.5f);
             ftueData.tapToContinueText.gameObject.SetActive(true);
             ftueData.tapToContinueText.DOScale(1.0f, 0.5f).From(0.0f);
             //wait until the player has tapped on screen
+            isInputAllowedInFTUE = true;
             hasPlayerTappedinFTUE = false;
             yield return new WaitUntil(() => (hasPlayerTappedinFTUE == true));
             ftueData.collectCoinText.DOScale(0.0f, 0.5f).From(1.0f);
@@ -805,10 +814,12 @@ public class LevelManager : MonoBehaviour
             ftueData.collectItemsText.gameObject.SetActive(true);
             ftueData.collectItemsText.DOScale(1.0f, 0.5f).From(0.0f);
             //wait for the player to read the message then ask them to tap
+            isInputAllowedInFTUE = false;
             yield return new WaitForSeconds(1.5f);
             ftueData.tapToContinueText.gameObject.SetActive(true);
             ftueData.tapToContinueText.DOScale(1.0f, 0.5f).From(0.0f);
             //wait until the player has tapped on screen
+            isInputAllowedInFTUE = true;
             hasPlayerTappedinFTUE = false;
             yield return new WaitUntil(() => (hasPlayerTappedinFTUE == true));
             ftueData.collectItemsText.DOScale(0.0f, 0.5f).From(1.0f);
@@ -835,18 +846,14 @@ public class LevelManager : MonoBehaviour
         ftueData.screenBG.gameObject.SetActive(true);
         ftueData.refillWaterText.gameObject.SetActive(true);
         ftueData.refillWaterText.DOScale(1.0f, 0.5f).From(0.0f);
-        //wait for the player to read the message then ask them to tap
-        yield return new WaitForSeconds(1.5f);
-        ftueData.tapToContinueText.gameObject.SetActive(true);
-        ftueData.tapToContinueText.DOScale(1.0f, 0.5f).From(0.0f);
         //wait until the player has tapped on screen
+        isInputAllowedInFTUE = true;
         hasPlayerTappedinFTUE = false;
         yield return new WaitUntil(() => (hasPlayerTappedinFTUE == true));
         ftueData.refillWaterText.DOScale(0.0f, 0.5f).From(1.0f);
         ftueData.screenBG.gameObject.SetActive(false);
         ftueData.focusCircle.gameObject.SetActive(false);
         ftueData.refillWaterText.gameObject.SetActive(false);
-        ftueData.tapToContinueText.gameObject.SetActive(false);
         ftueData.screenBG.SetParent(ftueData.ftueParent, worldPositionStays: true);
         //resume the game
         OnResume();

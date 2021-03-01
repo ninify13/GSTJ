@@ -99,6 +99,9 @@ public class Player : MonoBehaviour
         //if it's the FTUE state, send out a signal that player has tapped on screen
         if (m_levelManager.State == LevelManager.LevelState.FTUE)
         {
+            //return if the input is not allowed
+            if (m_levelManager.IsInputAllowedInFTUE() == false)
+                return;
             m_levelManager.IndicatePlayerInput(true);
         }
 
@@ -120,9 +123,11 @@ public class Player : MonoBehaviour
     }
     void OnWaterSpray(Vector3 mousePostiion)
     {
-        if (m_levelManager.State == LevelManager.LevelState.End || m_levelManager.State == LevelManager.LevelState.Paused)
+        if (m_levelManager.State == LevelManager.LevelState.End || 
+            m_levelManager.State == LevelManager.LevelState.Paused ||
+            m_levelManager.State == LevelManager.LevelState.FTUE)
             return;
-
+        
         if (mousePostiion.x < (Screen.width / 10.0f))
             return;
 
