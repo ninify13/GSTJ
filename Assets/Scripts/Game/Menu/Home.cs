@@ -37,7 +37,10 @@ namespace Game.Menu
             //set the state of tutorial check mark
             //if the player has seen FTUE
             if (GSTJ_Core.hasPlayerSeenFTUE == true)
-                OnButtonTutorial();
+            {
+                tutorialCheckMark.gameObject.SetActive(false);
+                GSTJ_Core.m_ShowFTUE = false;
+            }
 
             StartCoroutine(EnterHome());
         }
@@ -88,6 +91,10 @@ namespace Game.Menu
             if (tutorialCheckMark != null)
             {
                 tutorialCheckMark.gameObject.SetActive(!tutorialCheckMark.gameObject.activeSelf);
+                //if they have seen the FTUE already, reset that status
+                if (GSTJ_Core.hasPlayerSeenFTUE == true && GSTJ_Core.m_ShowFTUE == false)
+                    GSTJ_Core.hasPlayerSeenFTUE = false;
+                //indicate whether the player wants to see FTUE
                 GSTJ_Core.m_ShowFTUE = !GSTJ_Core.m_ShowFTUE;
             }
         }

@@ -74,7 +74,7 @@ namespace Game.Menu
                 {
                     //unlock the character
                     m_isLocked = false;
-                    m_meta.isCharUnlocked = false;
+                    m_meta.isCharUnlocked = true;
                     m_lockedObject.SetActive(m_isLocked);
                     m_unlockedObject.SetActive(!m_isLocked);
                     //deduct the required number of coins

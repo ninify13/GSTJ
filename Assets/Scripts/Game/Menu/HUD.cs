@@ -202,23 +202,23 @@ public class HUDElements
             case 1:
             m_collectible01.gameObject.SetActive(true);
             m_collectible01.sprite = sp;
-            //remove the shadow behind it
+            //keep the shadow behind it
             shadow = m_collectible01.transform.parent.gameObject.GetComponent<Image>();
-            if (shadow != null) shadow.enabled = false;
+            if (shadow != null) shadow.enabled = true;
             break;
 
             case 2:
             m_collectible02.gameObject.SetActive(true);
             m_collectible02.sprite = sp;
             shadow = m_collectible02.transform.parent.gameObject.GetComponent<Image>();
-            if (shadow != null) shadow.enabled = false;
+            if (shadow != null) shadow.enabled = true;
             break;
 
             case 3:
             m_collectible03.gameObject.SetActive(true);
             m_collectible03.sprite = sp;
             shadow = m_collectible03.transform.parent.gameObject.GetComponent<Image>();
-            if (shadow != null) shadow.enabled = false;
+            if (shadow != null) shadow.enabled = true;
             break;
 
             default:

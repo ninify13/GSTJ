@@ -124,10 +124,16 @@ public class Player : MonoBehaviour
     void OnWaterSpray(Vector3 mousePostiion)
     {
         if (m_levelManager.State == LevelManager.LevelState.End || 
-            m_levelManager.State == LevelManager.LevelState.Paused ||
-            m_levelManager.State == LevelManager.LevelState.FTUE)
+            m_levelManager.State == LevelManager.LevelState.Paused)
             return;
         
+        //if it's the FTUE, then stop the water player and return
+        if (m_levelManager.State == LevelManager.LevelState.FTUE)
+        {
+            m_waterPlayer.Stop();
+            return;  
+        } 
+
         if (mousePostiion.x < (Screen.width / 10.0f))
             return;
 

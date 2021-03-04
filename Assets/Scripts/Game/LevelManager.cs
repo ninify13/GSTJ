@@ -220,7 +220,7 @@ public class LevelManager : MonoBehaviour
         //and if it is single player
         if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Single)
         {
-            //only enable pause button if ftue is not shown
+            //only enable pause button if ftue is not enabled
             if (GSTJ_Core.m_ShowFTUE == false)
                 m_hud.EnablePause(true);
             else
@@ -367,6 +367,9 @@ public class LevelManager : MonoBehaviour
                             {
                                 isFirstCoinSpawned = true;
                                 firstCoin = coin.transform;
+                                //only disable the colliders if FTUE is shown
+                                if (GSTJ_Core.m_ShowFTUE == true)
+                                    ToggleColliders(firstCoin, false);
                             }
                         }
                     }
@@ -427,6 +430,9 @@ public class LevelManager : MonoBehaviour
                         {
                             isFirstItemSpawned = true;
                             firstItem = easterEgg.transform;
+                            //only disable the colliders if FTUE is shown
+                            if (GSTJ_Core.m_ShowFTUE == true)
+                                ToggleColliders(firstItem, false);
                         }
                     }
                 }
@@ -686,9 +692,9 @@ public class LevelManager : MonoBehaviour
         return isInputAllowedInFTUE;
     } 
     private bool hasPlayerTappedinFTUE = false;
-    public void IndicatePlayerInput(bool hasTaped)
+    public void IndicatePlayerInput(bool hasTapped)
     {
-        hasPlayerTappedinFTUE = hasTaped;
+        hasPlayerTappedinFTUE = hasTapped;
     }
 
     [SerializeField] FTUEDataStructure ftueData;
@@ -732,6 +738,8 @@ public class LevelManager : MonoBehaviour
             ftueData.tapToContinueText.DOScale(1.0f, 0.5f).From(0.0f);
             //wait until the player has tapped on screen
             isInputAllowedInFTUE = true;
+            //set the colliders as on in the game object
+            ToggleColliders(firstFire, true);
             hasPlayerTappedinFTUE = false;
             yield return new WaitUntil(() => (hasPlayerTappedinFTUE == true));
             ftueData.sprayWaterText.DOScale(0.0f, 0.5f).From(1.0f);
@@ -776,6 +784,8 @@ public class LevelManager : MonoBehaviour
             ftueData.tapToContinueText.DOScale(1.0f, 0.5f).From(0.0f);
             //wait until the player has tapped on screen
             isInputAllowedInFTUE = true;
+            //set the colliders as on in the game object
+            ToggleColliders(firstCoin, true);
             hasPlayerTappedinFTUE = false;
             yield return new WaitUntil(() => (hasPlayerTappedinFTUE == true));
             ftueData.collectCoinText.DOScale(0.0f, 0.5f).From(1.0f);
@@ -820,6 +830,8 @@ public class LevelManager : MonoBehaviour
             ftueData.tapToContinueText.DOScale(1.0f, 0.5f).From(0.0f);
             //wait until the player has tapped on screen
             isInputAllowedInFTUE = true;
+            //set the colliders as on in the game object
+            ToggleColliders(firstItem, true);
             hasPlayerTappedinFTUE = false;
             yield return new WaitUntil(() => (hasPlayerTappedinFTUE == true));
             ftueData.collectItemsText.DOScale(0.0f, 0.5f).From(1.0f);
@@ -1145,8 +1157,21 @@ public class LevelManager : MonoBehaviour
                 {
                     isFirstFireSpawned = true;
                     firstFire = fire.transform;
+                    //only disable the collider if we are showing the FTUE
+                    if (GSTJ_Core.m_ShowFTUE == true)
+                        ToggleColliders(firstFire, false);
                 }
             }
+        }
+    }
+
+    //for enabling or disabling all colliders on an object and its children
+    private void ToggleColliders(Transform obj, bool state)
+    {
+        Collider2D[] allColliders = obj.GetComponentsInChildren<Collider2D>();
+        for (int i = 0; i < allColliders.Length; i++)
+        {
+            allColliders[i].enabled = state;
         }
     }
 
@@ -1318,6 +1343,9 @@ public class LevelManager : MonoBehaviour
 
     public void OnExit()
     {
+        //stop coroutine for ftue
+        StopCoroutine(ShowFTUEPrompts());
+
         m_mainMusic.Stop();
 
         m_inputManager.OnMouseUp -= OnMouseUp;

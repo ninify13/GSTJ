@@ -273,9 +273,9 @@ public class Pause : MonoBehaviour
                 m_col01.sprite = sp;
                 m_col01Text.gameObject.SetActive(true);
                 m_col01Text.text = score.ToString();
-                //remove shadow behind the collectible
+                //keep shadow behind the collectible
                 shadow = m_col01.transform.parent.gameObject.GetComponent<Image>();
-                if (shadow != null) shadow.enabled = false;
+                if (shadow != null) shadow.enabled = true;
                 break;
 
                 case 2:
@@ -283,9 +283,9 @@ public class Pause : MonoBehaviour
                 m_col02.sprite = sp;
                 m_col02Text.gameObject.SetActive(true);
                 m_col02Text.text = score.ToString();
-                //remove shadow behind the collectible
+                //keep shadow behind the collectible
                 shadow = m_col02.transform.parent.gameObject.GetComponent<Image>();
-                if (shadow != null) shadow.enabled = false;
+                if (shadow != null) shadow.enabled = true;
                 break;
 
                 case 3:
@@ -293,9 +293,9 @@ public class Pause : MonoBehaviour
                 m_col03.sprite = sp;
                 m_col03Text.gameObject.SetActive(true);
                 m_col03Text.text = score.ToString();
-                //remove shadow behind the collectible
+                //keep shadow behind the collectible
                 shadow = m_col03.transform.parent.gameObject.GetComponent<Image>();
-                if (shadow != null) shadow.enabled = false;
+                if (shadow != null) shadow.enabled = true;
                 break;
 
                 default:

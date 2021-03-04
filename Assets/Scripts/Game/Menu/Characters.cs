@@ -85,6 +85,12 @@ namespace Game.Menu
                 CharacterItem characterItem = m_characterItems[i].gameObject.GetComponent<CharacterItem>();
                 CharacterMeta characterMeta = GSTJ_Core.CharacterMeta.Characters[i];
                 characterItem.Init(characterMeta, OnSelectCharacter);
+                //for first character, set it selected by default
+                if (i == 0)
+                {
+                    characterItem.SetSelected(true);
+                    m_characterItem = characterItem;
+                }
             }
 
             m_scrollRect.horizontalScrollbar.value = 0.0f;
