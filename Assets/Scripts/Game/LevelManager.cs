@@ -858,6 +858,11 @@ public class LevelManager : MonoBehaviour
         ftueData.screenBG.gameObject.SetActive(true);
         ftueData.refillWaterText.gameObject.SetActive(true);
         ftueData.refillWaterText.DOScale(1.0f, 0.5f).From(0.0f);
+        //wait for the player to read the message then ask them to tap
+        isInputAllowedInFTUE = false;
+        yield return new WaitForSeconds(1.5f);
+        ftueData.tapToContinueText.gameObject.SetActive(true);
+        ftueData.tapToContinueText.DOScale(1.0f, 0.5f).From(0.0f);
         //wait until the player has tapped on screen
         isInputAllowedInFTUE = true;
         hasPlayerTappedinFTUE = false;
@@ -866,6 +871,7 @@ public class LevelManager : MonoBehaviour
         ftueData.screenBG.gameObject.SetActive(false);
         ftueData.focusCircle.gameObject.SetActive(false);
         ftueData.refillWaterText.gameObject.SetActive(false);
+        ftueData.tapToContinueText.gameObject.SetActive(false);
         ftueData.screenBG.SetParent(ftueData.ftueParent, worldPositionStays: true);
         //resume the game
         OnResume();

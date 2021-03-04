@@ -19003,7 +19003,7 @@ GameObject:
   - component: {fileID: 1485687912}
   - component: {fileID: 1485687911}
   m_Layer: 5
-  m_Name: Exit
+  m_Name: MainMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25144,7 +25144,7 @@ MonoBehaviour:
     m_col03Text: {fileID: 555977865}
     winner: {fileID: 0}
     highScoreTag: {fileID: 0}
-  m_mainMenuBTN: {fileID: 0}
+  m_mainMenuBTN: {fileID: 1485687910}
   m_restartBTN: {fileID: 0}
 --- !u!1 &1930702479
 GameObject:
