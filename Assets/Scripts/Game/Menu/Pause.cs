@@ -35,8 +35,9 @@ public class Pause : MonoBehaviour
     //coroutine for displaying the reveal sequence
     private IEnumerator ShowDisplaySequence()
     {
-        //disable main menu/restart button at start
-        if (m_mainMenuBTN != null)  m_mainMenuBTN.gameObject.SetActive(false);
+        //disable main menu/restart button at start for end screens
+        if (m_mainMenuBTN != null && isThisEndLevelScreen == true)  
+            m_mainMenuBTN.gameObject.SetActive(false);
         if (m_restartBTN != null)  m_restartBTN.gameObject.SetActive(false);
         //if this is level end screen, start the bgm
         if (isThisEndLevelScreen == true)
@@ -111,12 +112,13 @@ public class Pause : MonoBehaviour
                 }
             }
         }
-        //enable the main menu/restart buttons
-        if (m_mainMenuBTN != null)  
+        //enable the main menu/restart buttons if this is the end screen
+        if (m_mainMenuBTN != null && isThisEndLevelScreen == true)  
         {
             m_mainMenuBTN.gameObject.SetActive(true);
             m_mainMenuBTN.DOScale(1.0f, 0.2f).From(0.0f);
         }
+        //restart button is only in end screen so no need to check
         if (m_restartBTN != null)  
         {
             m_restartBTN.gameObject.SetActive(true);
