@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Levels:
   - DifficultyKey: Easy
-    LevelSpeedMinMax: {x: 4, y: 8}
-    LevelTime: 60
+    LevelSpeedMinMax: {x: 3, y: 6}
+    LevelTime: 49
     BossTime: 16
     BossFires: 48
     FireMinMaxPerSet: {x: 1, y: 6}
     GapBetweenFiresInSet: {x: 3, y: 5}
     TimeBetweenFireSets: {x: 2, y: 3}
-    Coins: 10
+    Coins: 7
     CoinClumpWeights:
     - {x: 25, y: 1}
     - {x: 20, y: 2}
@@ -31,7 +31,7 @@ MonoBehaviour:
     WaterReduceRate: 1
   - DifficultyKey: Medium
     LevelSpeedMinMax: {x: 6, y: 13}
-    LevelTime: 90
+    LevelTime: 94
     BossTime: 20
     BossFires: 72
     FireMinMaxPerSet: {x: 2, y: 6}
@@ -46,14 +46,14 @@ MonoBehaviour:
     WaterFillRate: 5
     WaterReduceRate: 1
   - DifficultyKey: Hard
-    LevelSpeedMinMax: {x: 10, y: 20}
-    LevelTime: 120
+    LevelSpeedMinMax: {x: 15, y: 20}
+    LevelTime: 130
     BossTime: 24
     BossFires: 96
     FireMinMaxPerSet: {x: 3, y: 6}
     GapBetweenFiresInSet: {x: 3, y: 5}
     TimeBetweenFireSets: {x: 2, y: 3}
-    Coins: 10
+    Coins: 15
     CoinClumpWeights:
     - {x: 45, y: 1}
     - {x: 40, y: 2}
