@@ -1084,7 +1084,9 @@ public class LevelManager : MonoBehaviour
         m_hud.SetHUDCollectible(playerHUD, sp, ID);
         
         //note that collectible score is based on difficulty mode
-        float colScore = 50.0f * (m_levelIndex+1);
+        int difficultyID = PlayerPrefs.GetInt("LEVEL", 0);
+        int colScore = 50 + 50 * (difficultyID/2);
+        
         //also add collectible and score to pause screen and end-game UI
         //set appropriate data for single/multi player mode
         if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Single)
@@ -1103,12 +1105,12 @@ public class LevelManager : MonoBehaviour
     public void AddCollectibleScore(HUD.PlayerHUD playerHUD, int ID)
     {
         //note that collectible score is based on difficulty mode
-        float colScore = 50.0f * (m_levelIndex+1);
+        int difficultyID = PlayerPrefs.GetInt("LEVEL", 0);
+        int colScore = 50 + 50 * (difficultyID/2);
 
         //set appropriate data for single/multi player mode
         if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Single)
         {
-            //note that collectible score is hard coded to 50.0f
             m_pause.AddCollectibleScoreForPlayer(playerHUD, colScore, ID);
             m_end.AddCollectibleScoreForPlayer(playerHUD, colScore, ID);
         }
