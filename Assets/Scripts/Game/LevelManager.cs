@@ -1083,33 +1083,38 @@ public class LevelManager : MonoBehaviour
     {
         m_hud.SetHUDCollectible(playerHUD, sp, ID);
         
+        //note that collectible score is based on difficulty mode
+        float colScore = 50.0f * (m_levelIndex+1);
         //also add collectible and score to pause screen and end-game UI
         //set appropriate data for single/multi player mode
         if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Single)
         {
-            //note that collectible score is hard coded to 50.0f
-            m_pause.SetCollectibleDataForPlayer(playerHUD, sp, 50.0f, ID);
-            m_end.SetCollectibleDataForPlayer(playerHUD, sp, 50.0f, ID);
+            //note that collectible score is based on difficulty mode
+            m_pause.SetCollectibleDataForPlayer(playerHUD, sp, colScore, ID);
+            m_end.SetCollectibleDataForPlayer(playerHUD, sp, colScore, ID);
         }
         
         if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
-            m_endMP.SetCollectibleDataForPlayer(playerHUD, sp, 50.0f, ID);
+            m_endMP.SetCollectibleDataForPlayer(playerHUD, sp, colScore, ID);
 
     }
 
     //updating score for the easter egg in hud/end-game ui
     public void AddCollectibleScore(HUD.PlayerHUD playerHUD, int ID)
     {
+        //note that collectible score is based on difficulty mode
+        float colScore = 50.0f * (m_levelIndex+1);
+
         //set appropriate data for single/multi player mode
         if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Single)
         {
             //note that collectible score is hard coded to 50.0f
-            m_pause.AddCollectibleScoreForPlayer(playerHUD, 50.0f, ID);
-            m_end.AddCollectibleScoreForPlayer(playerHUD, 50.0f, ID);
+            m_pause.AddCollectibleScoreForPlayer(playerHUD, colScore, ID);
+            m_end.AddCollectibleScoreForPlayer(playerHUD, colScore, ID);
         }
         
         if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Multi)
-            m_endMP.AddCollectibleScoreForPlayer(playerHUD, 50.0f, ID);
+            m_endMP.AddCollectibleScoreForPlayer(playerHUD, colScore, ID);
 
     }
 

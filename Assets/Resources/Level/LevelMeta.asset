@@ -34,15 +34,15 @@ MonoBehaviour:
     LevelTime: 94
     BossTime: 20
     BossFires: 72
-    FireMinMaxPerSet: {x: 2, y: 4}
+    FireMinMaxPerSet: {x: 2, y: 5}
     GapBetweenFiresInSet: {x: 3, y: 5}
     TimeBetweenFireSets: {x: 2, y: 3}
     Coins: 10
     CoinClumpWeights:
-    - {x: 35, y: 1}
-    - {x: 30, y: 2}
-    - {x: 25, y: 3}
-    - {x: 15, y: 4}
+    - {x: 35, y: 2}
+    - {x: 30, y: 3}
+    - {x: 25, y: 4}
+    - {x: 15, y: 5}
     WaterFillRate: 6
     WaterReduceRate: 1
   - DifficultyKey: Hard
@@ -50,14 +50,14 @@ MonoBehaviour:
     LevelTime: 130
     BossTime: 24
     BossFires: 96
-    FireMinMaxPerSet: {x: 3, y: 6}
+    FireMinMaxPerSet: {x: 3, y: 8}
     GapBetweenFiresInSet: {x: 3, y: 5}
     TimeBetweenFireSets: {x: 2, y: 3}
     Coins: 15
     CoinClumpWeights:
-    - {x: 45, y: 1}
-    - {x: 40, y: 2}
-    - {x: 30, y: 3}
-    - {x: 20, y: 4}
+    - {x: 45, y: 3}
+    - {x: 40, y: 4}
+    - {x: 30, y: 5}
+    - {x: 20, y: 6}
     WaterFillRate: 8
     WaterReduceRate: 1
