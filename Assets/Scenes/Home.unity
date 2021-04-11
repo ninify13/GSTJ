@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.3731193, g: 0.38073996, b: 0.35872698, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1501,7 +1501,7 @@ MonoBehaviour:
     water.
 
     4. Collect <sprite=7> <sprite=6> <sprite=5> <sprite=4> <sprite=3>for
-    bonus points.'
+    bonus points & coins.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 516e2d25d5fd35847ba290f3c05eb8e9, type: 2}
   m_sharedMaterial: {fileID: -1277436096327413643, guid: 516e2d25d5fd35847ba290f3c05eb8e9,
@@ -3046,6 +3046,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: -12.5
       objectReference: {fileID: 0}
+    - target: {fileID: 4188045050906072941, guid: 5ffb2e137aaf8ee4fb0c8395379621f2,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -12.5
+      objectReference: {fileID: 0}
     - target: {fileID: 4451831990666337689, guid: 5ffb2e137aaf8ee4fb0c8395379621f2,
         type: 3}
       propertyPath: m_Pivot.x
@@ -3398,7 +3403,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 630.7105, y: 0}
+  m_AnchoredPosition: {x: 631.14276, y: 0}
   m_SizeDelta: {x: 1160, y: 678}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &1845322412003154113
@@ -4447,7 +4452,7 @@ PrefabInstance:
     - target: {fileID: 8721749273256802720, guid: b01cf5d1daec37c4a877737d86bc1801,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -66.255005
+      value: -66.25502
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b01cf5d1daec37c4a877737d86bc1801, type: 3}
@@ -5206,7 +5211,7 @@ PrefabInstance:
     - target: {fileID: 1968136379069372011, guid: 263adadaed4cae0439bda889e13f4b3f,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -65
+      value: -65.000015
       objectReference: {fileID: 0}
     - target: {fileID: 1968136379069372011, guid: 263adadaed4cae0439bda889e13f4b3f,
         type: 3}
@@ -5358,7 +5363,7 @@ PrefabInstance:
     - target: {fileID: 3826729720924682560, guid: 0e0dd79bbf11ed3498d9696c0f1d043f,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -48
+      value: -48.000015
       objectReference: {fileID: 0}
     - target: {fileID: 5044216734447170451, guid: 0e0dd79bbf11ed3498d9696c0f1d043f,
         type: 3}
@@ -5668,6 +5673,11 @@ PrefabInstance:
     - target: {fileID: 1374055770, guid: 9a1d86fe18480f643bfff9b9dfef1f72, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -399.70004
+      objectReference: {fileID: 0}
+    - target: {fileID: 1116668956883474841, guid: 9a1d86fe18480f643bfff9b9dfef1f72,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -26.800186
       objectReference: {fileID: 0}
     - target: {fileID: 3378831824092649155, guid: 9a1d86fe18480f643bfff9b9dfef1f72,
         type: 3}
