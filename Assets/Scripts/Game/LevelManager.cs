@@ -424,6 +424,8 @@ public class LevelManager : MonoBehaviour
                         easterEgg.Init(eggID, eggPosition, new Vector3(-eggPosition.x, eggPosition.y, eggPosition.z), new EasterEgg.OnCollected(CollectEasterEgg), m_poolManager);
 
                         m_easterEggItems.Add(easterEgg);
+                        //toggle all its colliders on
+                        ToggleColliders(easterEgg.transform, true);
                         m_levelPlayerCharacter.AddEasterEgg(easterEgg);
                         //marking the first Item transform
                         if (isFirstItemSpawned == false)
