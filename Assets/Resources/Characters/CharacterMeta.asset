@@ -21,11 +21,11 @@ MonoBehaviour:
     Image: {fileID: 21300000, guid: 2db13dc796332e4498310a2d5c0ed55b, type: 3}
   - CharacterName: 0
     CoinRequirement: 350
-    isCharUnlocked: 1
+    isCharUnlocked: 0
     Image: {fileID: 21300000, guid: 56a133e93048cc245ae42887379970f9, type: 3}
   - CharacterName: 2
     CoinRequirement: 550
-    isCharUnlocked: 1
+    isCharUnlocked: 0
     Image: {fileID: 21300000, guid: b931461cadf9b7d43a0d75b7fe152316, type: 3}
   - CharacterName: 3
     CoinRequirement: 850
