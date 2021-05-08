@@ -352,6 +352,17 @@ public class LevelManager : MonoBehaviour
 
                         // Spawn coin at (Screen end, -2.0f, 0.0f)
                         Vector3 coinPosition = new Vector3(30.0f, -2.0f, 0.0f);
+                        //if it's hard mode then move coin clusters up or down based on chance
+                        //0-40 coin cluster stays where it is
+                        //41-70 coin cluster moves up
+                        //71-100 coin cluster moves down
+                        if (m_levelIndex > 1) //i.e. hard mode is selected
+                        {
+                            int temp = Random.Range(0, 100);
+                            if (temp > 39 && temp < 70) coinPosition.y = 4.0f;
+                            if (temp > 69 && temp < 100) coinPosition.y = -6.0f;
+                        }
+
                         int coins = GSTJ_Core.LevelMeta.Levels[m_levelIndex].GetCoinClumpAmount();
                         for (int i = 0; i < coins; i++)
                         {
