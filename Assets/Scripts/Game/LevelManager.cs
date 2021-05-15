@@ -351,7 +351,7 @@ public class LevelManager : MonoBehaviour
                         m_lastCoinTime = Time.time;
 
                         // Spawn coin at (Screen end, -2.0f, 0.0f)
-                        Vector3 coinPosition = new Vector3(30.0f, -2.0f, 0.0f);
+                        Vector3 coinPosition = new Vector3(30.0f, -2.0f, -1.5f);
                         //if it's hard mode then move coin clusters up or down based on chance
                         //0-40 coin cluster stays where it is
                         //41-70 coin cluster moves up
@@ -946,7 +946,8 @@ public class LevelManager : MonoBehaviour
 
                     case 2: //hard
                     //there's 100% chance player 2 will collect this coin
-                    m_oppCoinsThisSession += value;
+                    //since it's hard mode, the player and their opponent will collect 2x
+                    m_oppCoinsThisSession += 2 * value;
                     //and 30% chance to collect an additional coin
                     chance = Random.Range(0.0f, 1.0f);
                     if (chance <= 0.3f) m_oppCoinsThisSession += value;
@@ -1060,6 +1061,12 @@ public class LevelManager : MonoBehaviour
     }
     public void AddScore(ScoreType scoreType, int value = 1)
     {
+        //check difficulty level selected
+        int difficultyID = PlayerPrefs.GetInt("LEVEL", -1);
+        //for hard mode, the player will get 2x coins
+        if (scoreType == ScoreType.Coin && difficultyID > 1)
+            value = 2 * value;
+        
         int score = PlayerPrefs.GetInt(scoreType.ToString(), 0);
         score += value;
         PlayerPrefs.SetInt(scoreType.ToString(), score);
