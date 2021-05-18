@@ -56,8 +56,8 @@ MonoBehaviour:
     Coins: 15
     CoinClumpWeights:
     - {x: 30, y: 1}
-    - {x: 30, y: 1}
-    - {x: 20, y: 2}
+    - {x: 30, y: 2}
     - {x: 20, y: 3}
+    - {x: 20, y: 4}
     WaterFillRate: 8
     WaterReduceRate: 1.1
