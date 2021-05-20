@@ -50,6 +50,17 @@ namespace Game.Collectible
             
         }
 
+        //adding a method to override Y position
+        public void OverrideYPos(float newY)
+        {
+            Vector3 newPos = m_scrollingObject.StartPoint;
+            newPos.y = newY;
+            m_scrollingObject.SetStartPoint(newPos);
+            newPos = m_scrollingObject.EndPoint;
+            newPos.y = newY;
+            m_scrollingObject.SetEndPoint(newPos);
+        }
+
         public void TogglePause(bool pause)
         {
             if (pause)

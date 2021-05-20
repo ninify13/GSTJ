@@ -219,7 +219,9 @@ public class Player : MonoBehaviour
                 // Water helper is looking mostly towards easter egg
                 //note that collectible score is based on difficulty mode
                 int difficultyID = PlayerPrefs.GetInt("LEVEL", 0);
-                int colScore = 50 + 50 * (difficultyID/2);
+                int colScore = 25;
+                if (difficultyID == 1) colScore = 35; //med mode
+                if (difficultyID == 2) colScore = 50; //hard mode
                 m_levelManager.AddScore(LevelManager.ScoreType.Coin, colScore);
                 //play the easter egg (item) collection sound
                 m_levelManager.PlayItemColAudio();

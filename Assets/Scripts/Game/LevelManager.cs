@@ -378,6 +378,8 @@ public class LevelManager : MonoBehaviour
                             {
                                 isFirstCoinSpawned = true;
                                 firstCoin = coin.transform;
+                                //update its start and end Y position
+                                coin.OverrideYPos(m_fireTruck.position.y + 5.0f);
                                 //only disable the colliders if FTUE is shown
                                 if (GSTJ_Core.m_ShowFTUE == true)
                                     ToggleColliders(firstCoin, false);
@@ -443,6 +445,8 @@ public class LevelManager : MonoBehaviour
                         {
                             isFirstItemSpawned = true;
                             firstItem = easterEgg.transform;
+                            //update its start and end Y position
+                            easterEgg.OverrideYPos(m_fireTruck.position.y + 5.0f);
                             //only disable the colliders if FTUE is shown
                             if (GSTJ_Core.m_ShowFTUE == true)
                                 ToggleColliders(firstItem, false);
@@ -1190,6 +1194,8 @@ public class LevelManager : MonoBehaviour
                 {
                     isFirstFireSpawned = true;
                     firstFire = fire.transform;
+                    //update its start and end Y position
+                    fire.OverrideYPos(m_fireTruck.position.y + 5.0f);
                     //only disable the collider if we are showing the FTUE
                     if (GSTJ_Core.m_ShowFTUE == true)
                         ToggleColliders(firstFire, false);
