@@ -817,6 +817,7 @@ public class LevelManager : MonoBehaviour
 
         //wait for 1-2s before showing the next FTUE
         yield return new WaitForSeconds(Random.Range(2.3f, 3.0f));
+        yield return new WaitUntil (() => ((isFirstItemSpawned == true)));
 
         //if the first item has spawned
         if (isFirstItemSpawned == true)
@@ -1067,7 +1068,8 @@ public class LevelManager : MonoBehaviour
     {
         //check difficulty level selected
         int difficultyID = PlayerPrefs.GetInt("LEVEL", -1);
-        //for hard mode, the player will get 2x coins
+        //for hard mode, the player will get 2x coins and easter egg score
+
         if (scoreType == ScoreType.Coin && difficultyID > 1)
             value = 2 * value;
         
@@ -1109,7 +1111,9 @@ public class LevelManager : MonoBehaviour
         
         //note that collectible score is based on difficulty mode
         int difficultyID = PlayerPrefs.GetInt("LEVEL", 0);
-        int colScore = 50 + 50 * (difficultyID/2);
+        int colScore = 25;
+        if (difficultyID == 1) colScore = 50; //med mode
+        if (difficultyID == 2) colScore = 80; //hard mode
         
         //also add collectible and score to pause screen and end-game UI
         //set appropriate data for single/multi player mode
@@ -1130,7 +1134,9 @@ public class LevelManager : MonoBehaviour
     {
         //note that collectible score is based on difficulty mode
         int difficultyID = PlayerPrefs.GetInt("LEVEL", 0);
-        int colScore = 50 + 50 * (difficultyID/2);
+        int colScore = 25;
+        if (difficultyID == 1) colScore = 50; //med mode
+        if (difficultyID == 2) colScore = 80; //hard mode
 
         //set appropriate data for single/multi player mode
         if (GSTJ_Core.SelectedMode == GSTJ_Core.GameMode.Single)
