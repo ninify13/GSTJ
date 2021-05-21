@@ -39,10 +39,10 @@ MonoBehaviour:
     TimeBetweenFireSets: {x: 2, y: 3}
     Coins: 10
     CoinClumpWeights:
-    - {x: 35, y: 1}
-    - {x: 25, y: 2}
+    - {x: 30, y: 2}
     - {x: 25, y: 3}
-    - {x: 15, y: 4}
+    - {x: 25, y: 3}
+    - {x: 20, y: 5}
     WaterFillRate: 6
     WaterReduceRate: 0.95
   - DifficultyKey: Hard
@@ -55,9 +55,9 @@ MonoBehaviour:
     TimeBetweenFireSets: {x: 2, y: 3}
     Coins: 15
     CoinClumpWeights:
-    - {x: 30, y: 1}
-    - {x: 30, y: 2}
+    - {x: 25, y: 2}
+    - {x: 30, y: 3}
     - {x: 20, y: 3}
-    - {x: 20, y: 4}
+    - {x: 25, y: 4}
     WaterFillRate: 8
     WaterReduceRate: 1.1
